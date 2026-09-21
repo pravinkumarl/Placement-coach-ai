@@ -282,7 +282,7 @@ function initChatbotWidget() {
 
       try {
         let replyText = '';
-        if (window.GeminiService && GeminiService.getApiKey()) {
+        if (window.GeminiService && (GeminiService.getApiKey() || (GeminiService.hasAccess && GeminiService.hasAccess()))) {
           const systemPrompt = `You are a concise, supportive AI Placement Coach widget assistant. Give brief, punchy, and actionable placement advice in 2-3 short sentences.`;
           replyText = await GeminiService.callGemini(widgetHistory, systemPrompt);
         } else {
@@ -650,7 +650,7 @@ When responding:
 
     try {
       let replyText = '';
-      if (window.GeminiService && GeminiService.getApiKey()) {
+      if (window.GeminiService && (GeminiService.getApiKey() || (GeminiService.hasAccess && GeminiService.hasAccess()))) {
         replyText = await GeminiService.callGemini(conversationHistory, systemPrompt);
       } else {
         replyText = "I'm ready to coach you! Please ensure the GEMINI_API_KEY is configured in `config.js` to enable live reasoning.";
@@ -774,7 +774,7 @@ Keep your tone professional, crisp, and realistic.`;
 
     try {
       let reply = '';
-      if (window.GeminiService && GeminiService.getApiKey()) {
+      if (window.GeminiService && (GeminiService.getApiKey() || (GeminiService.hasAccess && GeminiService.hasAccess()))) {
         reply = await GeminiService.callGemini(interviewHistory, interviewSystemPrompt);
       } else {
         reply = "Good point. How would you handle distributed locking if multiple workers attempt to update the same record?";
