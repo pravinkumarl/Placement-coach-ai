@@ -1,0 +1,10 @@
+{
+  "name": "placement-coach-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI-Powered Placement Preparation Platform",
+  "type": "module",
+  "scripts": {
+    "start": "serve ."
+  }
+}

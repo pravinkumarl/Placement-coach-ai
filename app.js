@@ -681,6 +681,11 @@ When responding:
         <div class="chat-bubble ai border border-danger-subtle bg-danger-subtle text-danger-emphasis">
           <strong>Connection Error:</strong> ${escapeHtml(err.message || 'Failed to generate response')}.
           <br><small class="text-muted">Please check your network and Gemini API key.</small>
+          <div class="mt-2">
+            <button class="btn btn-sm btn-outline-danger py-1 px-3" data-bs-toggle="modal" data-bs-target="#apiKeyModal">
+              <i class="bi bi-key-fill"></i> Enter / Change Gemini API Key
+            </button>
+          </div>
           <span class="bubble-time">Just now</span>
         </div>
       `;
@@ -693,6 +698,40 @@ When responding:
   chatInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendMessage();
   });
+
+  // API Key Modal Handling
+  const apiKeyModalEl = document.getElementById('apiKeyModal');
+  const apiKeyInput = document.getElementById('geminiApiKeyInput');
+  const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
+  const apiKeyMsg = document.getElementById('apiKeyModalMsg');
+
+  if (apiKeyModalEl && apiKeyInput && saveApiKeyBtn) {
+    apiKeyModalEl.addEventListener('show.bs.modal', () => {
+      apiKeyInput.value = localStorage.getItem('GEMINI_API_KEY') || (typeof GEMINI_API_KEY !== 'undefined' ? GEMINI_API_KEY : '');
+      if (apiKeyMsg) apiKeyMsg.className = 'alert d-none small py-2 mb-0';
+    });
+
+    saveApiKeyBtn.addEventListener('click', () => {
+      const keyVal = apiKeyInput.value.trim();
+      if (!keyVal) {
+        localStorage.removeItem('GEMINI_API_KEY');
+        if (apiKeyMsg) {
+          apiKeyMsg.className = 'alert alert-warning small py-2 mb-0';
+          apiKeyMsg.textContent = 'API key cleared. System will use serverless proxy if available.';
+        }
+      } else {
+        localStorage.setItem('GEMINI_API_KEY', keyVal);
+        if (apiKeyMsg) {
+          apiKeyMsg.className = 'alert alert-success small py-2 mb-0';
+          apiKeyMsg.textContent = 'API Key saved successfully! Gemini 3.6 Flash is ready.';
+        }
+        setTimeout(() => {
+          const modalInstance = bootstrap.Modal.getInstance(apiKeyModalEl);
+          if (modalInstance) modalInstance.hide();
+        }, 1200);
+      }
+    });
+  }
 
   // Quick reply chips
   document.querySelectorAll('.full-chat .quick-reply-chip').forEach(chip => {

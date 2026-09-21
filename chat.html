@@ -55,6 +55,9 @@
         </div>
       </div>
       <div class="header-actions">
+        <button class="btn btn-sm btn-outline-custom" id="apiKeyModalBtn" title="Gemini API Key Settings" data-bs-toggle="modal" data-bs-target="#apiKeyModal">
+          <i class="bi bi-key-fill text-warning"></i> <span class="d-none d-sm-inline">API Key</span>
+        </button>
         <button class="btn btn-sm btn-outline-custom d-lg-none" onclick="toggleChatSidebar()">
           <i class="bi bi-chat-left-text"></i> History
         </button>
@@ -282,6 +285,32 @@
         <div class="chat-input-bar">
           <input type="text" placeholder="Ask your AI placement coach anything..." aria-label="Chat message">
           <button class="btn-send" aria-label="Send message"><i class="bi bi-send-fill"></i></button>
+        </div>
+      </div>
+    </div>
+  <!-- API Key Settings Modal -->
+  <div class="modal fade" id="apiKeyModal" tabindex="-1" aria-labelledby="apiKeyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow" style="border-radius: 1rem;">
+        <div class="modal-header">
+          <h5 class="modal-title d-flex align-items-center gap-2" id="apiKeyModalLabel">
+            <i class="bi bi-key-fill text-warning"></i> Gemini API Key Settings
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-muted small mb-3">
+            Enter your Google Gemini API key to run live AI reasoning using <strong><code>gemini-3.6-flash</code></strong>. Your key is stored safely in your browser's local storage.
+          </p>
+          <div class="mb-3">
+            <label for="geminiApiKeyInput" class="form-label small fw-semibold">Gemini API Key</label>
+            <input type="password" class="form-control form-control-custom" id="geminiApiKeyInput" placeholder="Paste your Gemini API key here...">
+          </div>
+          <div id="apiKeyModalMsg" class="alert d-none small py-2 mb-0"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-sm btn-primary-custom" id="saveApiKeyBtn">Save Key</button>
         </div>
       </div>
     </div>
