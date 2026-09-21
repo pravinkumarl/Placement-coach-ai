@@ -149,7 +149,8 @@ async function callGemini(contents, customSystemPrompt) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: contents,
-          systemPrompt: systemInstruction
+          systemPrompt: systemInstruction,
+          model: GEMINI_CONFIG.primaryModel
         })
       });
 

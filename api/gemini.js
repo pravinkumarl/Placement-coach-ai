@@ -33,8 +33,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: { message: 'Invalid payload: "contents" array is required.' } });
   }
 
-  // Model fallback chain
-  const modelsToTry = [model, 'gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-2.5-flash'].filter(Boolean);
+  // Model fallback chain: using gemini-3.6-flash and gemini-3.8-flash
+  const modelsToTry = [model, 'gemini-3.6-flash', 'gemini-3.8-flash'].filter(Boolean);
   const baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models';
 
   let lastErrorData = null;
