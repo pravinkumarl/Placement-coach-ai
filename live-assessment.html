@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Live assessment in progress — answer questions, manage your time, and submit for AI-powered feedback.">
+  <title>Live Assessment — Placement Coach</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Minimal Top Bar (no sidebar — distraction-free) -->
+  <header class="top-header" style="margin-left: 0;">
+    <div class="d-flex align-items-center gap-3">
+      <a href="assessment-hub.html" class="btn-icon" title="Exit Assessment" data-bs-toggle="modal" data-bs-target="#exitModal">
+        <i class="bi bi-x-lg"></i>
+      </a>
+      <h1 class="page-title">DSA Coding Challenge</h1>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <span class="fw-bold" id="timerText" style="font-size: 1.1rem; color: var(--clr-primary); font-variant-numeric: tabular-nums;">45:00</span>
+      <span class="badge rounded-pill px-3 py-2" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;" id="questionCounter">Question 1 of 5</span>
+    </div>
+  </header>
+
+  <!-- Timer Progress Bar -->
+  <div class="timer-bar" style="margin-left: 0; top: 60px;">
+    <div class="timer-bar-fill" id="timerBarFill" style="width: 0%;"></div>
+  </div>
+
+  <!-- Question Progress -->
+  <div class="progress mx-3 mx-md-4 mt-2" style="height: 4px; border-radius: 2px;">
+    <div class="progress-bar" role="progressbar" id="questionProgress" style="width: 20%; background: var(--clr-primary);" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+  </div>
+
+  <!-- Main Content (no sidebar) -->
+  <div class="p-3 p-md-4" style="margin-left: 0;">
+    <!-- Question 1 (MCQ) -->
+    <div class="question-panel active" id="q1">
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="glass-card h-100">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <span class="badge rounded-pill" style="background:var(--clr-warning-light);color:var(--clr-warning);font-weight:600;">Medium</span>
+              <span class="badge rounded-pill" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">Arrays</span>
+            </div>
+            <h5 class="fw-bold mb-3">Q1: Two Sum Problem</h5>
+            <p style="color:var(--clr-text-secondary);">Given an array of integers <code>nums</code> and an integer <code>target</code>, return <em>indices of the two numbers</em> such that they add up to <code>target</code>.</p>
+            <p style="color:var(--clr-text-secondary);">You may assume that each input would have exactly one solution, and you may not use the same element twice.</p>
+            <div class="p-3 rounded-3 mt-3" style="background:var(--clr-bg); font-family: monospace; font-size:0.88rem;">
+              <strong>Example:</strong><br>
+              Input: nums = [2,7,11,15], target = 9<br>
+              Output: [0,1]<br>
+              Explanation: nums[0] + nums[1] == 9
+            </div>
+            <div class="mt-3 p-3 rounded-3" style="background:var(--clr-bg); font-size:0.85rem;">
+              <strong>Constraints:</strong><br>
+              • 2 ≤ nums.length ≤ 10⁴<br>
+              • -10⁹ ≤ nums[i] ≤ 10⁹<br>
+              • Only one valid answer exists.
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="glass-card h-100 p-0 overflow-hidden">
+            <div class="d-flex align-items-center justify-content-between px-3 py-2" style="background: #1E1E2E; border-bottom: 1px solid #313244;">
+              <div class="d-flex gap-2">
+                <span style="font-size:0.8rem;color:#CDD6F4;font-weight:500;">Python</span>
+              </div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm" style="color:#CDD6F4;font-size:0.75rem;background:rgba(255,255,255,0.1);border:none;border-radius:4px;padding:0.2rem 0.6rem;">Reset</button>
+              </div>
+            </div>
+            <div class="code-editor-mock" style="border-radius: 0; min-height: 350px;">
+<pre style="margin:0; white-space:pre-wrap;"><span class="keyword">def</span> <span class="function">twoSum</span>(nums, target):
+    <span class="comment"># Your solution here</span>
+    <span class="comment"># Hint: Consider using a hash map</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="function">len</span>(nums)):
+        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="function">range</span>(i + <span class="number">1</span>, <span class="function">len</span>(nums)):
+            <span class="keyword">if</span> nums[i] + nums[j] == target:
+                <span class="keyword">return</span> [i, j]
+    <span class="keyword">return</span> []</pre>
+            </div>
+            <div class="d-flex gap-2 p-3" style="background: #1E1E2E; border-top: 1px solid #313244;">
+              <button class="btn btn-sm" style="background: var(--clr-success); color: #fff; border: none; border-radius: 6px; padding: 0.4rem 1rem; font-weight: 500; min-height: 36px;">
+                <i class="bi bi-play-fill"></i> Run Code
+              </button>
+              <button class="btn btn-sm" style="background: rgba(255,255,255,0.1); color: #CDD6F4; border: none; border-radius: 6px; padding: 0.4rem 1rem; font-weight: 500; min-height: 36px;">
+                <i class="bi bi-terminal"></i> Test Cases
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question 2 (MCQ — shown when navigated) -->
+    <div class="question-panel" id="q2" style="display:none;">
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="glass-card h-100">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <span class="badge rounded-pill" style="background:var(--clr-danger-light);color:var(--clr-danger);font-weight:600;">Hard</span>
+              <span class="badge rounded-pill" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">Dynamic Programming</span>
+            </div>
+            <h5 class="fw-bold mb-3">Q2: Longest Increasing Subsequence</h5>
+            <p style="color:var(--clr-text-secondary);">Given an integer array <code>nums</code>, return the length of the longest strictly increasing subsequence.</p>
+            <div class="p-3 rounded-3 mt-3" style="background:var(--clr-bg); font-family: monospace; font-size:0.88rem;">
+              <strong>Example:</strong><br>
+              Input: nums = [10,9,2,5,3,7,101,18]<br>
+              Output: 4<br>
+              Explanation: [2,3,7,101]
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="glass-card h-100 p-0 overflow-hidden">
+            <div class="d-flex align-items-center px-3 py-2" style="background: #1E1E2E; border-bottom: 1px solid #313244;">
+              <span style="font-size:0.8rem;color:#CDD6F4;font-weight:500;">Python</span>
+            </div>
+            <div class="code-editor-mock" style="border-radius: 0; min-height: 350px;">
+<pre style="margin:0; white-space:pre-wrap;"><span class="keyword">def</span> <span class="function">lengthOfLIS</span>(nums):
+    <span class="comment"># Your solution here</span>
+    <span class="keyword">pass</span></pre>
+            </div>
+            <div class="d-flex gap-2 p-3" style="background: #1E1E2E; border-top: 1px solid #313244;">
+              <button class="btn btn-sm" style="background: var(--clr-success); color: #fff; border: none; border-radius: 6px; padding: 0.4rem 1rem; font-weight: 500; min-height: 36px;">
+                <i class="bi bi-play-fill"></i> Run Code
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question 3 (Interview-style — chat UI) -->
+    <div class="question-panel" id="q3" style="display:none;">
+      <div class="glass-card">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="badge rounded-pill" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">Technical Interview</span>
+          <span class="badge rounded-pill" style="background:var(--clr-warning-light);color:var(--clr-warning);font-weight:600;">System Design</span>
+        </div>
+        <h5 class="fw-bold mb-3">Q3: AI Technical Interview — System Design</h5>
+        <div class="chat-container" style="max-height: 450px;">
+          <div class="chat-messages" style="max-height:350px; overflow-y:auto;">
+            <div class="chat-message-row">
+              <div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>
+              <div class="chat-bubble ai">
+                Let's talk about system design. Can you walk me through how you would design a URL shortening service like bit.ly?
+                <span class="bubble-time">Interview Start</span>
+              </div>
+            </div>
+            <div class="chat-message-row user-row">
+              <div class="chat-bubble user">
+                Sure! I'd start with the requirements. We need a service that takes a long URL and returns a short unique code, and can redirect users when they visit the short URL.
+                <span class="bubble-time">00:30</span>
+              </div>
+            </div>
+            <div class="chat-message-row">
+              <div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>
+              <div class="chat-bubble ai">
+                Good start! How would you generate the unique short code? What encoding would you use and how would you handle collisions?
+                <span class="bubble-time">00:45</span>
+              </div>
+            </div>
+          </div>
+          <div class="chat-input-bar" style="border-radius: 0 0 var(--radius-lg) var(--radius-lg);">
+            <input type="text" placeholder="Type your answer..." aria-label="Interview response">
+            <button class="btn-send" aria-label="Send"><i class="bi bi-send-fill"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question 4 -->
+    <div class="question-panel" id="q4" style="display:none;">
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="glass-card h-100">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <span class="badge rounded-pill" style="background:var(--clr-warning-light);color:var(--clr-warning);font-weight:600;">Medium</span>
+              <span class="badge rounded-pill" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">Trees</span>
+            </div>
+            <h5 class="fw-bold mb-3">Q4: Validate Binary Search Tree</h5>
+            <p style="color:var(--clr-text-secondary);">Given the root of a binary tree, determine if it is a valid binary search tree (BST).</p>
+            <div class="p-3 rounded-3 mt-3" style="background:var(--clr-bg); font-family: monospace; font-size:0.88rem;">
+              <strong>Example:</strong><br>
+              Input: root = [2,1,3]<br>
+              Output: true
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="glass-card h-100 p-0 overflow-hidden">
+            <div class="d-flex align-items-center px-3 py-2" style="background: #1E1E2E; border-bottom: 1px solid #313244;">
+              <span style="font-size:0.8rem;color:#CDD6F4;font-weight:500;">Python</span>
+            </div>
+            <div class="code-editor-mock" style="border-radius: 0; min-height: 350px;">
+<pre style="margin:0; white-space:pre-wrap;"><span class="keyword">def</span> <span class="function">isValidBST</span>(root):
+    <span class="comment"># Your solution here</span>
+    <span class="keyword">pass</span></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question 5 -->
+    <div class="question-panel" id="q5" style="display:none;">
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="glass-card h-100">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <span class="badge rounded-pill" style="background:var(--clr-danger-light);color:var(--clr-danger);font-weight:600;">Hard</span>
+              <span class="badge rounded-pill" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">Graphs</span>
+            </div>
+            <h5 class="fw-bold mb-3">Q5: Course Schedule (Topological Sort)</h5>
+            <p style="color:var(--clr-text-secondary);">There are <code>numCourses</code> courses labeled from 0 to numCourses-1. You are given an array <code>prerequisites</code>. Return <code>true</code> if you can finish all courses.</p>
+            <div class="p-3 rounded-3 mt-3" style="background:var(--clr-bg); font-family: monospace; font-size:0.88rem;">
+              <strong>Example:</strong><br>
+              Input: numCourses = 2, prerequisites = [[1,0]]<br>
+              Output: true
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="glass-card h-100 p-0 overflow-hidden">
+            <div class="d-flex align-items-center px-3 py-2" style="background: #1E1E2E; border-bottom: 1px solid #313244;">
+              <span style="font-size:0.8rem;color:#CDD6F4;font-weight:500;">Python</span>
+            </div>
+            <div class="code-editor-mock" style="border-radius: 0; min-height: 350px;">
+<pre style="margin:0; white-space:pre-wrap;"><span class="keyword">def</span> <span class="function">canFinish</span>(numCourses, prerequisites):
+    <span class="comment"># Your solution here</span>
+    <span class="keyword">pass</span></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question Loading Spinner Overlay -->
+    <div id="questionLoadingOverlay" class="d-none text-center py-5 my-5">
+      <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading question...</span>
+      </div>
+      <h6 class="fw-bold text-muted">Loading question from question bank...</h6>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="d-flex justify-content-between align-items-center mt-4">
+      <button class="btn btn-outline-custom" id="prevBtn" disabled onclick="navigateQuestion('prev')">
+        <i class="bi bi-arrow-left"></i> Previous
+      </button>
+      <div class="d-flex gap-2">
+        <button class="btn" style="background:var(--clr-bg);color:var(--clr-text-secondary);border:1px solid var(--clr-border);border-radius:var(--radius-sm);min-height:44px;" data-bs-toggle="tooltip" title="Flag this question for review">
+          <i class="bi bi-flag"></i> Flag
+        </button>
+      </div>
+      <button class="btn btn-primary-custom" id="nextBtn" onclick="navigateQuestion('next')">
+        Next <i class="bi bi-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Submit Confirmation & Evaluation Modal -->
+  <div class="modal fade" id="submitModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="border:none; border-radius:var(--radius-xl); background:var(--clr-surface);">
+        <!-- State 1: Confirmation -->
+        <div class="modal-body text-center p-4" id="submitConfirmState">
+          <div style="width:64px;height:64px;border-radius:50%;background:var(--clr-success-light);color:var(--clr-success);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin:0 auto 1rem;">
+            <i class="bi bi-check-lg"></i>
+          </div>
+          <h5 class="fw-bold">Submit Assessment?</h5>
+          <p style="color:var(--clr-text-secondary);">You've answered 5 of 5 questions. Once submitted, your solution is evaluated by the AI grader.</p>
+          <div class="d-flex gap-3 justify-content-center mt-3">
+            <button class="btn btn-outline-custom" data-bs-dismiss="modal">Review Answers</button>
+            <button type="button" class="btn btn-primary-custom" id="finalSubmitBtn" onclick="handleFinalSubmit()">
+              <i class="bi bi-check-lg"></i> Submit & Get Feedback
+            </button>
+          </div>
+        </div>
+
+        <!-- State 2: Evaluating Spinner State -->
+        <div class="modal-body text-center p-5 d-none" id="submitEvaluatingState">
+          <div class="d-flex justify-content-center align-items-center gap-2 mb-3">
+            <div class="spinner-grow text-primary" role="status" style="width: 2rem; height: 2rem;"></div>
+            <div class="spinner-grow text-info" role="status" style="width: 2rem; height: 2rem; animation-delay: 0.2s;"></div>
+            <div class="spinner-grow text-success" role="status" style="width: 2rem; height: 2rem; animation-delay: 0.4s;"></div>
+          </div>
+          <h5 class="fw-bold mb-2">Evaluating your answer...</h5>
+          <p class="text-muted small mb-3">Testing test cases, time complexity, and generating topic-level AI breakdown.</p>
+          <div class="progress" style="height: 6px; border-radius: 3px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 85%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exit Confirmation Modal -->
+  <div class="modal fade" id="exitModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="border:none; border-radius:var(--radius-xl); background:var(--clr-surface);">
+        <div class="modal-body text-center p-4">
+          <div style="width:64px;height:64px;border-radius:50%;background:var(--clr-danger-light);color:var(--clr-danger);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin:0 auto 1rem;">
+            <i class="bi bi-exclamation-triangle"></i>
+          </div>
+          <h5 class="fw-bold">Exit Assessment?</h5>
+          <p style="color:var(--clr-text-secondary);">Your progress will be lost if you leave now. Are you sure?</p>
+          <div class="d-flex gap-3 justify-content-center mt-3">
+            <button class="btn btn-outline-custom" data-bs-dismiss="modal">Continue Assessment</button>
+            <a href="assessment-hub.html" class="btn" style="background:var(--clr-danger);color:#fff;border:none;border-radius:var(--radius-sm);font-weight:600;min-height:44px;display:inline-flex;align-items:center;">Exit</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="config.js"></script>
+  <script src="gemini.js"></script>
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initAssessmentTimer();
+      // Init tooltips
+      const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      tooltips.forEach(el => new bootstrap.Tooltip(el));
+    });
+
+    // Show active panel, hide others
+    document.querySelectorAll('.question-panel').forEach((panel, idx) => {
+      if (idx === 0) {
+        panel.classList.add('active');
+        panel.style.display = '';
+      } else {
+        panel.classList.remove('active');
+        panel.style.display = 'none';
+      }
+    });
+
+    // Handle question navigation with brief spinner state
+    window.navigateQuestion = function(direction) {
+      const panels = document.querySelectorAll('.question-panel');
+      const current = document.querySelector('.question-panel.active');
+      const overlay = document.getElementById('questionLoadingOverlay');
+      if (!current) return;
+
+      let idx = Array.from(panels).indexOf(current);
+      if (direction === 'next' && idx < panels.length - 1) idx++;
+      else if (direction === 'prev' && idx > 0) idx--;
+
+      // Hide all panels, show brief loader
+      panels.forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+      if (overlay) overlay.classList.remove('d-none');
+
+      setTimeout(() => {
+        if (overlay) overlay.classList.add('d-none');
+        panels[idx].classList.add('active');
+        panels[idx].style.display = '';
+        panels[idx].style.animation = 'bubbleFadeIn 0.3s ease';
+
+        // Update progress
+        const progress = document.getElementById('questionProgress');
+        if (progress) {
+          const pct = ((idx + 1) / panels.length) * 100;
+          progress.style.width = pct + '%';
+        }
+        document.getElementById('questionCounter').textContent = `Question ${idx + 1} of ${panels.length}`;
+
+        document.getElementById('prevBtn').disabled = (idx === 0);
+        const nextBtn = document.getElementById('nextBtn');
+        if (idx === panels.length - 1) {
+          nextBtn.innerHTML = '<i class="bi bi-check-lg"></i> Submit';
+          nextBtn.onclick = () => new bootstrap.Modal(document.getElementById('submitModal')).show();
+        } else {
+          nextBtn.innerHTML = 'Next <i class="bi bi-arrow-right"></i>';
+          nextBtn.onclick = () => navigateQuestion('next');
+        }
+      }, 250);
+    };
+
+    function handleFinalSubmit() {
+      const confirmState = document.getElementById('submitConfirmState');
+      const evalState = document.getElementById('submitEvaluatingState');
+      if (confirmState && evalState) {
+        confirmState.classList.add('d-none');
+        evalState.classList.remove('d-none');
+        setTimeout(() => {
+          window.location.href = 'performance.html';
+        }, 1500);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sign in or create an account on Placement Coach — your AI-powered placement preparation platform.">
+  <title>Authentication — Placement Coach</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+  <style>
+    .auth-split-container {
+      min-height: 100vh;
+      display: flex;
+    }
+    .auth-left-banner {
+      flex: 1;
+      background: linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4C1D95 100%);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 3.5rem;
+      color: #ffffff;
+    }
+    .auth-left-banner::before {
+      content: '';
+      position: absolute;
+      width: 450px;
+      height: 450px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.45) 0%, rgba(79, 70, 229, 0.1) 70%, transparent 100%);
+      top: -100px;
+      right: -100px;
+      filter: blur(40px);
+    }
+    .auth-left-banner::after {
+      content: '';
+      position: absolute;
+      width: 350px;
+      height: 350px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, rgba(139, 92, 246, 0.1) 70%, transparent 100%);
+      bottom: -50px;
+      left: -50px;
+      filter: blur(40px);
+    }
+    .auth-right-form {
+      flex: 1.1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 3rem 4rem;
+      background: var(--clr-surface);
+    }
+    @media (max-width: 991px) {
+      .auth-split-container {
+        flex-direction: column;
+      }
+      .auth-left-banner {
+        padding: 2.5rem 1.5rem;
+        min-height: 280px;
+      }
+      .auth-right-form {
+        padding: 2rem 1.5rem;
+      }
+    }
+    .auth-nav-tabs .nav-link {
+      color: var(--clr-text-secondary);
+      font-weight: 600;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 0.5rem;
+      background: transparent;
+      transition: all var(--transition-fast);
+    }
+    .auth-nav-tabs .nav-link.active {
+      color: var(--bs-primary);
+      background: var(--clr-primary-light);
+    }
+  </style>
+</head>
+<body class="bg-body">
+
+  <div class="auth-split-container">
+    <!-- ======================== LEFT PANEL (Gradient Banner) ======================== -->
+    <div class="auth-left-banner">
+      <!-- Top Brand -->
+      <div class="position-relative z-1">
+        <a href="index.html" class="d-flex align-items-center gap-2 text-white text-decoration-none">
+          <span class="badge rounded-circle p-2 d-inline-flex align-items-center justify-content-center text-white" style="background: rgba(255, 255, 255, 0.2); width: 38px; height: 38px;">
+            <i class="bi bi-rocket-takeoff fs-5"></i>
+          </span>
+          <span class="fw-bold fs-4">Placement Coach</span>
+        </a>
+      </div>
+
+      <!-- Center Typography -->
+      <div class="my-auto position-relative z-1 py-4">
+        <span class="badge rounded-pill px-3 py-2 fw-semibold mb-3" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px);">
+          <i class="bi bi-stars me-1 text-warning"></i> AI Placement Copilot
+        </span>
+        <h1 class="display-5 fw-bold mb-3" style="line-height: 1.2;">
+          Get ready.<br>Get placed.<br>Get coached.
+        </h1>
+        <p class="lead opacity-90 fs-6 max-w-md" style="line-height: 1.6; color: #E0E7FF;">
+          One coach that measures you, finds your gaps, plans your practice, and re-tests until you're interview-ready.
+        </p>
+      </div>
+
+      <!-- Bottom Floating Glass Badge -->
+      <div class="position-relative z-1">
+        <div class="p-3 rounded-4 shadow-sm d-flex align-items-center gap-3" style="background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2);">
+          <div class="rounded-circle d-flex align-items-center justify-content-center bg-success text-white flex-shrink-0" style="width: 42px; height: 42px;">
+            <i class="bi bi-graph-up-arrow fs-5"></i>
+          </div>
+          <div>
+            <div class="fw-bold text-white small">Readiness up 31% in 8 weeks</div>
+            <div class="small" style="color: #C7D2FE;">Average student improvement before campus placement season</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================== RIGHT PANEL (Form Container) ======================== -->
+    <div class="auth-right-form">
+      <div style="max-width: 480px; width: 100%; margin: 0 auto;">
+        <!-- Top Bar with Theme Toggle -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge rounded-circle p-2 d-inline-flex align-items-center justify-content-center text-white" style="background: var(--bs-primary); width: 32px; height: 32px;">
+              <i class="bi bi-rocket-takeoff"></i>
+            </span>
+            <span class="fw-bold text-body">Placement Coach</span>
+          </div>
+          <button class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center dark-mode-toggle" id="themeToggleBtn" style="width: 36px; height: 36px;" title="Toggle dark mode">
+            <i class="bi bi-moon-stars"></i>
+          </button>
+        </div>
+
+        <!-- Tab Switcher: [Sign in] | [Create account] -->
+        <ul class="nav auth-nav-tabs p-1 bg-light rounded-3 mb-4 d-flex" role="tablist">
+          <li class="nav-item flex-fill text-center">
+            <button class="nav-link w-100 active" id="signin-tab" data-bs-toggle="tab" data-bs-target="#signin-pane" type="button" role="tab" aria-controls="signin-pane" aria-selected="true">
+              Sign in
+            </button>
+          </li>
+          <li class="nav-item flex-fill text-center">
+            <button class="nav-link w-100" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup-pane" type="button" role="tab" aria-controls="signup-pane" aria-selected="false">
+              Create account
+            </button>
+          </li>
+        </ul>
+
+        <!-- Alerts -->
+        <div class="alert alert-danger alert-dismissible fade show d-none align-items-center gap-2 mb-3 shadow-sm" id="loginAlertDanger" role="alert">
+          <i class="bi bi-exclamation-circle-fill text-danger fs-5 flex-shrink-0"></i>
+          <div class="flex-grow-1 small">
+            <strong>Login Failed:</strong> Please enter a valid email and password to proceed.
+          </div>
+          <button type="button" class="btn-close" onclick="document.getElementById('loginAlertDanger').classList.add('d-none')" aria-label="Close"></button>
+        </div>
+
+        <div class="alert alert-success alert-dismissible fade show d-none align-items-center gap-2 mb-3 shadow-sm" id="signupAlertSuccess" role="alert">
+          <i class="bi bi-check-circle-fill text-success fs-5 flex-shrink-0"></i>
+          <div class="flex-grow-1 small">
+            <strong>Account Created:</strong> Welcome aboard! Launching your diagnostic roadmap...
+          </div>
+          <button type="button" class="btn-close" onclick="document.getElementById('signupAlertSuccess').classList.add('d-none')" aria-label="Close"></button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="authTabContent">
+          <!-- 1. SIGN IN TAB VIEW -->
+          <div class="tab-pane fade show active" id="signin-pane" role="tabpanel" aria-labelledby="signin-tab" tabindex="0">
+            <h3 class="fw-bold mb-1">Welcome back, let's coach</h3>
+            <p class="text-muted small mb-4">Your placement readiness journey continues here.</p>
+
+            <form class="needs-validation" id="loginForm" novalidate onsubmit="handleLoginSubmit(event)">
+              <div class="mb-3">
+                <label for="loginEmail" class="form-label small fw-semibold">Email address</label>
+                <input type="email" class="form-control form-control-custom" id="loginEmail" placeholder="you@college.edu" value="student@placementcoach.ai" required>
+                <div class="text-danger small mt-1 d-none" id="loginEmailError">Email address is required (e.g. you@college.edu).</div>
+              </div>
+
+              <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                  <label for="loginPassword" class="form-label small fw-semibold">Password</label>
+                  <a href="#" class="small text-decoration-none text-primary fw-medium">Forgot password?</a>
+                </div>
+                <div class="position-relative">
+                  <input type="password" class="form-control form-control-custom" id="loginPassword" placeholder="Enter your password" value="Placement@2026" required minlength="6">
+                  <button type="button" class="btn position-absolute end-0 top-50 translate-middle-y me-2 p-0 border-0 text-muted" onclick="togglePasswordVisibility('loginPassword', this)">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </div>
+                <div class="text-danger small mt-1 d-none" id="loginPasswordError">Password must be at least 6 characters.</div>
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="rememberMe" checked>
+                  <label class="form-check-label small text-muted" for="rememberMe">Remember me</label>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100 py-2 rounded-3 shadow-sm fw-semibold mb-3">
+                Sign in to dashboard <i class="bi bi-arrow-right ms-1"></i>
+              </button>
+            </form>
+          </div>
+
+          <!-- 2. CREATE ACCOUNT TAB VIEW -->
+          <div class="tab-pane fade" id="signup-pane" role="tabpanel" aria-labelledby="signup-tab" tabindex="0">
+            <h3 class="fw-bold mb-1">Welcome back, let's coach</h3>
+            <p class="text-muted small mb-4">Start your placement preparation with AI diagnosis.</p>
+
+            <form class="needs-validation" id="signupForm" novalidate onsubmit="handleSignupSubmit(event)">
+              <div class="mb-3">
+                <label for="signupName" class="form-label small fw-semibold">Full name</label>
+                <input type="text" class="form-control form-control-custom" id="signupName" placeholder="e.g. Aarav Sharma" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="signupEmail" class="form-label small fw-semibold">College email</label>
+                <input type="email" class="form-control form-control-custom" id="signupEmail" placeholder="you@college.edu" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="signupPassword" class="form-label small fw-semibold">Password</label>
+                <div class="position-relative">
+                  <input type="password" class="form-control form-control-custom" id="signupPassword" placeholder="Create a password" required minlength="8" oninput="checkPasswordStrength(this.value)">
+                  <button type="button" class="btn position-absolute end-0 top-50 translate-middle-y me-2 p-0 border-0 text-muted" onclick="togglePasswordVisibility('signupPassword', this)">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </div>
+                <!-- Real-time Password Strength Meter -->
+                <div class="progress mt-2" style="height: 5px;">
+                  <div class="progress-bar" id="passwordStrengthBar" style="width: 0%; background: #EF4444;"></div>
+                </div>
+                <div class="d-flex justify-content-between mt-1">
+                  <small class="text-muted" id="passwordStrengthText">Password strength: Too weak</small>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <label for="signupConfirmPassword" class="form-label small fw-semibold">Confirm password</label>
+                <input type="password" class="form-control form-control-custom" id="signupConfirmPassword" placeholder="Repeat your password" required>
+                <div class="text-danger small mt-1 d-none" id="passwordMatchError">Passwords do not match.</div>
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100 py-2 rounded-3 shadow-sm fw-semibold mb-3">
+                Create my free account <i class="bi bi-arrow-right ms-1"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Social Divider -->
+        <div class="d-flex align-items-center gap-3 my-3">
+          <hr class="flex-grow-1 text-muted opacity-25">
+          <small class="text-muted text-uppercase" style="font-size: 0.75rem;">continue with</small>
+          <hr class="flex-grow-1 text-muted opacity-25">
+        </div>
+
+        <!-- Continue with Google Button -->
+        <button class="btn w-100 d-flex align-items-center justify-content-center gap-2 py-2 border rounded-3 bg-body text-body hover-lift" onclick="window.location.href='dashboard.html'" type="button">
+          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
+          <span class="fw-semibold small">Continue with Google</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app.js"></script>
+  <script>
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('bi-eye', 'bi-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.replace('bi-eye-slash', 'bi-eye');
+      }
+    }
+
+    function checkPasswordStrength(val) {
+      const bar = document.getElementById('passwordStrengthBar');
+      const text = document.getElementById('passwordStrengthText');
+      if (!val) {
+        bar.style.width = '0%';
+        text.textContent = 'Password strength: Too weak';
+        return;
+      }
+      let score = 0;
+      if (val.length >= 8) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+
+      if (score <= 1) {
+        bar.style.width = '25%';
+        bar.style.background = '#EF4444';
+        text.textContent = 'Password strength: Too weak';
+      } else if (score === 2) {
+        bar.style.width = '50%';
+        bar.style.background = '#F59E0B';
+        text.textContent = 'Password strength: Fair';
+      } else if (score === 3) {
+        bar.style.width = '75%';
+        bar.style.background = '#3B82F6';
+        text.textContent = 'Password strength: Good';
+      } else {
+        bar.style.width = '100%';
+        bar.style.background = '#10B981';
+        text.textContent = 'Password strength: Strong';
+      }
+    }
+
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPassword').value.trim();
+      const emailErr = document.getElementById('loginEmailError');
+      const passErr = document.getElementById('loginPasswordError');
+      const danger = document.getElementById('loginAlertDanger');
+
+      let valid = true;
+      if (!email) {
+        emailErr.classList.remove('d-none');
+        valid = false;
+      } else {
+        emailErr.classList.add('d-none');
+      }
+
+      if (!pass || pass.length < 6) {
+        passErr.classList.remove('d-none');
+        valid = false;
+      } else {
+        passErr.classList.add('d-none');
+      }
+
+      if (!valid) {
+        danger.classList.remove('d-none');
+        danger.classList.add('d-flex');
+        return;
+      }
+
+      danger.classList.add('d-none');
+      window.location.href = 'dashboard.html';
+    }
+
+    function handleSignupSubmit(e) {
+      e.preventDefault();
+      const pass = document.getElementById('signupPassword').value;
+      const confirm = document.getElementById('signupConfirmPassword').value;
+      const matchErr = document.getElementById('passwordMatchError');
+      const success = document.getElementById('signupAlertSuccess');
+
+      if (pass !== confirm) {
+        matchErr.classList.remove('d-none');
+        return;
+      }
+
+      matchErr.classList.add('d-none');
+      success.classList.remove('d-none');
+      success.classList.add('d-flex');
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 1200);
+    }
+  </script>
+</body>
+</html>

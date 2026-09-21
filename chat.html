@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Your AI Placement Coach — a personalized chat assistant that knows your strengths, weaknesses, and recommends exactly what to study next.">
+  <title>AI Chat Coach — Placement Coach</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand"><i class="bi bi-mortarboard-fill"></i> Placement Coach</div>
+    <a href="profile.html" class="sidebar-user text-decoration-none d-flex align-items-center gap-2 p-2 rounded-3" title="Click to view & edit profile">
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Rahul Sharma" class="img-fluid rounded-circle user-avatar-img border border-2 border-primary" style="width: 42px; height: 42px; object-fit: cover;">
+      <div class="flex-grow-1 overflow-hidden">
+        <div class="user-name fw-bold text-truncate" id="sidebarUserName">Rahul Sharma</div>
+        <div class="user-role small text-muted text-truncate" id="sidebarUserRole">CSE, 4th Year • Edit <i class="bi bi-pencil-fill" style="font-size:0.75rem;"></i></div>
+      </div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Main</div>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="assessment-hub.html"><i class="bi bi-clipboard2-check"></i> Assessments</a></li>
+        <li class="nav-item"><a class="nav-link" href="performance.html"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></li>
+        <li class="nav-item"><a class="nav-link" href="roadmap.html"><i class="bi bi-map-fill"></i> Roadmap</a></li>
+        <li class="nav-item"><a class="nav-link" href="progress.html"><i class="bi bi-graph-up-arrow"></i> Progress</a></li>
+        <li class="nav-item"><a class="nav-link" href="profile.html"><i class="bi bi-person-badge-fill"></i> Profile & Settings</a></li>
+      </ul>
+      <div class="nav-label">AI Tools</div>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link active" href="chat.html"><i class="bi bi-chat-dots-fill"></i> AI Coach <span class="badge bg-primary rounded-pill">New</span></a></li>
+        <li class="nav-item"><a class="nav-link" href="mock-simulation.html"><i class="bi bi-building"></i> Mock Simulation</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="dark-mode-toggle" title="Toggle dark mode"><i class="bi bi-moon-stars"></i><span>Dark Mode</span><div class="toggle-track ms-auto"><div class="toggle-thumb"></div></div></div>
+    </div>
+  </aside>
+
+  <div class="main-content full-chat" style="display: flex; flex-direction: column; height: 100vh;">
+    <header class="top-header" style="flex-shrink: 0;">
+      <div class="d-flex align-items-center gap-3">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar"><i class="bi bi-list"></i></button>
+        <div class="d-flex align-items-center gap-2">
+          <h1 class="page-title mb-0">AI Placement Coach</h1>
+          <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill d-inline-flex align-items-center gap-1" style="font-size:0.75rem;">
+            <span class="spinner-grow spinner-grow-sm text-success" style="width:7px;height:7px;"></span> Live Gemini AI Active
+          </span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-sm btn-outline-custom d-lg-none" onclick="toggleChatSidebar()">
+          <i class="bi bi-chat-left-text"></i> History
+        </button>
+        <button class="btn-icon" id="newChatBtn" title="New conversation"><i class="bi bi-plus-lg"></i></button>
+      </div>
+    </header>
+
+    <div class="d-flex flex-grow-1 overflow-hidden">
+      <!-- Conversation History Sidebar -->
+      <div class="chat-sidebar d-none d-lg-flex">
+        <div class="chat-search">
+          <input type="text" class="form-control form-control-custom" placeholder="Search conversations..." style="font-size: 0.85rem;">
+        </div>
+        <div class="conversation-list">
+          <div class="conversation-item active">
+            <div class="conv-icon"><i class="bi bi-chat-dots"></i></div>
+            <div class="flex-grow-1">
+              <div class="conv-title">Today's Session</div>
+              <div class="conv-time">Just now</div>
+            </div>
+          </div>
+          <div class="conversation-item">
+            <div class="conv-icon"><i class="bi bi-code-slash"></i></div>
+            <div class="flex-grow-1">
+              <div class="conv-title">DP Problem Help</div>
+              <div class="conv-time">Yesterday</div>
+            </div>
+          </div>
+          <div class="conversation-item">
+            <div class="conv-icon"><i class="bi bi-person-video3"></i></div>
+            <div class="flex-grow-1">
+              <div class="conv-title">Interview Feedback</div>
+              <div class="conv-time">Sep 15</div>
+            </div>
+          </div>
+          <div class="conversation-item">
+            <div class="conv-icon"><i class="bi bi-map"></i></div>
+            <div class="flex-grow-1">
+              <div class="conv-title">Roadmap Discussion</div>
+              <div class="conv-time">Sep 13</div>
+            </div>
+          </div>
+          <div class="conversation-item">
+            <div class="conv-icon"><i class="bi bi-database"></i></div>
+            <div class="flex-grow-1">
+              <div class="conv-title">SQL Tips & Tricks</div>
+              <div class="conv-time">Sep 10</div>
+            </div>
+          </div>
+          <div class="conversation-item">
+            <div class="conv-icon"><i class="bi bi-graph-up"></i></div>
+            <div class="flex-grow-1">
+              <div class="conv-title">Progress Check</div>
+              <div class="conv-time">Sep 8</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Main Area -->
+      <div class="flex-grow-1 d-flex flex-column" style="background: var(--clr-bg);">
+        <!-- Chat Messages -->
+        <div class="chat-messages flex-grow-1" style="padding: 1.5rem; overflow-y: auto;">
+          <!-- Welcome -->
+          <div class="text-center mb-4">
+            <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--clr-primary),#7C3AED);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;margin:0 auto 1rem;">
+              <i class="bi bi-mortarboard-fill"></i>
+            </div>
+            <h5 class="fw-bold">AI Placement Coach</h5>
+            <p style="color:var(--clr-text-muted);font-size:0.9rem;max-width:400px;margin:0 auto;">
+              I know your strengths, weaknesses, and learning history. Ask me anything about your placement prep!
+            </p>
+          </div>
+
+          <!-- Pre-loaded mock conversation -->
+          <div class="chat-message-row">
+            <div class="chat-avatar ai-avatar"><i class="bi bi-mortarboard-fill"></i></div>
+            <div class="chat-bubble ai">
+              Hi Rahul! 👋 Good to see you back. Let me give you a quick status update:
+              <br><br>
+              📊 <strong>Readiness Score:</strong> 73% (+5% since last week)<br>
+              ⚠️ <strong>Weak Areas:</strong> Dynamic Programming (35%), Graph Algorithms (30%)<br>
+              ✅ <strong>Strong Areas:</strong> Arrays (92%), Trees (85%), Logical Reasoning (82%)<br>
+              🔥 <strong>Streak:</strong> 12 days — your personal best!
+              <br><br>
+              Want me to create today's personalized practice plan?
+              <a href="roadmap.html" class="chat-action-btn"><i class="bi bi-map"></i> View Roadmap</a>
+              <a href="assessment-hub.html" class="chat-action-btn"><i class="bi bi-play-fill"></i> Start Practice</a>
+              <span class="bubble-time">2:30 PM</span>
+            </div>
+          </div>
+
+          <div class="chat-message-row user-row">
+            <div class="chat-bubble user">
+              Yes, give me a practice plan for today. I have about 2 hours.
+              <span class="bubble-time">2:31 PM</span>
+            </div>
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Student" class="img-fluid rounded-circle shadow-sm ms-2" style="width: 36px; height: 36px; object-fit: cover; flex-shrink: 0;">
+          </div>
+
+          <div class="chat-message-row">
+            <div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>
+            <div class="chat-bubble ai">
+              Here's your personalized 2-hour practice plan:
+              <br><br>
+              <strong>🕐 Hour 1 — Dynamic Programming Focus</strong><br>
+              <em>(Your weakest area at 35%)</em><br>
+              • 15 min: Watch "Memoization vs Tabulation" refresher<br>
+              • 30 min: Solve 3 easy DP problems (Climbing Stairs, House Robber, Fibonacci)<br>
+              • 15 min: Review solutions and understand state transitions<br>
+              <br>
+              <strong>🕐 Hour 2 — Mixed Practice</strong><br>
+              • 20 min: SQL subqueries practice (3 queries)<br>
+              • 25 min: Graph BFS/DFS — solve 2 medium problems<br>
+              • 15 min: Quick aptitude quiz (verbal ability)
+              <br><br>
+              This plan targets your 3 weakest areas while keeping your strengths fresh. Ready to start?
+              <a href="assessment-hub.html" class="chat-action-btn"><i class="bi bi-play-fill"></i> Start DP Practice</a>
+              <span class="bubble-time">2:31 PM</span>
+            </div>
+          </div>
+
+          <div class="chat-message-row user-row">
+            <div class="chat-bubble user">
+              I keep failing DP problems. Can you explain how to approach them?
+              <span class="bubble-time">2:32 PM</span>
+            </div>
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Student" class="img-fluid rounded-circle shadow-sm ms-2" style="width: 36px; height: 36px; object-fit: cover; flex-shrink: 0;">
+          </div>
+
+          <div class="chat-message-row">
+            <div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>
+            <div class="chat-bubble ai">
+              I've looked at your DP assessment history and I see a pattern. Here's what's happening:
+              <br><br>
+              <strong>🔍 Your DP Mistakes (from 3 assessments):</strong><br>
+              1. You tend to jump to coding without identifying the <em>state</em> and <em>recurrence relation</em> first<br>
+              2. You're strong with 1D DP but struggle with 2D DP (like LCS, Edit Distance)<br>
+              3. Time management: you spent 40% of time on a single DP question last test<br>
+              <br>
+              <strong>💡 The IDEAL Framework for DP:</strong><br>
+              <strong>I</strong> — Identify if it's a DP problem (overlapping subproblems + optimal substructure)<br>
+              <strong>D</strong> — Define the state (what variables change between subproblems?)<br>
+              <strong>E</strong> — Establish the recurrence (how does dp[i] relate to previous states?)<br>
+              <strong>A</strong> — Add base cases (smallest subproblem you can solve directly)<br>
+              <strong>L</strong> — Look at optimization (can you reduce space complexity?)<br>
+              <br>
+              Try this framework on the Longest Increasing Subsequence problem — that's where you got stuck last time. Want me to walk you through it step by step?
+              <a href="#" class="chat-action-btn" onclick="event.preventDefault();"><i class="bi bi-book"></i> LIS Walkthrough</a>
+              <a href="assessment-hub.html" class="chat-action-btn"><i class="bi bi-code-slash"></i> Practice DP</a>
+              <span class="bubble-time">2:33 PM</span>
+            </div>
+          </div>
+
+          <div class="chat-message-row user-row">
+            <div class="chat-bubble user">
+              How did my last mock interview go? Any specific tips?
+              <span class="bubble-time">2:35 PM</span>
+            </div>
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Student" class="img-fluid rounded-circle shadow-sm ms-2" style="width: 36px; height: 36px; object-fit: cover; flex-shrink: 0;">
+          </div>
+
+          <div class="chat-message-row">
+            <div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>
+            <div class="chat-bubble ai">
+              Here's your mock interview analysis from Sep 16:
+              <br><br>
+              <strong>Technical Interview — 65%</strong><br>
+              ✅ <strong>Strengths:</strong><br>
+              • Clear communication style — you explain your thought process well<br>
+              • Good at identifying brute force approaches quickly<br>
+              • Strong understanding of tree data structures<br>
+              <br>
+              ⚠️ <strong>Areas to improve:</strong><br>
+              • <strong>Problem decomposition:</strong> You jump into coding too quickly. Spend 2-3 minutes planning before writing code<br>
+              • <strong>Edge cases:</strong> You missed the empty input case in 2 out of 3 problems<br>
+              • <strong>Time complexity analysis:</strong> When asked "can you optimize?", you couldn't identify the bottleneck<br>
+              <br>
+              <strong>🎯 Tip for next interview:</strong> Practice the "think aloud" technique. Before coding, say: "My approach is ___. The time complexity will be ___. Let me handle these edge cases: ___."
+              <a href="performance.html" class="chat-action-btn"><i class="bi bi-bar-chart"></i> Full Report</a>
+              <a href="mock-simulation.html" class="chat-action-btn"><i class="bi bi-play-fill"></i> Practice Again</a>
+              <span class="bubble-time">2:35 PM</span>
+            </div>
+          </div>
+
+          <div class="chat-message-row user-row">
+            <div class="chat-bubble user">
+              When will I be placement ready?
+              <span class="bubble-time">2:37 PM</span>
+            </div>
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Student" class="img-fluid rounded-circle shadow-sm ms-2" style="width: 36px; height: 36px; object-fit: cover; flex-shrink: 0;">
+          </div>
+
+          <div class="chat-message-row">
+            <div class="chat-avatar ai-avatar"><i class="bi bi-mortarboard-fill"></i></div>
+            <div class="chat-bubble ai">
+              Based on your current trajectory, here's my prediction:
+              <br><br>
+              📈 You're at <strong>73%</strong> readiness now (up from 42% in 4 weeks).<br>
+              🎯 Target for "Placement Ready" badge: <strong>85%</strong><br>
+              ⏱️ Estimated time to reach 85%: <strong>~3 weeks</strong> (if you maintain current pace)<br>
+              <br>
+              <strong>What needs to happen:</strong><br>
+              1. DP score: 35% → 65% (biggest impact, ~+8% readiness)<br>
+              2. Graph score: 30% → 60% (~+6% readiness)<br>
+              3. System Design: 60% → 75% (~+3% readiness)<br>
+              <br>
+              The DP and Graph improvements alone would push you past 85%. Focus on those first!
+              <a href="progress.html" class="chat-action-btn"><i class="bi bi-graph-up"></i> View Progress</a>
+              <span class="bubble-time">2:37 PM</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Reply Chips -->
+        <div class="quick-replies" style="border-top: 1px solid var(--clr-border);">
+          <div class="quick-reply-chip">Show my weak topics</div>
+          <div class="quick-reply-chip">Give me today's practice set</div>
+          <div class="quick-reply-chip">Explain my last interview feedback</div>
+          <div class="quick-reply-chip">How long to reach 85%?</div>
+          <div class="quick-reply-chip">Suggest company mock test</div>
+        </div>
+
+        <!-- Input Bar -->
+        <div class="chat-input-bar">
+          <input type="text" placeholder="Ask your AI placement coach anything..." aria-label="Chat message">
+          <button class="btn-send" aria-label="Send message"><i class="bi bi-send-fill"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="config.js"></script>
+  <script src="gemini.js"></script>
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initFullPageChat();
+      // Scroll chat to bottom on load
+      const messages = document.querySelector('.full-chat .chat-messages');
+      if (messages) messages.scrollTop = messages.scrollHeight;
+    });
+  </script>
+</body>
+</html>

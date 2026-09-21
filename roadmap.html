@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Your personalized learning roadmap — AI-recommended topics, practice sets, and milestones tailored to your weak areas.">
+  <title>Roadmap — Placement Coach</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand"><i class="bi bi-mortarboard-fill"></i> Placement Coach</div>
+    <a href="profile.html" class="sidebar-user text-decoration-none d-flex align-items-center gap-2 p-2 rounded-3" title="Click to view & edit profile">
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Rahul Sharma" class="img-fluid rounded-circle user-avatar-img border border-2 border-primary" style="width: 42px; height: 42px; object-fit: cover;">
+      <div class="flex-grow-1 overflow-hidden">
+        <div class="user-name fw-bold text-truncate" id="sidebarUserName">Rahul Sharma</div>
+        <div class="user-role small text-muted text-truncate" id="sidebarUserRole">CSE, 4th Year • Edit <i class="bi bi-pencil-fill" style="font-size:0.75rem;"></i></div>
+      </div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Main</div>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="assessment-hub.html"><i class="bi bi-clipboard2-check"></i> Assessments</a></li>
+        <li class="nav-item"><a class="nav-link" href="performance.html"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></li>
+        <li class="nav-item"><a class="nav-link active" href="roadmap.html"><i class="bi bi-map-fill"></i> Roadmap</a></li>
+        <li class="nav-item"><a class="nav-link" href="progress.html"><i class="bi bi-graph-up-arrow"></i> Progress</a></li>
+        <li class="nav-item"><a class="nav-link" href="profile.html"><i class="bi bi-person-badge-fill"></i> Profile & Settings</a></li>
+      </ul>
+      <div class="nav-label">AI Tools</div>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link" href="chat.html"><i class="bi bi-chat-dots-fill"></i> AI Coach</a></li>
+        <li class="nav-item"><a class="nav-link" href="mock-simulation.html"><i class="bi bi-building"></i> Mock Simulation</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="dark-mode-toggle" title="Toggle dark mode"><i class="bi bi-moon-stars"></i><span>Dark Mode</span><div class="toggle-track ms-auto"><div class="toggle-thumb"></div></div></div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="top-header">
+      <div class="d-flex align-items-center gap-3">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar"><i class="bi bi-list"></i></button>
+        <h1 class="page-title">Personalized Roadmap</h1>
+      </div>
+      <div class="header-actions">
+        <span class="badge rounded-pill px-3 py-2" style="background:var(--clr-success-light);color:var(--clr-success);font-weight:600;">
+          <i class="bi bi-check-circle"></i> 3 of 8 milestones completed
+        </span>
+        <button class="btn btn-primary-custom btn-sm" id="recalcRoadmapBtn" onclick="generatePersonalizedRoadmap()">
+          <span class="spinner-border spinner-border-sm d-none me-1" id="recalcSpinner" role="status"></span>
+          <i class="bi bi-magic me-1" id="recalcIcon"></i> Recalculate Roadmap
+        </button>
+        <button class="btn-icon" title="Notifications"><i class="bi bi-bell"></i></button>
+      </div>
+    </header>
+
+    <div class="p-3 p-md-4">
+      <!-- Roadmap Generating Spinner Banner -->
+      <div id="generatingRoadmapAlert" class="alert alert-primary d-none align-items-center gap-3 mb-4 shadow-sm" role="alert">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="flex-grow-1">
+          <strong>Generating your personalized roadmap...</strong> AI Coach is synthesizing your latest reassessment benchmarks and prioritizing target skill areas.
+        </div>
+      </div>
+
+      <!-- Success toast / notification when refreshed -->
+      <div id="roadmapUpdatedAlert" class="alert alert-success alert-dismissible fade show d-none align-items-center gap-2 mb-4 shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill fs-5 text-success"></i>
+        <div class="flex-grow-1">
+          <strong>Roadmap Updated:</strong> Your personalized path has been adapted! Milestone 4 priority shifted to DBMS Normalization.
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
+      <!-- Progress Overview -->
+      <div class="glass-card mb-4" data-aos="fade-up">
+        <div class="row align-items-center g-3">
+          <div class="col-md-6">
+            <h5 class="fw-bold mb-1">Your Learning Path</h5>
+            <p class="mb-0" style="color:var(--clr-text-secondary);font-size:0.9rem;">
+              AI-generated roadmap based on your assessment results. Complete milestones to boost your readiness score.
+            </p>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex align-items-center gap-3">
+              <div class="flex-grow-1">
+                <div class="d-flex justify-content-between mb-1">
+                  <small class="fw-bold">Overall Progress</small>
+                  <small class="fw-bold" style="color:var(--clr-primary);">37.5%</small>
+                </div>
+                <div class="progress" style="height:10px;border-radius:5px;">
+                  <div class="progress-bar" style="width:37.5%;background:linear-gradient(90deg,var(--clr-primary),#7C3AED);border-radius:5px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Roadmap Timeline -->
+      <div class="roadmap-timeline">
+        <!-- Milestone 1: Completed -->
+        <div class="roadmap-item" data-aos="fade-up">
+          <div class="roadmap-dot completed"><i class="bi bi-check-lg"></i></div>
+          <div class="roadmap-card">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+              <div>
+                <span class="badge badge-strong mb-2">Completed</span>
+                <h6>Master Arrays & String Manipulation</h6>
+                <p>Two pointers, sliding window, prefix sums, and string hashing techniques.</p>
+              </div>
+              <button class="btn btn-outline-success btn-sm" disabled><i class="bi bi-check-lg"></i> Completed</button>
+            </div>
+            <div class="accordion" id="acc1">
+              <div class="accordion-item border-0">
+                <h2 class="accordion-header"><button class="accordion-button collapsed py-2" style="font-size:0.85rem;background:transparent;color:var(--clr-text);" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">View Resources & Practice Sets</button></h2>
+                <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#acc1">
+                  <div class="accordion-body py-2" style="font-size:0.88rem;">
+                    <ul class="list-unstyled mb-0">
+                      <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Two Pointers Pattern — 10 problems ✓</li>
+                      <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Sliding Window — 8 problems ✓</li>
+                      <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Video: "Master Arrays in 2 Hours" ✓</li>
+                      <li><i class="bi bi-check-circle-fill text-success me-2"></i> Assessment: Arrays — 92% ✓</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="roadmap-meta mt-2"><span><i class="bi bi-clock"></i> Completed Sep 13</span><span><i class="bi bi-star-fill" style="color:var(--clr-warning);"></i> Score: 92%</span></div>
+          </div>
+        </div>
+
+        <!-- Milestone 2: Completed -->
+        <div class="roadmap-item" data-aos="fade-up" data-aos-delay="100">
+          <div class="roadmap-dot completed"><i class="bi bi-check-lg"></i></div>
+          <div class="roadmap-card">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+              <div>
+                <span class="badge badge-strong mb-2">Completed</span>
+                <h6>Strengthen Logical Reasoning</h6>
+                <p>Syllogisms, coding-decoding, blood relations, seating arrangement, and puzzles.</p>
+              </div>
+              <button class="btn btn-outline-success btn-sm" disabled><i class="bi bi-check-lg"></i> Completed</button>
+            </div>
+            <div class="roadmap-meta mt-2"><span><i class="bi bi-clock"></i> Completed Sep 14</span><span><i class="bi bi-star-fill" style="color:var(--clr-warning);"></i> Score: 82%</span></div>
+          </div>
+        </div>
+
+        <!-- Milestone 3: Completed -->
+        <div class="roadmap-item" data-aos="fade-up" data-aos-delay="150">
+          <div class="roadmap-dot completed"><i class="bi bi-check-lg"></i></div>
+          <div class="roadmap-card">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+              <div>
+                <span class="badge badge-strong mb-2">Completed</span>
+                <h6>Binary Trees & BST Fundamentals</h6>
+                <p>Traversals, BST validation, LCA, and serialization/deserialization.</p>
+              </div>
+              <button class="btn btn-outline-success btn-sm" disabled><i class="bi bi-check-lg"></i> Completed</button>
+            </div>
+            <div class="roadmap-meta mt-2"><span><i class="bi bi-clock"></i> Completed Sep 16</span><span><i class="bi bi-star-fill" style="color:var(--clr-warning);"></i> Score: 85%</span></div>
+          </div>
+        </div>
+
+        <!-- Milestone 4: In Progress -->
+        <div class="roadmap-item" data-aos="fade-up" data-aos-delay="200">
+          <div class="roadmap-dot in-progress"><i class="bi bi-play-fill"></i></div>
+          <div class="roadmap-card" style="border-color: var(--clr-primary);">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+              <div>
+                <span class="badge rounded-pill px-2 py-1 mb-2" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">In Progress</span>
+                <h6>SQL Queries & Database Mastery</h6>
+                <p>JOINs, subqueries, window functions, normalization, and indexing strategies.</p>
+              </div>
+              <button class="btn btn-primary-custom btn-sm" onclick="markAsDone(this)"><i class="bi bi-check-lg"></i> Mark as Done</button>
+            </div>
+            <div class="accordion" id="acc4">
+              <div class="accordion-item border-0">
+                <h2 class="accordion-header"><button class="accordion-button collapsed py-2" style="font-size:0.85rem;background:transparent;color:var(--clr-text);" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4">View Resources & Practice Sets</button></h2>
+                <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#acc4">
+                  <div class="accordion-body py-2" style="font-size:0.88rem;">
+                    <ul class="list-unstyled mb-0">
+                      <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Basic JOINs — 8 queries ✓</li>
+                      <li class="mb-2"><i class="bi bi-circle text-muted me-2"></i> Subqueries & CTEs — 6 queries</li>
+                      <li class="mb-2"><i class="bi bi-circle text-muted me-2"></i> Window Functions — 5 queries</li>
+                      <li class="mb-2"><i class="bi bi-circle text-muted me-2"></i> Video: "DBMS Normalization Deep Dive"</li>
+                      <li><i class="bi bi-circle text-muted me-2"></i> Assessment: SQL & DBMS</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="roadmap-meta mt-2"><span><i class="bi bi-clock"></i> Est. 2 weeks</span><span><i class="bi bi-bar-chart"></i> Current: 55%</span></div>
+          </div>
+        </div>
+
+        <!-- Milestone 5: Upcoming -->
+        <div class="roadmap-item" data-aos="fade-up" data-aos-delay="250">
+          <div class="roadmap-dot upcoming"><i class="bi bi-5-circle"></i></div>
+          <div class="roadmap-card">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+              <div>
+                <span class="badge rounded-pill px-2 py-1 mb-2" style="background:var(--clr-bg);color:var(--clr-text-muted);font-weight:600;">Upcoming</span>
+                <h6>System Design Fundamentals</h6>
+                <p>Load balancing, caching, database sharding, microservices, and API design patterns.</p>
+              </div>
+              <button class="btn btn-outline-custom btn-sm" disabled>Locked</button>
+            </div>
+            <div class="roadmap-meta mt-2"><span><i class="bi bi-clock"></i> Est. 3 weeks</span><span><i class="bi bi-lock"></i> Complete SQL first</span></div>
+          </div>
+        </div>
+
+        <!-- Milestone 6: Upcoming -->
+        <div class="roadmap-item" data-aos="fade-up" data-aos-delay="300">
+          <div class="roadmap-dot upcoming"><i class="bi bi-6-circle"></i></div>
+          <div class="roadmap-card">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+              <div>
+                <span class="badge rounded-pill px-2 py-1 mb-2" style="background:var(--clr-bg);color:var(--clr-text-muted);font-weight:600;">Upcoming</span>
+                <h6>Dynamic Programming Mastery</h6>
+                <p>Memoization, tabulation, classic DP patterns (knapsack, LIS, LCS, matrix chain).</p>
+              </div>
+              <button class="btn btn-outline-custom btn-sm" disabled>Locked</button>
+            </div>
+            <div class="roadmap-meta mt-2"><span><i class="bi bi-clock"></i> Est. 4 weeks</span><span><i class="bi bi-exclamation-triangle" style="color:var(--clr-danger);"></i> High priority</span></div>
+          </div>
+        </div>
+
+        <!-- Milestone 7: Upcoming -->
+        <div class="roadmap-item" data-aos="fade-up" data-aos-delay="350">
+          <div class="roadmap-dot upcoming"><i class="bi bi-7-circle"></i></div>
+          <div class="roadmap-card">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+              <div>
+                <span class="badge rounded-pill px-2 py-1 mb-2" style="background:var(--clr-bg);color:var(--clr-text-muted);font-weight:600;">Upcoming</span>
+                <h6>Graph Algorithms Deep Dive</h6>
+                <p>BFS, DFS, topological sort, shortest paths (Dijkstra, Bellman-Ford), and MST.</p>
+              </div>
+              <button class="btn btn-outline-custom btn-sm" disabled>Locked</button>
+            </div>
+            <div class="roadmap-meta mt-2"><span><i class="bi bi-clock"></i> Est. 3 weeks</span><span><i class="bi bi-exclamation-triangle" style="color:var(--clr-danger);"></i> High priority</span></div>
+          </div>
+        </div>
+
+        <!-- Milestone 8: Upcoming -->
+        <div class="roadmap-item" data-aos="fade-up" data-aos-delay="400">
+          <div class="roadmap-dot upcoming"><i class="bi bi-trophy"></i></div>
+          <div class="roadmap-card" style="background: linear-gradient(135deg, rgba(var(--clr-primary-rgb), 0.05), rgba(124, 58, 237, 0.05));">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+              <div>
+                <span class="badge rounded-pill px-2 py-1 mb-2" style="background:var(--clr-warning-light);color:var(--clr-warning);font-weight:600;"><i class="bi bi-trophy"></i> Final Milestone</span>
+                <h6>Full Mock Placement Drive</h6>
+                <p>Complete a simulated placement drive: Online assessment → Technical Interview → HR Interview → Offer.</p>
+              </div>
+              <button class="btn btn-outline-custom btn-sm" disabled>Locked</button>
+            </div>
+            <div class="roadmap-meta mt-2"><span><i class="bi bi-clock"></i> 1 day</span><span><i class="bi bi-star-fill" style="color:var(--clr-warning);"></i> Unlocks at 85% readiness</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chatbot FAB -->
+  <button class="chatbot-fab" id="chatbotFab" aria-label="Open AI Chat"><i class="bi bi-chat-dots-fill"></i></button>
+  <div class="chatbot-panel" id="chatbotPanel">
+    <div class="panel-header"><div class="d-flex align-items-center gap-2"><div class="chat-avatar ai-avatar"><i class="bi bi-mortarboard-fill"></i></div><div><h6>AI Placement Coach</h6><small style="opacity:0.8;">Online</small></div></div><button class="panel-close" aria-label="Close"><i class="bi bi-x-lg"></i></button></div>
+    <div class="chat-messages"><div class="chat-message-row"><div class="chat-avatar ai-avatar"><i class="bi bi-mortarboard-fill"></i></div><div class="chat-bubble ai">You're making great progress! 3 milestones done. Focus on completing the SQL module this week to unlock System Design.<span class="bubble-time">Now</span></div></div></div>
+    <div class="quick-replies"><div class="quick-reply-chip">What should I do next?</div><div class="quick-reply-chip">How long to reach 85%?</div></div>
+    <div class="chat-input-bar"><input type="text" placeholder="Ask about your roadmap..." aria-label="Chat"><button class="btn-send" aria-label="Send"><i class="bi bi-send-fill"></i></button></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="config.js"></script>
+  <script src="gemini.js"></script>
+  <script src="app.js"></script>
+  <script>
+    function generatePersonalizedRoadmap() {
+      const btn = document.getElementById('recalcRoadmapBtn');
+      const spinner = document.getElementById('recalcSpinner');
+      const icon = document.getElementById('recalcIcon');
+      const alert = document.getElementById('generatingRoadmapAlert');
+      const updatedAlert = document.getElementById('roadmapUpdatedAlert');
+
+      if (!btn) return;
+      btn.disabled = true;
+      spinner.classList.remove('d-none');
+      icon.classList.add('d-none');
+      alert.classList.remove('d-none');
+      alert.classList.add('d-flex');
+      if (updatedAlert) updatedAlert.classList.add('d-none');
+
+      setTimeout(() => {
+        alert.classList.add('d-none');
+        alert.classList.remove('d-flex');
+        btn.disabled = false;
+        spinner.classList.add('d-none');
+        icon.classList.remove('d-none');
+        if (updatedAlert) {
+          updatedAlert.classList.remove('d-none');
+          updatedAlert.classList.add('d-flex');
+        }
+      }, 1500);
+    }
+  </script>
+</body>
+</html>

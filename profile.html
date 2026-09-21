@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Student Profile & Settings — Edit your personal details, choose avatars, manage target companies, and track enrolled courses.">
+  <title>Student Profile — Placement Coach</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ======================== SIDEBAR ======================== -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <i class="bi bi-mortarboard-fill"></i> Placement Coach
+    </div>
+    <a href="profile.html" class="sidebar-user text-decoration-none d-flex align-items-center gap-2 p-2 rounded-3" style="background: rgba(79,70,229,0.08); border: 1px solid rgba(79,70,229,0.2);" title="Click to view & edit profile">
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Rahul Sharma" class="img-fluid rounded-circle user-avatar-img border border-2 border-primary" style="width: 42px; height: 42px; object-fit: cover;">
+      <div class="flex-grow-1 overflow-hidden">
+        <div class="user-name fw-bold text-truncate" id="sidebarUserName">Rahul Sharma</div>
+        <div class="user-role small text-muted text-truncate" id="sidebarUserRole">CSE, 4th Year • Edit <i class="bi bi-pencil-fill" style="font-size:0.75rem;"></i></div>
+      </div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Main</div>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" href="dashboard.html"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="assessment-hub.html"><i class="bi bi-clipboard2-check"></i> Assessments</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="performance.html"><i class="bi bi-bar-chart-line-fill"></i> Reports</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="roadmap.html"><i class="bi bi-map-fill"></i> Roadmap</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="progress.html"><i class="bi bi-graph-up-arrow"></i> Progress</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="profile.html"><i class="bi bi-person-badge-fill"></i> Profile & Settings</a>
+        </li>
+      </ul>
+      <div class="nav-label">AI Tools</div>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" href="chat.html"><i class="bi bi-chat-dots-fill"></i> AI Coach</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="mock-simulation.html"><i class="bi bi-building"></i> Mock Simulation</a>
+        </li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="dark-mode-toggle" title="Toggle dark mode">
+        <i class="bi bi-moon-stars"></i>
+        <span>Dark Mode</span>
+        <div class="toggle-track ms-auto"><div class="toggle-thumb"></div></div>
+      </div>
+      <a href="login.html" class="nav-link mt-2 d-flex align-items-center gap-2" style="color: var(--clr-text-muted); font-size: 0.85rem;">
+        <i class="bi bi-box-arrow-left"></i> Logout
+      </a>
+    </div>
+  </aside>
+
+  <!-- ======================== MAIN CONTENT ======================== -->
+  <div class="main-content">
+    <header class="top-header">
+      <div class="d-flex align-items-center gap-3">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar"><i class="bi bi-list"></i></button>
+        <h1 class="page-title">Student Profile & Settings</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-outline-custom btn-sm" onclick="toggleEditMode()">
+          <i class="bi bi-pencil-square me-1"></i> <span id="toggleEditBtnText">Edit Profile</span>
+        </button>
+        <button class="btn-icon" title="Notifications"><i class="bi bi-bell"></i></button>
+      </div>
+    </header>
+
+    <div class="p-3 p-md-4">
+      <!-- Success Alert Banner -->
+      <div class="alert alert-success alert-dismissible fade show d-none align-items-center gap-2 mb-4 shadow-sm" id="profileSuccessAlert" role="alert">
+        <i class="bi bi-check-circle-fill fs-5 text-success"></i>
+        <div class="flex-grow-1">
+          <strong>Profile Saved:</strong> Your information, avatar, and career preferences have been updated successfully!
+        </div>
+        <button type="button" class="btn-close" onclick="document.getElementById('profileSuccessAlert').classList.add('d-none')" aria-label="Close"></button>
+      </div>
+
+      <!-- Profile Header Summary Card (card > card-body > card-title + card-text > card-footer) -->
+      <div class="card border-0 shadow-sm mb-4" style="background: var(--glass-bg); border-radius: var(--radius-lg); overflow: hidden;" data-aos="fade-up">
+        <div class="card-body p-4">
+          <div class="row align-items-center g-4">
+            <div class="col-md-auto text-center text-md-start">
+              <div class="position-relative d-inline-block">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80" alt="Current Avatar" id="currentProfileAvatar" class="img-fluid rounded-circle border border-4 border-primary shadow" style="width: 100px; height: 100px; object-fit: cover;">
+                <label for="avatarFileInput" class="position-absolute bottom-0 end-0 badge bg-primary rounded-circle p-2 shadow" style="cursor: pointer;" title="Upload or Change Photo">
+                  <i class="bi bi-camera-fill text-white"></i>
+                </label>
+                <input type="file" id="avatarFileInput" accept="image/*" class="d-none" onchange="handleAvatarFileUpload(event)">
+              </div>
+            </div>
+            <div class="col-md">
+              <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                <h3 class="card-title fw-bold mb-0" id="displayProfileName">Rahul Sharma</h3>
+                <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-1">Tier-1 Ready</span>
+                <span class="badge bg-success-subtle text-success fw-semibold px-3 py-1"><i class="bi bi-shield-check"></i> Verified Student</span>
+              </div>
+              <p class="card-text text-muted mb-2" id="displayProfileBio">
+                Final year Computer Science student aiming for SDE-1 roles at Top Tech firms. Passionate about distributed systems, DSA, and clean code.
+              </p>
+              <div class="d-flex flex-wrap gap-3 small text-muted">
+                <span><i class="bi bi-mortarboard-fill text-primary"></i> <strong class="text-body" id="displayDegree">B.Tech CSE</strong> (2026 Batch)</span>
+                <span><i class="bi bi-geo-alt-fill text-danger"></i> <span id="displayCollege">IIT Delhi / Campus Cohort A</span></span>
+                <span><i class="bi bi-award-fill text-warning"></i> CGPA: <strong class="text-body" id="displayCgpa">8.8 / 10</strong></span>
+                <span><i class="bi bi-speedometer2 text-success"></i> Readiness: <strong class="text-success">73%</strong></span>
+              </div>
+            </div>
+            <div class="col-md-auto text-center text-md-end">
+              <button class="btn btn-primary-custom" onclick="toggleEditMode()">
+                <i class="bi bi-pencil-fill me-1"></i> Edit Profile Details
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer bg-transparent border-top px-4 py-2 d-flex flex-wrap justify-content-between align-items-center gap-2" style="border-color: var(--border-clr) !important;">
+          <small class="text-muted"><i class="bi bi-clock me-1"></i>Last profile sync: Today at 2:45 PM</small>
+          <div class="d-flex gap-2">
+            <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill px-3"><i class="bi bi-linkedin text-primary me-1"></i> LinkedIn</a>
+            <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill px-3"><i class="bi bi-github me-1"></i> GitHub</a>
+            <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill px-3"><i class="bi bi-file-earmark-person-fill text-success me-1"></i> View Resume</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================== EDIT PROFILE FORM ======================== -->
+      <div class="card border-0 shadow-sm mb-4" id="editProfileSection" style="background: var(--glass-bg); border-radius: var(--radius-lg);" data-aos="fade-up">
+        <div class="card-header bg-transparent border-bottom px-4 pt-3 pb-2" style="border-color: var(--border-clr) !important;">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0"><i class="bi bi-person-lines-fill text-primary me-2"></i>Edit Student Profile Information</h5>
+            <span class="badge bg-secondary" id="editStatusBadge">Read-Only</span>
+          </div>
+        </div>
+        <div class="card-body p-4">
+          <form id="profileEditForm" onsubmit="saveProfileDetails(event)">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Full Name</label>
+                <input type="text" class="form-control form-control-custom" id="inputFullName" value="Rahul Sharma" disabled required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">College Email</label>
+                <input type="email" class="form-control form-control-custom" id="inputEmail" value="rahul.sharma@iitd.ac.in" disabled required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Department & Degree</label>
+                <input type="text" class="form-control form-control-custom" id="inputDegree" value="Computer Science and Engineering (B.Tech)" disabled required>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Graduation Year</label>
+                <select class="form-select form-control-custom" id="inputGradYear" disabled>
+                  <option selected>2026</option>
+                  <option>2027</option>
+                  <option>2025</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Cumulative CGPA</label>
+                <input type="number" step="0.01" min="0" max="10" class="form-control form-control-custom" id="inputCgpa" value="8.80" disabled required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Target Role</label>
+                <select class="form-select form-control-custom" id="inputTargetRole" disabled>
+                  <option selected>Software Development Engineer (SDE-1)</option>
+                  <option>Data Analyst / Scientist</option>
+                  <option>Cloud / DevOps Engineer</option>
+                  <option>Product Manager</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">University / Campus</label>
+                <input type="text" class="form-control form-control-custom" id="inputCollege" value="Indian Institute of Technology Delhi" disabled required>
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-semibold small">Professional Bio & Career Objective</label>
+                <textarea class="form-control form-control-custom" id="inputBio" rows="3" disabled>Final year Computer Science student aiming for SDE-1 roles at Top Tech firms. Passionate about distributed systems, DSA, and clean code.</textarea>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small"><i class="bi bi-github me-1"></i> GitHub Profile URL</label>
+                <input type="url" class="form-control form-control-custom" id="inputGithub" value="https://github.com/rahul-sharma-dev" disabled>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small"><i class="bi bi-linkedin text-primary me-1"></i> LinkedIn Profile URL</label>
+                <input type="url" class="form-control form-control-custom" id="inputLinkedin" value="https://linkedin.com/in/rahul-sharma-cse" disabled>
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-semibold small"><i class="bi bi-image text-success me-1"></i> Profile Photo URL (or click camera icon on avatar to upload)</label>
+                <input type="url" class="form-control form-control-custom" id="inputAvatarUrl" value="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80" disabled>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-end gap-2 mt-4 pt-2 border-top" style="border-color: var(--border-clr) !important;">
+              <button type="button" class="btn btn-outline-custom" id="cancelEditBtn" onclick="cancelEditing()" style="display:none;">Cancel</button>
+              <button type="submit" class="btn btn-primary-custom" id="saveProfileBtn" style="display:none;">
+                <span class="spinner-border spinner-border-sm d-none me-1" id="saveProfileSpinner" role="status"></span>
+                <i class="bi bi-check2-circle me-1" id="saveProfileIcon"></i> Save Profile Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ======================== TARGET COMPANIES CAROUSEL ======================== -->
+      <div class="card border-0 shadow-sm mb-4" style="background: var(--glass-bg); border-radius: var(--radius-lg); overflow: hidden;" data-aos="fade-up">
+        <div class="card-header bg-transparent border-0 d-flex align-items-center justify-content-between pt-3 px-4">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge rounded-pill bg-primary-subtle text-primary fw-semibold px-3 py-1">
+              <i class="bi bi-building-check text-warning me-1"></i> Target Companies Carousel
+            </span>
+            <span class="text-muted small d-none d-md-inline">Manage companies you are actively targeting for campus placements</span>
+          </div>
+          <div class="d-flex gap-1">
+            <button class="btn btn-sm btn-outline-secondary rounded-circle" type="button" data-bs-target="#targetCompaniesCarousel" data-bs-slide="prev" style="width:34px;height:34px;padding:0;" aria-label="Previous Company">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-secondary rounded-circle" type="button" data-bs-target="#targetCompaniesCarousel" data-bs-slide="next" style="width:34px;height:34px;padding:0;" aria-label="Next Company">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body px-4 py-3">
+          <div id="targetCompaniesCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
+            <div class="carousel-inner">
+              <!-- Slide 1 -->
+              <div class="carousel-item active">
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <div class="card h-100 border shadow-sm" style="border-color: var(--border-clr) !important; background: var(--clr-surface); border-radius: var(--radius-md); overflow: hidden;">
+                      <div class="card-img-top p-3 d-flex align-items-center justify-content-center" style="background: rgba(66,133,244,0.08); height: 90px;">
+                        <i class="bi bi-google text-danger fs-1 img-fluid"></i>
+                      </div>
+                      <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                          <h6 class="card-title fw-bold mb-0">Google</h6>
+                          <span class="badge bg-danger">Tier-1 Dream</span>
+                        </div>
+                        <p class="card-text text-muted small mb-2">SDE-1 • Min CGPA: 8.0 • 4 Rounds</p>
+                        <span class="badge bg-success-subtle text-success"><i class="bi bi-check-circle-fill me-1"></i>Targeting</span>
+                      </div>
+                      <div class="card-footer bg-transparent border-top p-2 text-center" style="border-color: var(--border-clr) !important;">
+                        <a href="mock-simulation.html" class="btn btn-outline-custom btn-sm w-100">Simulate Drive</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="card h-100 border shadow-sm" style="border-color: var(--border-clr) !important; background: var(--clr-surface); border-radius: var(--radius-md); overflow: hidden;">
+                      <div class="card-img-top p-3 d-flex align-items-center justify-content-center" style="background: rgba(255,153,0,0.08); height: 90px;">
+                        <i class="bi bi-bag-check-fill text-warning fs-1 img-fluid"></i>
+                      </div>
+                      <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                          <h6 class="card-title fw-bold mb-0">Amazon</h6>
+                          <span class="badge bg-warning text-dark">Bar Raiser</span>
+                        </div>
+                        <p class="card-text text-muted small mb-2">SDE-1 • Min CGPA: 7.5 • 4 Rounds</p>
+                        <span class="badge bg-success-subtle text-success"><i class="bi bi-check-circle-fill me-1"></i>Targeting</span>
+                      </div>
+                      <div class="card-footer bg-transparent border-top p-2 text-center" style="border-color: var(--border-clr) !important;">
+                        <a href="mock-simulation.html" class="btn btn-outline-custom btn-sm w-100">Simulate Drive</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="card h-100 border shadow-sm" style="border-color: var(--border-clr) !important; background: var(--clr-surface); border-radius: var(--radius-md); overflow: hidden;">
+                      <div class="card-img-top p-3 d-flex align-items-center justify-content-center" style="background: rgba(0,164,239,0.08); height: 90px;">
+                        <i class="bi bi-microsoft text-primary fs-1 img-fluid"></i>
+                      </div>
+                      <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                          <h6 class="card-title fw-bold mb-0">Microsoft</h6>
+                          <span class="badge bg-primary">Cloud / IDC</span>
+                        </div>
+                        <p class="card-text text-muted small mb-2">Software Engineer • Min CGPA: 7.5 • 3 Rounds</p>
+                        <span class="badge bg-success-subtle text-success"><i class="bi bi-check-circle-fill me-1"></i>Targeting</span>
+                      </div>
+                      <div class="card-footer bg-transparent border-top p-2 text-center" style="border-color: var(--border-clr) !important;">
+                        <a href="mock-simulation.html" class="btn btn-outline-custom btn-sm w-100">Simulate Drive</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 2 -->
+              <div class="carousel-item">
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <div class="card h-100 border shadow-sm" style="border-color: var(--border-clr) !important; background: var(--clr-surface); border-radius: var(--radius-md); overflow: hidden;">
+                      <div class="card-img-top p-3 d-flex align-items-center justify-content-center" style="background: rgba(24,119,242,0.08); height: 90px;">
+                        <i class="bi bi-meta text-primary fs-1 img-fluid"></i>
+                      </div>
+                      <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                          <h6 class="card-title fw-bold mb-0">Meta</h6>
+                          <span class="badge bg-primary">Product Infra</span>
+                        </div>
+                        <p class="card-text text-muted small mb-2">Systems & Fullstack • Min CGPA: 8.0</p>
+                        <span class="badge bg-secondary-subtle text-secondary">Added to Watchlist</span>
+                      </div>
+                      <div class="card-footer bg-transparent border-top p-2 text-center" style="border-color: var(--border-clr) !important;">
+                        <a href="mock-simulation.html" class="btn btn-outline-custom btn-sm w-100">Simulate Drive</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="card h-100 border shadow-sm" style="border-color: var(--border-clr) !important; background: var(--clr-surface); border-radius: var(--radius-md); overflow: hidden;">
+                      <div class="card-img-top p-3 d-flex align-items-center justify-content-center" style="background: rgba(43,57,144,0.08); height: 90px;">
+                        <i class="bi bi-building-fill text-info fs-1 img-fluid"></i>
+                      </div>
+                      <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                          <h6 class="card-title fw-bold mb-0">TCS Digital / Prime</h6>
+                          <span class="badge bg-info text-dark">NQT Track</span>
+                        </div>
+                        <p class="card-text text-muted small mb-2">Prime Developer • Min CGPA: 6.5</p>
+                        <span class="badge bg-success-subtle text-success"><i class="bi bi-check-circle-fill me-1"></i>Targeting</span>
+                      </div>
+                      <div class="card-footer bg-transparent border-top p-2 text-center" style="border-color: var(--border-clr) !important;">
+                        <a href="mock-simulation.html" class="btn btn-outline-custom btn-sm w-100">Simulate Drive</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="card h-100 border shadow-sm" style="border-color: var(--border-clr) !important; background: var(--clr-surface); border-radius: var(--radius-md); overflow: hidden;">
+                      <div class="card-img-top p-3 d-flex align-items-center justify-content-center" style="background: rgba(255,229,0,0.12); height: 90px;">
+                        <i class="bi bi-cart-check-fill text-warning fs-1 img-fluid"></i>
+                      </div>
+                      <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                          <h6 class="card-title fw-bold mb-0">Flipkart</h6>
+                          <span class="badge bg-warning text-dark">E-Commerce</span>
+                        </div>
+                        <p class="card-text text-muted small mb-2">SDE-1 • Min CGPA: 7.5 • 4 Rounds</p>
+                        <span class="badge bg-secondary-subtle text-secondary">Added to Watchlist</span>
+                      </div>
+                      <div class="card-footer bg-transparent border-top p-2 text-center" style="border-color: var(--border-clr) !important;">
+                        <a href="mock-simulation.html" class="btn btn-outline-custom btn-sm w-100">Simulate Drive</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================== COURSE IMAGES CAROUSEL ======================== -->
+      <div class="card border-0 shadow-sm mb-4" style="background: var(--glass-bg); border-radius: var(--radius-lg); overflow: hidden;" data-aos="fade-up">
+        <div class="card-header bg-transparent border-0 d-flex align-items-center justify-content-between pt-3 px-4">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge rounded-pill bg-primary-subtle text-primary fw-semibold px-3 py-1">
+              <i class="bi bi-journal-bookmark-fill text-primary me-1"></i> Enrolled Courses Carousel
+            </span>
+            <span class="text-muted small d-none d-md-inline">Placement preparation modules and video courses linked to your profile</span>
+          </div>
+          <div class="d-flex gap-1">
+            <button class="btn btn-sm btn-outline-secondary rounded-circle" type="button" data-bs-target="#coursesCarousel" data-bs-slide="prev" style="width:34px;height:34px;padding:0;" aria-label="Previous Course">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-secondary rounded-circle" type="button" data-bs-target="#coursesCarousel" data-bs-slide="next" style="width:34px;height:34px;padding:0;" aria-label="Next Course">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body px-4 py-3">
+          <div id="coursesCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="7000">
+            <div class="carousel-inner">
+              <!-- Slide 1 -->
+              <div class="carousel-item active">
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <div class="card h-100 border shadow-sm" style="border-color: var(--border-clr) !important; background: var(--clr-surface); border-radius: var(--radius-md); overflow: hidden;">
+                      <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&auto=format&fit=crop&q=80" class="card-img-top img-fluid" style="height: 140px; object-fit: cover;" alt="DSA Masterclass">
+                      <div class="card-body p-3">
+                        <span class="badge bg-danger mb-2">Coding Track</span>
+                        <h6 class="card-title fw-bold mb-1">DSA & Algorithmic Problem Solving</h6>
+                        <p class="card-text text-muted small mb-2">Covers 150+ essential patterns: Two Pointers, Trees, Graphs, and DP.</p>
+                        <div class="d-flex justify-content-between small text-muted mb-1">
+                          <span>Progress</span>
+                          <strong>78% Completed</strong>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                          <div class="progress-bar bg-success" style="width: 78%;"></div>
+                        </div>
+                      </div>
+                      <div class="card-footer bg-transparent border-top p-2 text-center" style="border-color: var(--border-clr) !important;">
+                        <a href="assessment-hub.html" class="btn btn-primary-custom btn-sm w-100">Continue Course</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="card h-100 border shadow-sm" style="border-color: var(--border-clr) !important; background: var(--clr-surface); border-radius: var(--radius-md); overflow: hidden;">
+                      <img src="https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=500&auto=format&fit=crop&q=80" class="card-img-top img-fluid" style="height: 140px; object-fit: cover;" alt="DBMS Bootcamp">
+                      <div class="card-body p-3">
+                        <span class="badge bg-warning text-dark mb-2">Core CS</span>
+                        <h6 class="card-title fw-bold mb-1">DBMS, SQL & Normalization Bootcamp</h6>
+                        <p class="card-text text-muted small mb-2">Relational algebra, subqueries, ACID properties, indexing, and 1NF to BCNF.</p>
+                        <div class="d-flex justify-content-between small text-muted mb-1">
+                          <span>Progress</span>
+                          <strong>45% Completed</strong>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                          <div class="progress-bar bg-warning" style="width: 45%;"></div>
+                        </div>
+                      </div>
+                      <div class="card-footer bg-transparent border-top p-2 text-center" style="border-color: var(--border-clr) !important;">
+                        <a href="assessment-hub.html" class="btn btn-primary-custom btn-sm w-100">Continue Course</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="card h-100 border shadow-sm" style="border-color: var(--border-clr) !important; background: var(--clr-surface); border-radius: var(--radius-md); overflow: hidden;">
+                      <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=500&auto=format&fit=crop&q=80" class="card-img-top img-fluid" style="height: 140px; object-fit: cover;" alt="Interview Prep">
+                      <div class="card-body p-3">
+                        <span class="badge bg-primary mb-2">Interview Track</span>
+                        <h6 class="card-title fw-bold mb-1">Technical & HR Mock Interview Simulator</h6>
+                        <p class="card-text text-muted small mb-2">Behavioral questions, STAR method phrasing, and system architecture walkthroughs.</p>
+                        <div class="d-flex justify-content-between small text-muted mb-1">
+                          <span>Progress</span>
+                          <strong>90% Completed</strong>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                          <div class="progress-bar bg-primary" style="width: 90%;"></div>
+                        </div>
+                      </div>
+                      <div class="card-footer bg-transparent border-top p-2 text-center" style="border-color: var(--border-clr) !important;">
+                        <a href="mock-simulation.html" class="btn btn-primary-custom btn-sm w-100">Practice Mocks</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 2 -->
+              <div class="carousel-item">
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <div class="card h-100 border shadow-sm" style="border-color: var(--border-clr) !important; background: var(--clr-surface); border-radius: var(--radius-md); overflow: hidden;">
+                      <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&auto=format&fit=crop&q=80" class="card-img-top img-fluid" style="height: 140px; object-fit: cover;" alt="System Design">
+                      <div class="card-body p-3">
+                        <span class="badge bg-info text-dark mb-2">Architecture</span>
+                        <h6 class="card-title fw-bold mb-1">System Design For Campus Placements</h6>
+                        <p class="card-text text-muted small mb-2">Load balancers, CDN caching, database sharding, microservices, and CAP theorem.</p>
+                        <div class="d-flex justify-content-between small text-muted mb-1">
+                          <span>Progress</span>
+                          <strong>30% Completed</strong>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                          <div class="progress-bar bg-info" style="width: 30%;"></div>
+                        </div>
+                      </div>
+                      <div class="card-footer bg-transparent border-top p-2 text-center" style="border-color: var(--border-clr) !important;">
+                        <a href="roadmap.html" class="btn btn-outline-custom btn-sm w-100">View Syllabus</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="card h-100 border shadow-sm" style="border-color: var(--border-clr) !important; background: var(--clr-surface); border-radius: var(--radius-md); overflow: hidden;">
+                      <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=500&auto=format&fit=crop&q=80" class="card-img-top img-fluid" style="height: 140px; object-fit: cover;" alt="Quantitative Aptitude">
+                      <div class="card-body p-3">
+                        <span class="badge bg-success mb-2">Aptitude</span>
+                        <h6 class="card-title fw-bold mb-1">Quantitative & Logical Speed Shortcuts</h6>
+                        <p class="card-text text-muted small mb-2">Speed math, mental calculations, probability heuristics, and time-and-work shortcuts.</p>
+                        <div class="d-flex justify-content-between small text-muted mb-1">
+                          <span>Progress</span>
+                          <strong>82% Completed</strong>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                          <div class="progress-bar bg-success" style="width: 82%;"></div>
+                        </div>
+                      </div>
+                      <div class="card-footer bg-transparent border-top p-2 text-center" style="border-color: var(--border-clr) !important;">
+                        <a href="assessment-hub.html" class="btn btn-primary-custom btn-sm w-100">Practice Tests</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="card h-100 border shadow-sm" style="border-color: var(--border-clr) !important; background: var(--clr-surface); border-radius: var(--radius-md); overflow: hidden;">
+                      <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=500&auto=format&fit=crop&q=80" class="card-img-top img-fluid" style="height: 140px; object-fit: cover;" alt="Soft Skills">
+                      <div class="card-body p-3">
+                        <span class="badge bg-secondary mb-2">Soft Skills</span>
+                        <h6 class="card-title fw-bold mb-1">Professional Communication & GD Prep</h6>
+                        <p class="card-text text-muted small mb-2">Email etiquette, campus group discussions, and active listening simulations.</p>
+                        <div class="d-flex justify-content-between small text-muted mb-1">
+                          <span>Progress</span>
+                          <strong>60% Completed</strong>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                          <div class="progress-bar bg-secondary" style="width: 60%;"></div>
+                        </div>
+                      </div>
+                      <div class="card-footer bg-transparent border-top p-2 text-center" style="border-color: var(--border-clr) !important;">
+                        <a href="assessment-hub.html" class="btn btn-outline-custom btn-sm w-100">Resume Course</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Chatbot FAB -->
+  <button class="chatbot-fab" id="chatbotFab" aria-label="Open AI Chat Coach"><i class="bi bi-chat-dots-fill"></i></button>
+  <div class="chatbot-panel" id="chatbotPanel">
+    <div class="panel-header">
+      <div class="d-flex align-items-center gap-2">
+        <div class="chat-avatar ai-avatar"><i class="bi bi-mortarboard-fill"></i></div>
+        <div>
+          <h6>AI Placement Coach</h6>
+          <small style="opacity:0.8;">Online</small>
+        </div>
+      </div>
+      <button class="panel-close" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="chat-messages">
+      <div class="chat-message-row">
+        <div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>
+        <div class="chat-bubble ai">
+          Hi Rahul! You can customize your profile, choose your avatar, and pick your dream companies right here. Need any resume review or target company suggestions?
+          <span class="bubble-time">Now</span>
+        </div>
+      </div>
+    </div>
+    <div class="quick-replies">
+      <div class="quick-reply-chip">How to improve my profile?</div>
+      <div class="quick-reply-chip">Recommended target companies</div>
+    </div>
+    <div class="chat-input-bar">
+      <input type="text" placeholder="Ask your AI coach..." aria-label="Chat">
+      <button class="btn-send" aria-label="Send"><i class="bi bi-send-fill"></i></button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="config.js"></script>
+  <script src="gemini.js"></script>
+  <script src="app.js"></script>
+  <script>
+    let isEditing = false;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load saved profile data if exists
+      const savedName = localStorage.getItem('pc_student_name');
+      const savedAvatar = localStorage.getItem('pc_student_avatar');
+      const savedBio = localStorage.getItem('pc_student_bio');
+      const savedDegree = localStorage.getItem('pc_student_degree');
+      const savedCgpa = localStorage.getItem('pc_student_cgpa');
+
+      if (savedName) {
+        document.getElementById('displayProfileName').textContent = savedName;
+        document.getElementById('inputFullName').value = savedName;
+        const sName = document.getElementById('sidebarUserName');
+        if (sName) sName.textContent = savedName;
+      }
+      if (savedAvatar) {
+        document.getElementById('currentProfileAvatar').src = savedAvatar;
+        document.querySelectorAll('.user-avatar-img').forEach(img => img.src = savedAvatar);
+        const inputAv = document.getElementById('inputAvatarUrl');
+        if (inputAv) inputAv.value = savedAvatar;
+      }
+      if (savedBio) {
+        document.getElementById('displayProfileBio').textContent = savedBio;
+        document.getElementById('inputBio').value = savedBio;
+      }
+      if (savedDegree) {
+        document.getElementById('displayDegree').textContent = savedDegree;
+        document.getElementById('inputDegree').value = savedDegree;
+      }
+      if (savedCgpa) {
+        document.getElementById('displayCgpa').textContent = savedCgpa + ' / 10';
+        document.getElementById('inputCgpa').value = savedCgpa;
+      }
+    });
+
+    function toggleEditMode() {
+      isEditing = !isEditing;
+      const formInputs = document.querySelectorAll('#profileEditForm input, #profileEditForm select, #profileEditForm textarea');
+      const saveBtn = document.getElementById('saveProfileBtn');
+      const cancelBtn = document.getElementById('cancelEditBtn');
+      const statusBadge = document.getElementById('editStatusBadge');
+      const toggleBtnText = document.getElementById('toggleEditBtnText');
+
+      formInputs.forEach(input => {
+        input.disabled = !isEditing;
+      });
+
+      if (isEditing) {
+        saveBtn.style.display = 'inline-flex';
+        cancelBtn.style.display = 'inline-flex';
+        statusBadge.textContent = 'Editing Mode Enabled';
+        statusBadge.className = 'badge bg-warning text-dark';
+        if (toggleBtnText) toggleBtnText.textContent = 'Cancel Editing';
+        document.getElementById('inputFullName').focus();
+        document.getElementById('editProfileSection').scrollIntoView({ behavior: 'smooth' });
+      } else {
+        saveBtn.style.display = 'none';
+        cancelBtn.style.display = 'none';
+        statusBadge.textContent = 'Read-Only';
+        statusBadge.className = 'badge bg-secondary';
+        if (toggleBtnText) toggleBtnText.textContent = 'Edit Profile';
+      }
+    }
+
+    function cancelEditing() {
+      isEditing = true;
+      toggleEditMode();
+    }
+
+    function handleAvatarFileUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        document.getElementById('currentProfileAvatar').src = dataUrl;
+        document.querySelectorAll('.user-avatar-img').forEach(img => img.src = dataUrl);
+        const inputAv = document.getElementById('inputAvatarUrl');
+        if (inputAv) inputAv.value = dataUrl;
+        localStorage.setItem('pc_student_avatar', dataUrl);
+
+        const alert = document.getElementById('profileSuccessAlert');
+        if (alert) {
+          alert.classList.remove('d-none');
+          alert.classList.add('d-flex');
+          alert.querySelector('div').innerHTML = '<strong>Photo Uploaded:</strong> Your profile photo has been updated and synced!';
+          setTimeout(() => alert.classList.add('d-none'), 3500);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveProfileDetails(e) {
+      e.preventDefault();
+      const saveBtn = document.getElementById('saveProfileBtn');
+      const spinner = document.getElementById('saveProfileSpinner');
+      const icon = document.getElementById('saveProfileIcon');
+      const alert = document.getElementById('profileSuccessAlert');
+
+      saveBtn.disabled = true;
+      spinner.classList.remove('d-none');
+      icon.classList.add('d-none');
+
+      setTimeout(() => {
+        const nameVal = document.getElementById('inputFullName').value;
+        const bioVal = document.getElementById('inputBio').value;
+        const degreeVal = document.getElementById('inputDegree').value;
+        const cgpaVal = document.getElementById('inputCgpa').value;
+        const collegeVal = document.getElementById('inputCollege').value;
+        const avatarUrlVal = document.getElementById('inputAvatarUrl') ? document.getElementById('inputAvatarUrl').value : '';
+
+        document.getElementById('displayProfileName').textContent = nameVal;
+        document.getElementById('displayProfileBio').textContent = bioVal;
+        document.getElementById('displayDegree').textContent = degreeVal;
+        document.getElementById('displayCgpa').textContent = cgpaVal + ' / 10';
+        document.getElementById('displayCollege').textContent = collegeVal;
+
+        if (avatarUrlVal) {
+          document.getElementById('currentProfileAvatar').src = avatarUrlVal;
+          document.querySelectorAll('.user-avatar-img').forEach(img => img.src = avatarUrlVal);
+          localStorage.setItem('pc_student_avatar', avatarUrlVal);
+        }
+
+        const sName = document.getElementById('sidebarUserName');
+        if (sName) sName.textContent = nameVal;
+
+        localStorage.setItem('pc_student_name', nameVal);
+        localStorage.setItem('pc_student_bio', bioVal);
+        localStorage.setItem('pc_student_degree', degreeVal);
+        localStorage.setItem('pc_student_cgpa', cgpaVal);
+
+        saveBtn.disabled = false;
+        spinner.classList.add('d-none');
+        icon.classList.remove('d-none');
+
+        toggleEditMode();
+
+        if (alert) {
+          alert.classList.remove('d-none');
+          alert.classList.add('d-flex');
+          alert.querySelector('div').innerHTML = '<strong>Profile Saved:</strong> Your profile details have been successfully updated and synced!';
+          alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 900);
+    }
+  </script>
+</body>
+</html>

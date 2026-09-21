@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Browse and start AI-powered assessments — aptitude, coding, technical interviews, HR interviews, and communication tests.">
+  <title>Assessment Hub — Placement Coach</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Sidebar (same as dashboard) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand"><i class="bi bi-mortarboard-fill"></i> Placement Coach</div>
+    <a href="profile.html" class="sidebar-user text-decoration-none d-flex align-items-center gap-2 p-2 rounded-3" title="Click to view & edit profile">
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Rahul Sharma" class="img-fluid rounded-circle user-avatar-img border border-2 border-primary" style="width: 42px; height: 42px; object-fit: cover;">
+      <div class="flex-grow-1 overflow-hidden">
+        <div class="user-name fw-bold text-truncate" id="sidebarUserName">Rahul Sharma</div>
+        <div class="user-role small text-muted text-truncate" id="sidebarUserRole">CSE, 4th Year • Edit <i class="bi bi-pencil-fill" style="font-size:0.75rem;"></i></div>
+      </div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Main</div>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link active" href="assessment-hub.html"><i class="bi bi-clipboard2-check"></i> Assessments</a></li>
+        <li class="nav-item"><a class="nav-link" href="performance.html"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></li>
+        <li class="nav-item"><a class="nav-link" href="roadmap.html"><i class="bi bi-map-fill"></i> Roadmap</a></li>
+        <li class="nav-item"><a class="nav-link" href="progress.html"><i class="bi bi-graph-up-arrow"></i> Progress</a></li>
+        <li class="nav-item"><a class="nav-link" href="profile.html"><i class="bi bi-person-badge-fill"></i> Profile & Settings</a></li>
+      </ul>
+      <div class="nav-label">AI Tools</div>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link" href="chat.html"><i class="bi bi-chat-dots-fill"></i> AI Coach</a></li>
+        <li class="nav-item"><a class="nav-link" href="mock-simulation.html"><i class="bi bi-building"></i> Mock Simulation</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="dark-mode-toggle" title="Toggle dark mode"><i class="bi bi-moon-stars"></i><span>Dark Mode</span><div class="toggle-track ms-auto"><div class="toggle-thumb"></div></div></div>
+      <a href="login.html" class="nav-link mt-2 d-flex align-items-center gap-2" style="color:var(--clr-text-muted);font-size:0.85rem;"><i class="bi bi-box-arrow-left"></i> Logout</a>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="top-header">
+      <div class="d-flex align-items-center gap-3">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar"><i class="bi bi-list"></i></button>
+        <h1 class="page-title">Assessment Hub</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn-icon" title="Notifications"><i class="bi bi-bell"></i><span class="notification-dot"></span></button>
+      </div>
+    </header>
+
+      <!-- Alert Info Banner -->
+      <div class="alert alert-info alert-dismissible fade show d-flex align-items-center gap-3 mb-4 shadow-sm" role="alert" data-aos="fade-up">
+        <i class="bi bi-info-circle-fill fs-4 text-info flex-shrink-0"></i>
+        <div class="flex-grow-1">
+          <strong>Feature Update:</strong> New: AI-based HR mock interviews now live! Practice behavioral questions with dynamic follow-ups and rubric scoring.
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
+      <!-- Intro -->
+      <div class="glass-card mb-4" data-aos="fade-up">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+          <div>
+            <h5 class="fw-bold mb-1">Choose Your Assessment</h5>
+            <p class="mb-0" style="color:var(--clr-text-secondary); font-size:0.9rem;">Pick a module to test your skills. AI will analyze your answers and give you topic-level feedback.</p>
+          </div>
+          <span class="badge rounded-pill px-3 py-2" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">
+            <i class="bi bi-lightning-charge-fill"></i> 7 modules available
+          </span>
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="d-flex flex-wrap gap-2 mb-4" data-aos="fade-up" data-aos-delay="100">
+        <button class="btn btn-sm btn-primary-custom active" data-filter-tab="all" onclick="filterAssessments('all', this)">All</button>
+        <button class="btn btn-sm btn-outline-custom" data-filter-tab="aptitude" onclick="filterAssessments('aptitude', this)">Aptitude</button>
+        <button class="btn btn-sm btn-outline-custom" data-filter-tab="coding" onclick="filterAssessments('coding', this)">Coding / DSA</button>
+        <button class="btn btn-sm btn-outline-custom" data-filter-tab="technical" onclick="filterAssessments('technical', this)">Technical Interview</button>
+        <button class="btn btn-sm btn-outline-custom" data-filter-tab="hr" onclick="filterAssessments('hr', this)">HR Interview</button>
+        <button class="btn btn-sm btn-outline-custom" data-filter-tab="communication" onclick="filterAssessments('communication', this)">Communication</button>
+      </div>
+
+      <!-- Assessment Cards Grid (card > card-img-top > card-body > card-title + card-text > card-footer) -->
+      <div class="row g-4" id="assessmentGrid">
+        <!-- Aptitude: Quant -->
+        <div class="col-lg-4 col-md-6" data-category="aptitude" data-aos="fade-up" data-aos-delay="150">
+          <div class="card h-100 border-0 shadow-sm assessment-card" style="background:var(--glass-bg); border-radius:var(--radius-lg); overflow:hidden;">
+            <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: linear-gradient(135deg, rgba(79,70,229,0.1), rgba(124,58,237,0.1)); height: 90px;">
+              <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: var(--clr-primary-light); color: var(--clr-primary); width: 50px; height: 50px;">
+                <i class="bi bi-calculator fs-3 img-fluid"></i>
+              </div>
+            </div>
+            <div class="card-body p-4">
+              <h5 class="card-title fw-bold">Quantitative Aptitude</h5>
+              <p class="card-text text-muted small">Number systems, percentages, profit & loss, time & work, probability, and speed math.</p>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge badge-difficulty" style="background:var(--clr-warning-light);color:var(--clr-warning);">Medium</span>
+                <span class="badge badge-difficulty" style="background:var(--clr-primary-light);color:var(--clr-primary);">30 Questions</span>
+              </div>
+              <div class="d-flex justify-content-between text-muted small border-top pt-2">
+                <span><i class="bi bi-clock"></i> 45 min</span>
+                <span><i class="bi bi-bar-chart"></i> Adaptive difficulty</span>
+              </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
+              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('Quantitative Aptitude', '45 min', '30 Questions')">
+                <i class="bi bi-play-fill"></i> Start Assessment
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Aptitude: Logical -->
+        <div class="col-lg-4 col-md-6" data-category="aptitude" data-aos="fade-up" data-aos-delay="200">
+          <div class="card h-100 border-0 shadow-sm assessment-card" style="background:var(--glass-bg); border-radius:var(--radius-lg); overflow:hidden;">
+            <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.1)); height: 90px;">
+              <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: var(--clr-success-light); color: var(--clr-success); width: 50px; height: 50px;">
+                <i class="bi bi-puzzle fs-3 img-fluid"></i>
+              </div>
+            </div>
+            <div class="card-body p-4">
+              <h5 class="card-title fw-bold">Logical Reasoning</h5>
+              <p class="card-text text-muted small">Syllogisms, seating arrangement, coding-decoding, blood relations, and pattern puzzles.</p>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge badge-difficulty" style="background:var(--clr-success-light);color:var(--clr-success);">Easy</span>
+                <span class="badge badge-difficulty" style="background:var(--clr-primary-light);color:var(--clr-primary);">25 Questions</span>
+              </div>
+              <div class="d-flex justify-content-between text-muted small border-top pt-2">
+                <span><i class="bi bi-clock"></i> 35 min</span>
+                <span><i class="bi bi-bar-chart"></i> Adaptive difficulty</span>
+              </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
+              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('Logical Reasoning', '35 min', '25 Questions')">
+                <i class="bi bi-play-fill"></i> Start Assessment
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Aptitude: Verbal -->
+        <div class="col-lg-4 col-md-6" data-category="aptitude" data-aos="fade-up" data-aos-delay="250">
+          <div class="card h-100 border-0 shadow-sm assessment-card" style="background:var(--glass-bg); border-radius:var(--radius-lg); overflow:hidden;">
+            <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(217,119,6,0.1)); height: 90px;">
+              <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: var(--clr-warning-light); color: var(--clr-warning); width: 50px; height: 50px;">
+                <i class="bi bi-translate fs-3 img-fluid"></i>
+              </div>
+            </div>
+            <div class="card-body p-4">
+              <h5 class="card-title fw-bold">Verbal Ability</h5>
+              <p class="card-text text-muted small">Reading comprehension, sentence correction, vocabulary, para-jumbles, and grammar.</p>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge badge-difficulty" style="background:var(--clr-success-light);color:var(--clr-success);">Easy</span>
+                <span class="badge badge-difficulty" style="background:var(--clr-primary-light);color:var(--clr-primary);">20 Questions</span>
+              </div>
+              <div class="d-flex justify-content-between text-muted small border-top pt-2">
+                <span><i class="bi bi-clock"></i> 30 min</span>
+                <span><i class="bi bi-bar-chart"></i> Standard</span>
+              </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
+              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('Verbal Ability', '30 min', '20 Questions')">
+                <i class="bi bi-play-fill"></i> Start Assessment
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coding: DSA -->
+        <div class="col-lg-4 col-md-6" data-category="coding" data-aos="fade-up" data-aos-delay="150">
+          <div class="card h-100 border-0 shadow-sm assessment-card" style="background:var(--glass-bg); border-radius:var(--radius-lg); overflow:hidden;">
+            <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(185,28,28,0.1)); height: 90px;">
+              <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: var(--clr-danger-light); color: var(--clr-danger); width: 50px; height: 50px;">
+                <i class="bi bi-code-slash fs-3 img-fluid"></i>
+              </div>
+            </div>
+            <div class="card-body p-4">
+              <h5 class="card-title fw-bold">DSA Coding Challenge</h5>
+              <p class="card-text text-muted small">Arrays, linked lists, binary trees, dynamic programming, and sliding window problems.</p>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge badge-difficulty" style="background:var(--clr-danger-light);color:var(--clr-danger);">Hard</span>
+                <span class="badge badge-difficulty" style="background:var(--clr-primary-light);color:var(--clr-primary);">5 Problems</span>
+              </div>
+              <div class="d-flex justify-content-between text-muted small border-top pt-2">
+                <span><i class="bi bi-clock"></i> 90 min</span>
+                <span><i class="bi bi-braces"></i> Code Editor</span>
+              </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
+              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('DSA Coding Challenge', '90 min', '5 Problems')">
+                <i class="bi bi-play-fill"></i> Start Assessment
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coding: DBMS & SQL -->
+        <div class="col-lg-4 col-md-6" data-category="coding" data-aos="fade-up" data-aos-delay="200">
+          <div class="card h-100 border-0 shadow-sm assessment-card" style="background:var(--glass-bg); border-radius:var(--radius-lg); overflow:hidden;">
+            <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: linear-gradient(135deg, rgba(79,70,229,0.1), rgba(6,182,212,0.1)); height: 90px;">
+              <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: var(--clr-primary-light); color: var(--clr-primary); width: 50px; height: 50px;">
+                <i class="bi bi-database fs-3 img-fluid"></i>
+              </div>
+            </div>
+            <div class="card-body p-4">
+              <h5 class="card-title fw-bold">DBMS & SQL Queries</h5>
+              <p class="card-text text-muted small">JOINs, subqueries, normalization (1NF-BCNF), indexing, and ACID transaction concepts.</p>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge badge-difficulty" style="background:var(--clr-warning-light);color:var(--clr-warning);">Medium</span>
+                <span class="badge badge-difficulty" style="background:var(--clr-primary-light);color:var(--clr-primary);">10 Queries</span>
+              </div>
+              <div class="d-flex justify-content-between text-muted small border-top pt-2">
+                <span><i class="bi bi-clock"></i> 45 min</span>
+                <span><i class="bi bi-braces"></i> SQL Editor</span>
+              </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
+              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('DBMS & SQL Queries', '45 min', '10 Queries')">
+                <i class="bi bi-play-fill"></i> Start Assessment
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Technical Interview -->
+        <div class="col-lg-4 col-md-6" data-category="technical" data-aos="fade-up" data-aos-delay="150">
+          <div class="card h-100 border-0 shadow-sm assessment-card" style="background:var(--glass-bg); border-radius:var(--radius-lg); overflow:hidden;">
+            <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: linear-gradient(135deg, rgba(79,70,229,0.1), rgba(244,63,94,0.1)); height: 90px;">
+              <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: var(--clr-primary-light); color: var(--clr-primary); width: 50px; height: 50px;">
+                <i class="bi bi-person-video3 fs-3 img-fluid"></i>
+              </div>
+            </div>
+            <div class="card-body p-4">
+              <h5 class="card-title fw-bold">AI Technical Interview</h5>
+              <p class="card-text text-muted small">Simulated technical interview covering DSA, system design, and CS core with adaptive follow-ups.</p>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge badge-difficulty" style="background:var(--clr-danger-light);color:var(--clr-danger);">Hard</span>
+                <span class="badge badge-difficulty" style="background:var(--clr-primary-light);color:var(--clr-primary);">AI Interactive</span>
+              </div>
+              <div class="d-flex justify-content-between text-muted small border-top pt-2">
+                <span><i class="bi bi-clock"></i> 45 min</span>
+                <span><i class="bi bi-chat-dots"></i> Chat-based</span>
+              </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
+              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('AI Technical Interview', '45 min', 'AI Interactive')">
+                <i class="bi bi-play-fill"></i> Start Interview
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- HR Interview -->
+        <div class="col-lg-4 col-md-6" data-category="hr" data-aos="fade-up" data-aos-delay="150">
+          <div class="card h-100 border-0 shadow-sm assessment-card" style="background:var(--glass-bg); border-radius:var(--radius-lg); overflow:hidden;">
+            <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(14,165,233,0.1)); height: 90px;">
+              <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: var(--clr-success-light); color: var(--clr-success); width: 50px; height: 50px;">
+                <i class="bi bi-people-fill fs-3 img-fluid"></i>
+              </div>
+            </div>
+            <div class="card-body p-4">
+              <h5 class="card-title fw-bold">AI HR Interview</h5>
+              <p class="card-text text-muted small">Behavioral scenarios, situational judgment, strengths/weaknesses, and culture fit evaluation.</p>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge badge-difficulty" style="background:var(--clr-warning-light);color:var(--clr-warning);">Medium</span>
+                <span class="badge badge-difficulty" style="background:var(--clr-primary-light);color:var(--clr-primary);">AI Interactive</span>
+              </div>
+              <div class="d-flex justify-content-between text-muted small border-top pt-2">
+                <span><i class="bi bi-clock"></i> 30 min</span>
+                <span><i class="bi bi-chat-dots"></i> Chat-based</span>
+              </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
+              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('AI HR Interview', '30 min', 'AI Interactive')">
+                <i class="bi bi-play-fill"></i> Start Interview
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Communication -->
+        <div class="col-lg-4 col-md-6" data-category="communication" data-aos="fade-up" data-aos-delay="150">
+          <div class="card h-100 border-0 shadow-sm assessment-card" style="background:var(--glass-bg); border-radius:var(--radius-lg); overflow:hidden;">
+            <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(239,68,68,0.1)); height: 90px;">
+              <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: var(--clr-warning-light); color: var(--clr-warning); width: 50px; height: 50px;">
+                <i class="bi bi-mic-fill fs-3 img-fluid"></i>
+              </div>
+            </div>
+            <div class="card-body p-4">
+              <h5 class="card-title fw-bold">Communication Assessment</h5>
+              <p class="card-text text-muted small">Email writing, presentation skills, GD simulations, and professional clarity checks.</p>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge badge-difficulty" style="background:var(--clr-success-light);color:var(--clr-success);">Easy</span>
+                <span class="badge badge-difficulty" style="background:var(--clr-primary-light);color:var(--clr-primary);">15 Tasks</span>
+              </div>
+              <div class="d-flex justify-content-between text-muted small border-top pt-2">
+                <span><i class="bi bi-clock"></i> 25 min</span>
+                <span><i class="bi bi-pencil-square"></i> Written</span>
+              </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
+              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('Communication Assessment', '25 min', '15 Tasks')">
+                <i class="bi bi-play-fill"></i> Start Assessment
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State (Shown when no cards match) -->
+        <div id="emptyState" class="col-12 text-center py-5" style="display: none;">
+          <div class="card border-0 shadow-sm p-4 p-md-5 mx-auto" style="max-width: 480px; background: var(--glass-bg); border-radius: var(--radius-lg);">
+            <div class="mb-3">
+              <svg class="img-fluid" width="140" height="110" viewBox="0 0 200 160" fill="none">
+                <rect x="35" y="25" width="130" height="95" rx="14" fill="#EEF2FF" stroke="#6366F1" stroke-width="2" stroke-dasharray="4 4"/>
+                <circle cx="100" cy="65" r="22" fill="#C7D2FE"/>
+                <path d="M92 64l5 5 11-11" stroke="#4F46E5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="65" y="96" width="70" height="6" rx="3" fill="#A5B4FC"/>
+                <circle cx="150" cy="38" r="12" fill="#FEF3C7"/>
+                <path d="M150 32v12M144 38h12" stroke="#D97706" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h5 class="fw-bold mb-1">No assessments in this category</h5>
+            <p class="text-muted small mb-3">No assessments taken — start your first one to generate personalized AI diagnostic feedback.</p>
+            <div>
+              <button class="btn btn-primary-custom btn-sm" onclick="filterAssessments('all', document.querySelector('[data-filter-tab=\'all\']'))">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filters
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== START MODAL ======================== -->
+  <div class="modal fade" id="startModal" tabindex="-1" aria-labelledby="startModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="border: none; border-radius: var(--radius-xl); background: var(--clr-surface);">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="startModalLabel">Start Assessment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-center mb-3">
+            <div style="width:64px;height:64px;border-radius:50%;background:var(--clr-primary-light);color:var(--clr-primary);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin:0 auto;">
+              <i class="bi bi-clipboard2-check"></i>
+            </div>
+          </div>
+          <h6 class="text-center fw-bold" id="modalAssessmentName">Assessment Name</h6>
+          <div class="d-flex justify-content-center gap-3 mt-2 mb-3">
+            <span class="badge rounded-pill px-3 py-2" style="background:var(--clr-bg);color:var(--clr-text-secondary);">
+              <i class="bi bi-clock"></i> <span id="modalTime">45 min</span>
+            </span>
+            <span class="badge rounded-pill px-3 py-2" style="background:var(--clr-bg);color:var(--clr-text-secondary);">
+              <i class="bi bi-list-ol"></i> <span id="modalQuestions">30 Questions</span>
+            </span>
+          </div>
+          <div class="p-3 rounded-3 mb-3" style="background: var(--clr-warning-light); font-size: 0.88rem;">
+            <i class="bi bi-exclamation-triangle-fill me-1" style="color:var(--clr-warning);"></i>
+            <strong>Important:</strong> Once started, the timer cannot be paused. Ensure you have a stable internet connection.
+          </div>
+          <ul class="list-unstyled" style="font-size:0.9rem; color:var(--clr-text-secondary);">
+            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> AI will adapt difficulty based on your answers</li>
+            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Detailed topic-wise feedback after submission</li>
+            <li><i class="bi bi-check-circle text-success me-2"></i> Results contribute to your readiness score</li>
+          </ul>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
+          <a href="live-assessment.html" class="btn btn-primary-custom">
+            <i class="bi bi-play-fill"></i> Start Now
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chatbot FAB (same as dashboard) -->
+  <button class="chatbot-fab" id="chatbotFab" aria-label="Open AI Chat Coach"><i class="bi bi-chat-dots-fill"></i></button>
+  <div class="chatbot-panel" id="chatbotPanel">
+    <div class="panel-header">
+      <div class="d-flex align-items-center gap-2"><div class="chat-avatar ai-avatar"><i class="bi bi-mortarboard-fill"></i></div><div><h6>AI Placement Coach</h6><small style="opacity:0.8;">Online</small></div></div>
+      <button class="panel-close" aria-label="Close chat"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="chat-messages">
+      <div class="chat-message-row"><div class="chat-avatar ai-avatar"><i class="bi bi-mortarboard-fill"></i></div><div class="chat-bubble ai">Ready for your next assessment? I'd recommend starting with the DSA Coding Challenge to address your DP weakness.<span class="bubble-time">Now</span></div></div>
+    </div>
+    <div class="quick-replies"><div class="quick-reply-chip">Show my weak topics</div><div class="quick-reply-chip">Today's practice set</div></div>
+    <div class="chat-input-bar"><input type="text" placeholder="Ask your AI coach..." aria-label="Chat message"><button class="btn-send" aria-label="Send message"><i class="bi bi-send-fill"></i></button></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="config.js"></script>
+  <script src="gemini.js"></script>
+  <script src="app.js"></script>
+  <script>
+    function setModalAssessment(name, time, questions) {
+      document.getElementById('modalAssessmentName').textContent = name;
+      document.getElementById('modalTime').textContent = time;
+      document.getElementById('modalQuestions').textContent = questions;
+    }
+
+    function filterAssessments(category, btn) {
+      document.querySelectorAll('[data-filter-tab]').forEach(b => {
+        b.classList.remove('btn-primary-custom', 'active');
+        b.classList.add('btn-outline-custom');
+      });
+      if (btn) {
+        btn.classList.remove('btn-outline-custom');
+        btn.classList.add('btn-primary-custom', 'active');
+      }
+
+      let visibleCount = 0;
+      document.querySelectorAll('[data-category]').forEach(card => {
+        if (category === 'all' || card.getAttribute('data-category') === category) {
+          card.style.display = '';
+          card.style.animation = 'bubbleFadeIn 0.3s ease';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      const empty = document.getElementById('emptyState');
+      if (empty) {
+        empty.style.display = visibleCount === 0 ? 'block' : 'none';
+      }
+    }
+  </script>
+</body>
+</html>

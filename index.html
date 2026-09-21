@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Placement Coach — AI-powered study copilot for campus placements. Topic-level feedback, complete placement round simulations, and an evolving roadmap.">
+  <title>Placement Coach — AI Study Copilot for Campus Placements</title>
+
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- AOS.js Animations -->
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body class="bg-light text-body">
+
+  <!-- ======================== 1. NAVIGATION BAR ======================== -->
+  <nav class="navbar navbar-expand-lg bg-body fixed-top shadow-sm py-3" id="mainNav">
+    <div class="container">
+      <!-- Left: Brand Logo & AI Pill Badge -->
+      <a class="navbar-brand d-flex align-items-center gap-2 text-decoration-none" href="index.html">
+        <span class="badge rounded-circle p-2 d-inline-flex align-items-center justify-content-center text-white shadow-sm" style="background: linear-gradient(135deg, var(--bs-primary), #4f46e5); width: 38px; height: 38px;">
+          <i class="bi bi-rocket-takeoff fs-6"></i>
+        </span>
+        <span class="fw-bold fs-5 tracking-tight text-body">Placement Coach</span>
+        <span class="badge rounded-pill bg-primary-subtle text-primary fw-semibold px-2 py-1" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+          AI STUDY COPILOT
+        </span>
+      </a>
+
+      <!-- Mobile Toggler -->
+      <button class="navbar-toggler border-0 shadow-none p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="bi bi-list fs-3"></i>
+      </button>
+
+      <!-- Center Links & Right CTAs -->
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 fw-medium gap-lg-3 text-center">
+          <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+          <li class="nav-item"><a class="nav-link" href="#how-it-works">How it works</a></li>
+          <li class="nav-item"><a class="nav-link" href="#testimonials">Success stories</a></li>
+          <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+        </ul>
+
+        <div class="d-flex align-items-center justify-content-center gap-2 mt-3 mt-lg-0">
+          <!-- Dark / Light Toggle Button -->
+          <button class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center dark-mode-toggle" id="themeToggleBtn" style="width: 40px; height: 40px;" title="Toggle dark/light mode" aria-label="Toggle theme">
+            <i class="bi bi-moon-stars"></i>
+          </button>
+          <!-- Log In Button (Ghost / Outline) -->
+          <a class="btn btn-outline-secondary rounded-pill px-3 fw-medium" href="login.html">Log in</a>
+          <!-- Get Started Button (Primary Purple Fill) -->
+          <a class="btn btn-primary rounded-pill px-4 shadow-sm fw-semibold" href="login.html">Get Started <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ======================== 2. HERO SECTION ======================== -->
+  <section class="py-5 bg-light position-relative overflow-hidden" id="hero" style="padding-top: 7rem !important; padding-bottom: 5rem !important;">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <!-- Left Column -->
+        <div class="col-lg-6" data-aos="fade-right">
+          <!-- Pill Tag -->
+          <div class="mb-3">
+            <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2 fw-semibold" style="font-size: 0.85rem;">
+              <i class="bi bi-stars me-1"></i> AI-driven. Topic-level. Personal
+            </span>
+          </div>
+
+          <!-- Large Bold Heading -->
+          <h1 class="display-4 fw-bold mb-3 tracking-tight" style="line-height: 1.15;">
+            Your personal AI coach for <span class="text-primary">campus placements</span>
+          </h1>
+
+          <!-- Subtitle -->
+          <p class="lead text-muted mb-4 fs-5" style="line-height: 1.6;">
+            Placement Coach simulates the entire placement journey — aptitude tests, live coding rounds, technical deep dives, and HR interviews. Receive actionable topic-level coaching instead of mere test scores, paired with an evolving roadmap that adapts as you grow.
+          </p>
+
+          <!-- CTA Buttons -->
+          <div class="d-flex flex-wrap gap-3 mb-4">
+            <a href="login.html" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm fw-semibold">
+              Start free — 7 day trial <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+            <a href="#how-it-works" class="btn btn-outline-primary btn-lg rounded-pill px-4 fw-semibold">
+              How it works <i class="bi bi-play-circle ms-1"></i>
+            </a>
+          </div>
+
+          <!-- Trust Indicators -->
+          <div class="d-flex flex-wrap gap-4 text-muted small pt-2">
+            <span class="d-flex align-items-center gap-1">
+              <i class="bi bi-check-circle-fill text-success"></i> No credit card
+            </span>
+            <span class="d-flex align-items-center gap-1">
+              <i class="bi bi-check-circle-fill text-success"></i> Set up in 5 minutes
+            </span>
+            <span class="d-flex align-items-center gap-1">
+              <i class="bi bi-check-circle-fill text-success"></i> Used by students across 68 colleges
+            </span>
+          </div>
+        </div>
+
+        <!-- Right Column: Interactive Floating Dashboard Preview Card -->
+        <div class="col-lg-6 position-relative" data-aos="fade-left" data-aos-delay="150">
+          <!-- Floating Badge Pill 1 (Top Right) -->
+          <div class="badge rounded-pill bg-white text-dark shadow-sm p-2 px-3 position-absolute float-badge-1 border">
+            <i class="bi bi-lightning-charge-fill text-warning me-1"></i>
+            <span class="fw-semibold">10-min refresher</span>
+          </div>
+
+          <!-- Floating Badge Pill 2 (Bottom Left) -->
+          <div class="badge rounded-pill bg-white text-dark shadow-sm p-2 px-3 position-absolute float-badge-2 border">
+            <i class="bi bi-mic-fill text-primary me-1"></i>
+            <span class="fw-semibold">AI mock interview – HR round 91%</span>
+          </div>
+
+          <!-- Floating Badge Pill 3 (Bottom Right) -->
+          <div class="badge rounded-pill bg-white text-dark shadow-sm p-2 px-3 position-absolute float-badge-3 border">
+            <i class="bi bi-graph-up-arrow text-success me-1"></i>
+            <span class="fw-semibold">Readiness +31% in 8 weeks</span>
+          </div>
+
+          <!-- Glass Preview Card Container -->
+          <div class="card rounded-4 shadow-lg border-0 p-4" style="background: rgba(255, 255, 255, 0.78); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.7) !important;">
+            <!-- Window Bar Header -->
+            <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom">
+              <div class="d-flex align-items-center gap-2">
+                <span style="width:11px; height:11px; border-radius:50%; background:#EF4444; display:inline-block;"></span>
+                <span style="width:11px; height:11px; border-radius:50%; background:#F59E0B; display:inline-block;"></span>
+                <span style="width:11px; height:11px; border-radius:50%; background:#10B981; display:inline-block;"></span>
+                <span class="ms-2 small fw-semibold text-muted">Placement Readiness Dashboard</span>
+              </div>
+              <span class="badge bg-success-subtle text-success small fw-semibold px-2 py-1">
+                <i class="bi bi-activity me-1"></i> Live Assessment Active
+              </span>
+            </div>
+
+            <!-- Readiness Circular Meter & Stats Row -->
+            <div class="row align-items-center g-3 mb-3">
+              <div class="col-sm-5 text-center">
+                <div class="position-relative d-inline-block">
+                  <svg viewBox="0 0 120 120" width="130" height="130" class="circular-meter">
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="currentColor" stroke-width="10" class="opacity-10 text-primary"></circle>
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="var(--bs-primary)" stroke-width="10" stroke-linecap="round" stroke-dasharray="314.159" stroke-dashoffset="87.96" transform="rotate(-90 60 60)" style="filter: drop-shadow(0px 2px 8px rgba(109, 40, 217, 0.35));"></circle>
+                    <text x="60" y="56" text-anchor="middle" font-size="22" font-weight="800" fill="currentColor">72%</text>
+                    <text x="60" y="73" text-anchor="middle" font-size="9" font-weight="600" fill="currentColor" opacity="0.6">Readiness</text>
+                  </svg>
+                </div>
+                <div class="small fw-semibold text-primary mt-1">Tier-1 Qualified Target</div>
+              </div>
+
+              <div class="col-sm-7">
+                <!-- Topic Progress Bars -->
+                <div class="mb-2">
+                  <div class="d-flex justify-content-between small fw-medium mb-1">
+                    <span>Coding & DSA (Arrays, Trees, DP)</span>
+                    <span class="text-success fw-bold">88%</span>
+                  </div>
+                  <div class="progress rounded-pill" style="height: 6px;">
+                    <div class="progress-bar bg-success" style="width: 88%;"></div>
+                  </div>
+                </div>
+
+                <div class="mb-2">
+                  <div class="d-flex justify-content-between small fw-medium mb-1">
+                    <span>Aptitude & Quant Reasoning</span>
+                    <span class="text-primary fw-bold">74%</span>
+                  </div>
+                  <div class="progress rounded-pill" style="height: 6px;">
+                    <div class="progress-bar bg-primary" style="width: 74%;"></div>
+                  </div>
+                </div>
+
+                <div class="mb-1">
+                  <div class="d-flex justify-content-between small fw-medium mb-1">
+                    <span>Technical Core (DBMS & OS)</span>
+                    <span class="text-warning fw-bold">54%</span>
+                  </div>
+                  <div class="progress rounded-pill" style="height: 6px;">
+                    <div class="progress-bar bg-warning" style="width: 54%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- AI Coach Insight Strip -->
+            <div class="p-3 rounded-3 d-flex align-items-center gap-3" style="background: rgba(109, 40, 217, 0.08); border: 1px solid rgba(109, 40, 217, 0.18);">
+              <div class="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0 shadow-sm" style="width: 36px; height: 36px; background: linear-gradient(135deg, var(--bs-primary), #4f46e5);">
+                <i class="bi bi-robot fs-6"></i>
+              </div>
+              <div class="small">
+                <strong class="text-primary">AI Coach Tip:</strong>
+                <span class="text-body-secondary">Focus on DBMS Normalization — try the 10-min refresher to push your readiness score past Tier-1 cutoffs.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 3. TRUSTED COMPANIES BANNER ======================== -->
+  <section class="py-4 border-top border-bottom bg-body-tertiary" id="companies">
+    <div class="container text-center">
+      <div class="text-uppercase text-muted fw-bold small tracking-wider mb-3" style="letter-spacing: 1.2px; font-size: 0.78rem;">
+        INTERVIEW SKILLS TRUSTED FOR PLACEMENTS AT
+      </div>
+      <div class="d-flex flex-wrap align-items-center justify-content-center gap-4 gap-md-5">
+        <div class="company-logo-item d-flex align-items-center gap-2 fs-5 fw-bold text-dark">
+          <i class="bi bi-google text-danger fs-4"></i> Google
+        </div>
+        <div class="company-logo-item d-flex align-items-center gap-2 fs-5 fw-bold text-dark">
+          <i class="bi bi-bag-check-fill text-warning fs-4"></i> Amazon
+        </div>
+        <div class="company-logo-item d-flex align-items-center gap-2 fs-5 fw-bold text-dark">
+          <i class="bi bi-microsoft text-primary fs-4"></i> Microsoft
+        </div>
+        <div class="company-logo-item d-flex align-items-center gap-2 fs-5 fw-bold text-dark">
+          <i class="bi bi-building-fill text-info fs-4"></i> TCS
+        </div>
+        <div class="company-logo-item d-flex align-items-center gap-2 fs-5 fw-bold text-dark">
+          <i class="bi bi-cpu-fill text-primary fs-4"></i> Infosys
+        </div>
+        <div class="company-logo-item d-flex align-items-center gap-2 fs-5 fw-bold text-dark">
+          <i class="bi bi-cart3 text-warning fs-4"></i> Walmart
+        </div>
+        <div class="company-logo-item d-flex align-items-center gap-2 fs-5 fw-bold text-dark">
+          <i class="bi bi-briefcase-fill text-success fs-4"></i> Deloitte
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 4. HOW IT WORKS SECTION (7 Numbered Steps) ======================== -->
+  <section class="py-5 bg-body" id="how-it-works">
+    <div class="container py-lg-4">
+      <div class="text-center max-w-3xl mx-auto mb-5" data-aos="fade-up">
+        <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2 fw-semibold mb-2">
+          CONTINUOUS FEEDBACK LOOP
+        </span>
+        <h2 class="display-6 fw-bold tracking-tight mb-3">
+          From first mock to offer letter, coach has your six
+        </h2>
+        <p class="text-muted fs-5">
+          A continuous 7-step loop engineered to diagnose hidden gaps and elevate you to placement-ready.
+        </p>
+      </div>
+
+      <!-- 7 Step Cards Grid -->
+      <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4" data-aos="fade-up" data-aos-delay="100">
+        <!-- Step 1: Assess -->
+        <div class="col">
+          <div class="card h-100 rounded-4 border-0 shadow-sm p-4 hover-lift bg-light">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="badge rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="background: var(--bs-primary); width: 34px; height: 34px;">1</span>
+              <div class="text-primary fs-3"><i class="bi bi-clipboard2-check"></i></div>
+            </div>
+            <h5 class="fw-bold mb-2">Assess</h5>
+            <p class="text-muted small mb-0">Simulate real placement rounds with adaptive difficulty questions across aptitude, code, and viva.</p>
+          </div>
+        </div>
+
+        <!-- Step 2: Analyze -->
+        <div class="col">
+          <div class="card h-100 rounded-4 border-0 shadow-sm p-4 hover-lift bg-light">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="badge rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="background: var(--bs-primary); width: 34px; height: 34px;">2</span>
+              <div class="text-info fs-3"><i class="bi bi-cpu"></i></div>
+            </div>
+            <h5 class="fw-bold mb-2">Analyze</h5>
+            <p class="text-muted small mb-0">AI evaluates response logic, code runtime complexity, algorithmic optimality, and spoken clarity.</p>
+          </div>
+        </div>
+
+        <!-- Step 3: Identify Gaps -->
+        <div class="col">
+          <div class="card h-100 rounded-4 border-0 shadow-sm p-4 hover-lift bg-light">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="badge rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="background: var(--bs-primary); width: 34px; height: 34px;">3</span>
+              <div class="text-danger fs-3"><i class="bi bi-search"></i></div>
+            </div>
+            <h5 class="fw-bold mb-2">Identify Gaps</h5>
+            <p class="text-muted small mb-0">Spot hidden weak topics fast with granular topic-level diagnosis instead of broad percentage scores.</p>
+          </div>
+        </div>
+
+        <!-- Step 4: Recommend -->
+        <div class="col">
+          <div class="card h-100 rounded-4 border-0 shadow-sm p-4 hover-lift bg-light">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="badge rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="background: var(--bs-primary); width: 34px; height: 34px;">4</span>
+              <div class="text-warning fs-3"><i class="bi bi-signpost-split"></i></div>
+            </div>
+            <h5 class="fw-bold mb-2">Recommend</h5>
+            <p class="text-muted small mb-0">Receive a tailored study roadmap with curated micro-drills, concise summaries, and targeted videos.</p>
+          </div>
+        </div>
+
+        <!-- Step 5: Practice -->
+        <div class="col">
+          <div class="card h-100 rounded-4 border-0 shadow-sm p-4 hover-lift bg-light">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="badge rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="background: var(--bs-primary); width: 34px; height: 34px;">5</span>
+              <div class="text-success fs-3"><i class="bi bi-code-slash"></i></div>
+            </div>
+            <h5 class="fw-bold mb-2">Practice</h5>
+            <p class="text-muted small mb-0">Drill daily targeted problem sets with an in-browser code editor, automated test cases, and AI hints.</p>
+          </div>
+        </div>
+
+        <!-- Step 6: Reassess -->
+        <div class="col">
+          <div class="card h-100 rounded-4 border-0 shadow-sm p-4 hover-lift bg-light">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="badge rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="background: var(--bs-primary); width: 34px; height: 34px;">6</span>
+              <div class="text-primary fs-3"><i class="bi bi-arrow-repeat"></i></div>
+            </div>
+            <h5 class="fw-bold mb-2">Reassess</h5>
+            <p class="text-muted small mb-0">Periodic milestone re-tests ensure your conceptual improvement is genuine, stable, and test-ready.</p>
+          </div>
+        </div>
+
+        <!-- Step 7: Track -->
+        <div class="col col-md-6 col-lg-6 mx-auto">
+          <div class="card h-100 rounded-4 border-0 shadow-sm p-4 hover-lift text-white" style="background: linear-gradient(135deg, var(--bs-primary), #4f46e5);">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="badge rounded-circle d-flex align-items-center justify-content-center bg-white text-primary fw-bold" style="width: 34px; height: 34px;">7</span>
+              <div class="text-white fs-3"><i class="bi bi-trophy"></i></div>
+            </div>
+            <h5 class="fw-bold mb-2">Track</h5>
+            <p class="text-white-50 small mb-0">Follow your readiness curve towards Tier-1 company cutoffs and watch your placement probability surge.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 5. FEATURE GRID (8 Bento-style Cards) ======================== -->
+  <section class="py-5 bg-light" id="features">
+    <div class="container py-lg-4">
+      <div class="text-center max-w-3xl mx-auto mb-5" data-aos="fade-up">
+        <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2 fw-semibold mb-2">
+          COMPLETE PLATFORM ECOSYSTEM
+        </span>
+        <h2 class="display-6 fw-bold tracking-tight mb-3">
+          Everything a placement season demands
+        </h2>
+        <p class="text-muted fs-5">
+          Bento-box architecture designed around each stage of corporate hiring drives.
+        </p>
+      </div>
+
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4" data-aos="fade-up" data-aos-delay="100">
+        <!-- 1. AI Coach Chat -->
+        <div class="col">
+          <div class="card h-100 rounded-4 border-0 shadow-sm p-4 hover-lift bg-body">
+            <div class="rounded-3 d-inline-flex align-items-center justify-content-center mb-3 text-primary bg-primary-subtle" style="width:48px;height:48px;">
+              <i class="bi bi-chat-dots-fill fs-4"></i>
+            </div>
+            <h5 class="fw-bold mb-2">AI Coach Chat</h5>
+            <p class="text-muted small mb-0">24/7 conversational mentor that analyzes your mistakes and explains tough algorithmic nuances.</p>
+          </div>
+        </div>
+
+        <!-- 2. Topic-Level Feedback -->
+        <div class="col">
+          <div class="card h-100 rounded-4 border-0 shadow-sm p-4 hover-lift bg-body">
+            <div class="rounded-3 d-inline-flex align-items-center justify-content-center mb-3 text-danger" style="width:48px;height:48px;background:rgba(239,68,68,0.12);">
+              <i class="bi bi-bullseye fs-4"></i>
+            </div>
+            <h5 class="fw-bold mb-2">Topic-Level Feedback</h5>
+            <p class="text-muted small mb-0">Granular diagnosis on why an answer was sub-optimal, which edge-case failed, and how to fix it.</p>
+          </div>
+        </div>
+
+        <!-- 3. Live Roadmap -->
+        <div class="col">
+          <div class="card h-100 rounded-4 border-0 shadow-sm p-4 hover-lift bg-body">
+            <div class="rounded-3 d-inline-flex align-items-center justify-content-center mb-3 text-warning" style="width:48px;height:48px;background:rgba(245,158,11,0.12);">
+              <i class="bi bi-map-fill fs-4"></i>
+            </div>
+            <h5 class="fw-bold mb-2">Live Personalized Roadmap</h5>
+            <p class="text-muted small mb-0">A dynamically re-calculating study timeline that updates milestones based on ongoing quiz scores.</p>
+          </div>
+        </div>
+
+        <!-- 4. Placement Simulations -->
+        <div class="col">
+          <div class="card h-100 rounded-4 border-0 shadow-sm p-4 hover-lift bg-body">
+            <div class="rounded-3 d-inline-flex align-items-center justify-content-center mb-3 text-info" style="width:48px;height:48px;background:rgba(14,165,233,0.12);">
+              <i class="bi bi-buildings-fill fs-4"></i>
+            </div>
+            <h5 class="fw-bold mb-2">Placement Simulations</h5>
+            <p class="text-muted small mb-0">Complete company drives for Google, Amazon, and TCS with realistic multi-round elimination flows.</p>
+          </div>
+        </div>
+
+        <!-- 5. DSA Judge & Hints -->
+        <div class="col">
+          <div class="card h-100 rounded-4 border-0 shadow-sm p-4 hover-lift bg-body">
+            <div class="rounded-3 d-inline-flex align-items-center justify-content-center mb-3 text-success" style="width:48px;height:48px;background:rgba(16,185,129,0.12);">
+              <i class="bi bi-terminal-fill fs-4"></i>
+            </div>
+            <h5 class="fw-bold mb-2">DSA Judge & Hints</h5>
+            <p class="text-muted small mb-0">Integrated online compiler supporting C++, Java, and Python with progressive clue unlocks.</p>
+          </div>
+        </div>
+
+        <!-- 6. Communication Coach -->
+        <div class="col">
+          <div class="card h-100 rounded-4 border-0 shadow-sm p-4 hover-lift bg-body">
+            <div class="rounded-3 d-inline-flex align-items-center justify-content-center mb-3 text-primary bg-primary-subtle" style="width:48px;height:48px;">
+              <i class="bi bi-mic-fill fs-4"></i>
+            </div>
+            <h5 class="fw-bold mb-2">Communication Coach</h5>
+            <p class="text-muted small mb-0">Audio mock interviews evaluating structural articulation, STAR response phrasing, and voice poise.</p>
+          </div>
+        </div>
+
+        <!-- 7. Readiness Analytics -->
+        <div class="col">
+          <div class="card h-100 rounded-4 border-0 shadow-sm p-4 hover-lift bg-body">
+            <div class="rounded-3 d-inline-flex align-items-center justify-content-center mb-3 text-info" style="width:48px;height:48px;background:rgba(59,130,246,0.12);">
+              <i class="bi bi-bar-chart-line-fill fs-4"></i>
+            </div>
+            <h5 class="fw-bold mb-2">Readiness Analytics</h5>
+            <p class="text-muted small mb-0">Benchmark your percentile curve against peer batches and dream enterprise qualification thresholds.</p>
+          </div>
+        </div>
+
+        <!-- 8. Achievements & Streaks -->
+        <div class="col">
+          <div class="card h-100 rounded-4 border-0 shadow-sm p-4 hover-lift bg-body">
+            <div class="rounded-3 d-inline-flex align-items-center justify-content-center mb-3 text-danger" style="width:48px;height:48px;background:rgba(239,68,68,0.12);">
+              <i class="bi bi-fire fs-4"></i>
+            </div>
+            <h5 class="fw-bold mb-2">Achievements & Streaks</h5>
+            <p class="text-muted small mb-0">Gamified consistency mechanics, streak freezes, and unlocked badges that keep motivation peaked.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 6. METRICS & PROOF COUNTER ======================== -->
+  <section class="py-5 bg-body" id="metrics">
+    <div class="container py-lg-3">
+      <div class="row g-4 text-center">
+        <div class="col-6 col-lg-3">
+          <div class="p-3">
+            <div class="display-5 fw-bold text-primary mb-1" data-countup="12000" data-format="k" data-suffix="+">12k+</div>
+            <div class="text-muted fw-semibold">Students Coached</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="p-3">
+            <div class="display-5 fw-bold text-primary mb-1" data-countup="68" data-suffix="">68</div>
+            <div class="text-muted fw-semibold">Colleges Onboard</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="p-3">
+            <div class="display-5 fw-bold text-primary mb-1" data-countup="320" data-suffix="+">320+</div>
+            <div class="text-muted fw-semibold">Company Frameworks</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="p-3">
+            <div class="display-5 fw-bold text-primary mb-1" data-countup="89" data-suffix="%">89%</div>
+            <div class="text-muted fw-semibold">Avg. Readiness Gain</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 7. TESTIMONIALS & FAQ ======================== -->
+  <section class="py-5 bg-light" id="testimonials">
+    <div class="container py-lg-4">
+      <div class="row g-5">
+        <!-- Testimonials Carousel (Left Column) -->
+        <div class="col-lg-6" data-aos="fade-right">
+          <div class="mb-4">
+            <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2 fw-semibold mb-2">
+              SUCCESS STORIES
+            </span>
+            <h3 class="fw-bold tracking-tight mb-2">Student Proof from Campus Batches</h3>
+            <p class="text-muted">Real students who turned placement anxiety into top-tier tech offers.</p>
+          </div>
+
+          <!-- Carousel -->
+          <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
+            <div class="carousel-inner">
+              <!-- Slide 1 -->
+              <div class="carousel-item active">
+                <div class="card rounded-4 border-0 shadow-sm p-4 p-md-5 bg-body">
+                  <div class="d-flex align-items-center gap-3 mb-3">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80" alt="Simran N." class="img-fluid rounded-circle border border-2 border-primary" style="width: 56px; height: 56px; object-fit: cover;">
+                    <div>
+                      <h6 class="fw-bold mb-0">Simran N.</h6>
+                      <small class="text-muted">Placed at <span class="badge bg-warning text-dark"><i class="bi bi-bag-check-fill"></i> Amazon SDE</span></small>
+                    </div>
+                  </div>
+                  <div class="text-warning mb-2">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                  </div>
+                  <p class="lead fs-6 fst-italic text-body mb-0">
+                    "Placement Coach broke down my Dynamic Programming roadblock. I gained 40% readiness in 3 weeks and cracked the Amazon SDE-1 loop with total composure."
+                  </p>
+                </div>
+              </div>
+
+              <!-- Slide 2 -->
+              <div class="carousel-item">
+                <div class="card rounded-4 border-0 shadow-sm p-4 p-md-5 bg-body">
+                  <div class="d-flex align-items-center gap-3 mb-3">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80" alt="Rohan K." class="img-fluid rounded-circle border border-2 border-primary" style="width: 56px; height: 56px; object-fit: cover;">
+                    <div>
+                      <h6 class="fw-bold mb-0">Rohan K.</h6>
+                      <small class="text-muted">Placed at <span class="badge bg-primary"><i class="bi bi-microsoft"></i> Microsoft Systems</span></small>
+                    </div>
+                  </div>
+                  <div class="text-warning mb-2">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                  </div>
+                  <p class="lead fs-6 fst-italic text-body mb-0">
+                    "The simulated behavioral round gave me the exact phrasing to answer System Design questions clearly. Best investment for campus hiring drives."
+                  </p>
+                </div>
+              </div>
+
+              <!-- Slide 3 -->
+              <div class="carousel-item">
+                <div class="card rounded-4 border-0 shadow-sm p-4 p-md-5 bg-body">
+                  <div class="d-flex align-items-center gap-3 mb-3">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Ananya S." class="img-fluid rounded-circle border border-2 border-primary" style="width: 56px; height: 56px; object-fit: cover;">
+                    <div>
+                      <h6 class="fw-bold mb-0">Ananya S.</h6>
+                      <small class="text-muted">Placed at <span class="badge bg-danger"><i class="bi bi-google"></i> Google Cloud</span></small>
+                    </div>
+                  </div>
+                  <div class="text-warning mb-2">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                  </div>
+                  <p class="lead fs-6 fst-italic text-body mb-0">
+                    "Having an AI tell me which topic to revise each morning took away all placement panic. My readiness increased +35% in 6 weeks."
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="d-flex gap-2 mt-3 justify-content-end">
+              <button class="btn btn-outline-secondary btn-sm rounded-circle" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev" style="width:36px;height:36px;" aria-label="Previous Testimonial">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <button class="btn btn-outline-secondary btn-sm rounded-circle" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next" style="width:36px;height:36px;" aria-label="Next Testimonial">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accordion FAQ (Right Column) -->
+        <div class="col-lg-6" id="faq" data-aos="fade-left">
+          <div class="mb-4">
+            <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2 fw-semibold mb-2">
+              FREQUENTLY ASKED QUESTIONS
+            </span>
+            <h3 class="fw-bold tracking-tight mb-2">Everything You Need to Know</h3>
+            <p class="text-muted">Answers to questions about personalized AI coaching and round coverage.</p>
+          </div>
+
+          <div class="accordion accordion-flush" id="landingFaq">
+            <!-- FAQ 1 -->
+            <div class="accordion-item rounded-4 mb-3 border-0 shadow-sm overflow-hidden bg-body">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  How is this different from normal mock test platforms?
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#landingFaq">
+                <div class="accordion-body text-muted pt-0 small" style="line-height: 1.6;">
+                  Traditional test platforms only provide raw percentage scores or correct/wrong keys. Placement Coach diagnoses the <em>exact root cause</em> behind every suboptimal answer, builds a dynamic roadmap to remediate that topic, and re-tests until you achieve verified mastery.
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ 2 -->
+            <div class="accordion-item rounded-4 mb-3 border-0 shadow-sm overflow-hidden bg-body">
+              <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  Which rounds are simulated?
+                </button>
+              </h2>
+              <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#landingFaq">
+                <div class="accordion-body text-muted pt-0 small" style="line-height: 1.6;">
+                  We simulate the entire corporate placement funnel: <strong>Online Assessment</strong> (Quantitative Aptitude, Logical Reasoning, Verbal), <strong>Technical Coding</strong> (DSA, SQL queries, System Architecture), and <strong>Personal Interviews</strong> (Technical Viva and HR Behavioral rounds with speech analysis).
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ 3 -->
+            <div class="accordion-item rounded-4 mb-3 border-0 shadow-sm overflow-hidden bg-body">
+              <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  How does the AI coach personalize for me?
+                </button>
+              </h2>
+              <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#landingFaq">
+                <div class="accordion-body text-muted pt-0 small" style="line-height: 1.6;">
+                  The AI tracks your historical submission patterns, time spent per challenge, and specific concept failure modes. It then customizes question difficulty, suggests daily 10-minute micro-drills, and recalculates your roadmap against the target cutoffs of your dream companies.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 8. FOOTER CTA & FOOTER ======================== -->
+  <footer class="pt-5 pb-4 bg-body border-top">
+    <div class="container">
+      <!-- Full-width Gradient Callout Card -->
+      <div class="rounded-4 p-5 text-center text-white shadow-lg mb-5" style="background: linear-gradient(135deg, var(--bs-primary), #4f46e5);" data-aos="zoom-in">
+        <h2 class="display-6 fw-bold mb-3">Your placement season. Coached by AI.</h2>
+        <p class="lead opacity-90 mb-4 max-w-2xl mx-auto" style="font-size: 1.15rem;">
+          Join thousands of students turning campus stress into dream offers. Take your baseline assessment today.
+        </p>
+        <a href="login.html" class="btn btn-light btn-lg rounded-pill px-5 fw-bold shadow-sm" style="color: var(--bs-primary);">
+          Start for free <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+      </div>
+
+      <!-- Links Grid -->
+      <div class="row g-4 mb-5">
+        <div class="col-lg-4 col-md-6">
+          <a class="d-flex align-items-center gap-2 text-decoration-none mb-3" href="index.html">
+            <span class="badge rounded-circle p-2 d-inline-flex align-items-center justify-content-center text-white" style="background: linear-gradient(135deg, var(--bs-primary), #4f46e5); width: 34px; height: 34px;">
+              <i class="bi bi-rocket-takeoff"></i>
+            </span>
+            <span class="fw-bold fs-5 text-body">Placement Coach</span>
+          </a>
+          <p class="text-muted small mb-3">
+            An intelligent placement companion that guides students through diagnostic tests, topic-level coaching, and company-specific mock drives.
+          </p>
+          <div class="d-flex gap-2">
+            <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width:34px;height:34px;"><i class="bi bi-twitter-x"></i></a>
+            <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width:34px;height:34px;"><i class="bi bi-linkedin"></i></a>
+            <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width:34px;height:34px;"><i class="bi bi-github"></i></a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-3 col-6">
+          <h6 class="fw-bold mb-3">Product</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small">
+            <li><a href="assessment-hub.html" class="text-decoration-none text-muted">Assessments</a></li>
+            <li><a href="chat.html" class="text-decoration-none text-muted">AI Coach Chat</a></li>
+            <li><a href="mock-simulation.html" class="text-decoration-none text-muted">Company Mocks</a></li>
+            <li><a href="roadmap.html" class="text-decoration-none text-muted">Smart Roadmap</a></li>
+            <li><a href="performance.html" class="text-decoration-none text-muted">Diagnostic Reports</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-3 col-6">
+          <h6 class="fw-bold mb-3">Practice</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small">
+            <li><a href="live-assessment.html" class="text-decoration-none text-muted">DSA Coding Arena</a></li>
+            <li><a href="assessment-hub.html" class="text-decoration-none text-muted">Quant & Aptitude</a></li>
+            <li><a href="mock-simulation.html" class="text-decoration-none text-muted">HR Viva Questions</a></li>
+            <li><a href="roadmap.html" class="text-decoration-none text-muted">Core CS Bootcamps</a></li>
+            <li><a href="progress.html" class="text-decoration-none text-muted">Streak Tracker</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <h6 class="fw-bold mb-3">Stay sharp</h6>
+          <p class="text-muted small mb-3">
+            Receive weekly placement interview patterns, company question banks, and AI prep strategies directly in your inbox.
+          </p>
+          <form onsubmit="event.preventDefault(); alert('Subscribed successfully! You are on the Placement Coach insider list.');" class="input-group">
+            <input type="email" class="form-control form-control-custom" placeholder="Enter your college email" required aria-label="Your college email">
+            <button class="btn btn-primary px-3 fw-semibold" type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Copyright Bar -->
+      <div class="border-top pt-4 text-center text-muted small">
+        <p class="mb-0">&copy; 2026 Placement Coach. All rights reserved. Designed with precision for campus candidates.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5.3.3 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- AOS.js JS -->
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <!-- Markdown & Gemini AI Integration -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="config.js"></script>
+  <script src="gemini.js"></script>
+  <!-- App JS -->
+  <script src="app.js"></script>
+</body>
+</html>

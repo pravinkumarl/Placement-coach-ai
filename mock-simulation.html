@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Simulate a full placement drive for specific companies — pick a company and role, then go through round-by-round mock interviews.">
+  <title>Mock Simulation — Placement Coach</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand"><i class="bi bi-mortarboard-fill"></i> Placement Coach</div>
+    <a href="profile.html" class="sidebar-user text-decoration-none d-flex align-items-center gap-2 p-2 rounded-3" title="Click to view & edit profile">
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Rahul Sharma" class="img-fluid rounded-circle user-avatar-img border border-2 border-primary" style="width: 42px; height: 42px; object-fit: cover;">
+      <div class="flex-grow-1 overflow-hidden">
+        <div class="user-name fw-bold text-truncate" id="sidebarUserName">Rahul Sharma</div>
+        <div class="user-role small text-muted text-truncate" id="sidebarUserRole">CSE, 4th Year • Edit <i class="bi bi-pencil-fill" style="font-size:0.75rem;"></i></div>
+      </div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Main</div>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="assessment-hub.html"><i class="bi bi-clipboard2-check"></i> Assessments</a></li>
+        <li class="nav-item"><a class="nav-link" href="performance.html"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></li>
+        <li class="nav-item"><a class="nav-link" href="roadmap.html"><i class="bi bi-map-fill"></i> Roadmap</a></li>
+        <li class="nav-item"><a class="nav-link" href="progress.html"><i class="bi bi-graph-up-arrow"></i> Progress</a></li>
+        <li class="nav-item"><a class="nav-link" href="profile.html"><i class="bi bi-person-badge-fill"></i> Profile & Settings</a></li>
+      </ul>
+      <div class="nav-label">AI Tools</div>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link" href="chat.html"><i class="bi bi-chat-dots-fill"></i> AI Coach</a></li>
+        <li class="nav-item"><a class="nav-link active" href="mock-simulation.html"><i class="bi bi-building"></i> Mock Simulation</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="dark-mode-toggle" title="Toggle dark mode"><i class="bi bi-moon-stars"></i><span>Dark Mode</span><div class="toggle-track ms-auto"><div class="toggle-thumb"></div></div></div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="top-header">
+      <div class="d-flex align-items-center gap-3">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar"><i class="bi bi-list"></i></button>
+        <h1 class="page-title">Company Mock Simulation</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn-icon" title="Notifications"><i class="bi bi-bell"></i></button>
+      </div>
+    </header>
+
+    <div class="p-3 p-md-4">
+      <!-- Intro -->
+      <div class="glass-card mb-4" data-aos="fade-up">
+        <h5 class="fw-bold mb-1">Simulate a Real Placement Drive</h5>
+        <p class="mb-0" style="color:var(--clr-text-secondary);font-size:0.9rem;">
+          Pick a target company and role, then go through a realistic round-by-round mock placement drive with AI-powered assessments and interviews.
+        </p>
+      </div>
+
+      <!-- Featured Company Simulation Carousel -->
+      <div class="card border-0 shadow-sm mb-4" style="background: var(--glass-bg); border-radius: var(--radius-lg); overflow:hidden;" data-aos="fade-up">
+        <div class="card-header bg-transparent border-0 d-flex align-items-center justify-content-between pt-3 px-4">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge rounded-pill bg-primary-subtle text-primary fw-semibold px-3 py-1">
+              <i class="bi bi-award-fill text-warning me-1"></i> Featured Company Drive Tracks
+            </span>
+            <span class="text-muted small d-none d-md-inline">Swipe or slide to pick high-priority campus hiring tracks</span>
+          </div>
+          <div class="d-flex gap-1">
+            <button class="btn btn-sm btn-outline-secondary rounded-circle" type="button" data-bs-target="#companyDriveCarousel" data-bs-slide="prev" style="width:34px;height:34px;padding:0;" aria-label="Previous Track">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-secondary rounded-circle" type="button" data-bs-target="#companyDriveCarousel" data-bs-slide="next" style="width:34px;height:34px;padding:0;" aria-label="Next Track">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body px-4 py-3">
+          <div id="companyDriveCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
+            <div class="carousel-inner">
+              <!-- Slide 1: Google -->
+              <div class="carousel-item active">
+                <div class="row align-items-center g-3">
+                  <div class="col-md-2 text-center">
+                    <div class="p-3 rounded-4 mx-auto d-flex align-items-center justify-content-center" style="width:84px;height:84px;background:#fff;box-shadow:var(--shadow-sm);">
+                      <i class="bi bi-google text-danger" style="font-size:2.8rem;"></i>
+                    </div>
+                  </div>
+                  <div class="col-md-7">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                      <h5 class="fw-bold mb-0">Google — Software Development Engineer (SDE-1)</h5>
+                      <span class="badge bg-danger">Tier-1 Track</span>
+                    </div>
+                    <p class="text-muted small mb-2">Simulates Google's campus hiring bar: 1 Coding OA (Graphs/DP), 2 Technical Rounds, 1 Googliness & Behavioral Round.</p>
+                    <div class="d-flex flex-wrap gap-3 small text-muted">
+                      <span><i class="bi bi-diagram-3-fill text-primary"></i> 4 Rounds</span>
+                      <span><i class="bi bi-clock-fill text-warning"></i> 180 Min Total</span>
+                      <span><i class="bi bi-people-fill text-success"></i> 2,410 Students Attempted</span>
+                    </div>
+                  </div>
+                  <div class="col-md-3 text-md-end text-center">
+                    <button class="btn btn-primary-custom" onclick="selectCompanyFromCarousel('Google')">
+                      <i class="bi bi-play-circle-fill me-1"></i> Simulate Google
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Slide 2: Amazon -->
+              <div class="carousel-item">
+                <div class="row align-items-center g-3">
+                  <div class="col-md-2 text-center">
+                    <div class="p-3 rounded-4 mx-auto d-flex align-items-center justify-content-center" style="width:84px;height:84px;background:#fff;box-shadow:var(--shadow-sm);">
+                      <i class="bi bi-bag-check-fill text-warning" style="font-size:2.8rem;"></i>
+                    </div>
+                  </div>
+                  <div class="col-md-7">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                      <h5 class="fw-bold mb-0">Amazon — SDE Campus Assessment & Bar Raiser</h5>
+                      <span class="badge bg-warning text-dark">Leadership Principles</span>
+                    </div>
+                    <p class="text-muted small mb-2">Features Amazon's 14 Leadership Principles evaluation, timed debugging round, and algorithmic problem solving.</p>
+                    <div class="d-flex flex-wrap gap-3 small text-muted">
+                      <span><i class="bi bi-diagram-3-fill text-primary"></i> 4 Rounds</span>
+                      <span><i class="bi bi-clock-fill text-warning"></i> 150 Min Total</span>
+                      <span><i class="bi bi-people-fill text-success"></i> 3,820 Students Attempted</span>
+                    </div>
+                  </div>
+                  <div class="col-md-3 text-md-end text-center">
+                    <button class="btn btn-primary-custom" onclick="selectCompanyFromCarousel('Amazon')">
+                      <i class="bi bi-play-circle-fill me-1"></i> Simulate Amazon
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Slide 3: Microsoft -->
+              <div class="carousel-item">
+                <div class="row align-items-center g-3">
+                  <div class="col-md-2 text-center">
+                    <div class="p-3 rounded-4 mx-auto d-flex align-items-center justify-content-center" style="width:84px;height:84px;background:#fff;box-shadow:var(--shadow-sm);">
+                      <i class="bi bi-microsoft text-primary" style="font-size:2.8rem;"></i>
+                    </div>
+                  </div>
+                  <div class="col-md-7">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                      <h5 class="fw-bold mb-0">Microsoft — Software Engineer (IDC/Azure)</h5>
+                      <span class="badge bg-primary">Systems & DSA</span>
+                    </div>
+                    <p class="text-muted small mb-2">Simulate Microsoft Codess & campus drive rounds: Codility tests, low-level design, and system architecture questions.</p>
+                    <div class="d-flex flex-wrap gap-3 small text-muted">
+                      <span><i class="bi bi-diagram-3-fill text-primary"></i> 3 Rounds</span>
+                      <span><i class="bi bi-clock-fill text-warning"></i> 135 Min Total</span>
+                      <span><i class="bi bi-people-fill text-success"></i> 1,940 Students Attempted</span>
+                    </div>
+                  </div>
+                  <div class="col-md-3 text-md-end text-center">
+                    <button class="btn btn-primary-custom" onclick="selectCompanyFromCarousel('Microsoft')">
+                      <i class="bi bi-play-circle-fill me-1"></i> Simulate Microsoft
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Slide 4: TCS Digital -->
+              <div class="carousel-item">
+                <div class="row align-items-center g-3">
+                  <div class="col-md-2 text-center">
+                    <div class="p-3 rounded-4 mx-auto d-flex align-items-center justify-content-center" style="width:84px;height:84px;background:#fff;box-shadow:var(--shadow-sm);">
+                      <i class="bi bi-building-fill text-info" style="font-size:2.8rem;"></i>
+                    </div>
+                  </div>
+                  <div class="col-md-7">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                      <h5 class="fw-bold mb-0">TCS Digital / Prime — National Qualifier Simulation</h5>
+                      <span class="badge bg-info text-dark">Mass Recruiter</span>
+                    </div>
+                    <p class="text-muted small mb-2">Advanced quantitative ability, logical reasoning, and advanced coding problem simulations matching NQT patterns.</p>
+                    <div class="d-flex flex-wrap gap-3 small text-muted">
+                      <span><i class="bi bi-diagram-3-fill text-primary"></i> 3 Rounds</span>
+                      <span><i class="bi bi-clock-fill text-warning"></i> 120 Min Total</span>
+                      <span><i class="bi bi-people-fill text-success"></i> 5,600 Students Attempted</span>
+                    </div>
+                  </div>
+                  <div class="col-md-3 text-md-end text-center">
+                    <button class="btn btn-primary-custom" onclick="selectCompanyFromCarousel('TCS')">
+                      <i class="bi bi-play-circle-fill me-1"></i> Simulate TCS
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 1: Choose Company (Standard Card Structure: card > card-img-top > card-body > card-title + card-text > card-footer) -->
+      <h6 class="fw-bold mb-3" data-aos="fade-up"><i class="bi bi-1-circle-fill me-2" style="color:var(--clr-primary);"></i>Select Target Company</h6>
+      <div class="row g-3 mb-4" data-aos="fade-up" data-aos-delay="100">
+        <!-- Google Card -->
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="card h-100 border-0 shadow-sm company-select-card" onclick="selectCompanyCard('Google', this)">
+            <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: rgba(66,133,244,0.08); height: 75px;">
+              <i class="bi bi-google text-danger fs-1 img-fluid"></i>
+            </div>
+            <div class="card-body p-3 text-center">
+              <h5 class="card-title fw-bold mb-1">Google</h5>
+              <p class="card-text text-muted small mb-0">SDE • 4 Rounds</p>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 text-center">
+              <span class="btn btn-outline-custom btn-sm w-100">Select Track</span>
+            </div>
+          </div>
+        </div>
+        <!-- Amazon Card -->
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="card h-100 border-0 shadow-sm company-select-card" onclick="selectCompanyCard('Amazon', this)">
+            <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: rgba(255,153,0,0.1); height: 75px;">
+              <i class="bi bi-bag-check-fill text-warning fs-1 img-fluid"></i>
+            </div>
+            <div class="card-body p-3 text-center">
+              <h5 class="card-title fw-bold mb-1">Amazon</h5>
+              <p class="card-text text-muted small mb-0">SDE • 4 Rounds</p>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 text-center">
+              <span class="btn btn-outline-custom btn-sm w-100">Select Track</span>
+            </div>
+          </div>
+        </div>
+        <!-- Microsoft Card -->
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="card h-100 border-0 shadow-sm company-select-card" onclick="selectCompanyCard('Microsoft', this)">
+            <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: rgba(0,164,239,0.08); height: 75px;">
+              <i class="bi bi-microsoft text-primary fs-1 img-fluid"></i>
+            </div>
+            <div class="card-body p-3 text-center">
+              <h5 class="card-title fw-bold mb-1">Microsoft</h5>
+              <p class="card-text text-muted small mb-0">Software Engineer • 3 Rounds</p>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 text-center">
+              <span class="btn btn-outline-custom btn-sm w-100">Select Track</span>
+            </div>
+          </div>
+        </div>
+        <!-- Meta Card -->
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="card h-100 border-0 shadow-sm company-select-card" onclick="selectCompanyCard('Meta', this)">
+            <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: rgba(24,119,242,0.08); height: 75px;">
+              <i class="bi bi-meta text-primary fs-1 img-fluid"></i>
+            </div>
+            <div class="card-body p-3 text-center">
+              <h5 class="card-title fw-bold mb-1">Meta</h5>
+              <p class="card-text text-muted small mb-0">Full Stack • 4 Rounds</p>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 text-center">
+              <span class="btn btn-outline-custom btn-sm w-100">Select Track</span>
+            </div>
+          </div>
+        </div>
+        <!-- TCS Card -->
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="card h-100 border-0 shadow-sm company-select-card" onclick="selectCompanyCard('TCS', this)">
+            <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: rgba(43,57,144,0.08); height: 75px;">
+              <i class="bi bi-building-fill text-info fs-1 img-fluid"></i>
+            </div>
+            <div class="card-body p-3 text-center">
+              <h5 class="card-title fw-bold mb-1">TCS Digital</h5>
+              <p class="card-text text-muted small mb-0">Ninja & Digital • 3 Rounds</p>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 text-center">
+              <span class="btn btn-outline-custom btn-sm w-100">Select Track</span>
+            </div>
+          </div>
+        </div>
+        <!-- Infosys Card -->
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="card h-100 border-0 shadow-sm company-select-card" onclick="selectCompanyCard('Infosys', this)">
+            <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: rgba(0,124,195,0.08); height: 75px;">
+              <i class="bi bi-briefcase-fill text-primary fs-1 img-fluid"></i>
+            </div>
+            <div class="card-body p-3 text-center">
+              <h5 class="card-title fw-bold mb-1">Infosys</h5>
+              <p class="card-text text-muted small mb-0">SP & DSE • 3 Rounds</p>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 text-center">
+              <span class="btn btn-outline-custom btn-sm w-100">Select Track</span>
+            </div>
+          </div>
+        </div>
+        <!-- Flipkart Card -->
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="card h-100 border-0 shadow-sm company-select-card" onclick="selectCompanyCard('Flipkart', this)">
+            <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: rgba(255,229,0,0.12); height: 75px;">
+              <i class="bi bi-cart-check-fill text-warning fs-1 img-fluid"></i>
+            </div>
+            <div class="card-body p-3 text-center">
+              <h5 class="card-title fw-bold mb-1">Flipkart</h5>
+              <p class="card-text text-muted small mb-0">GRxD • 4 Rounds</p>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 text-center">
+              <span class="btn btn-outline-custom btn-sm w-100">Select Track</span>
+            </div>
+          </div>
+        </div>
+        <!-- Wipro Card -->
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="card h-100 border-0 shadow-sm company-select-card" onclick="selectCompanyCard('Wipro', this)">
+            <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: rgba(123,66,188,0.08); height: 75px;">
+              <i class="bi bi-globe-americas text-purple fs-1 img-fluid" style="color: #7B42BC;"></i>
+            </div>
+            <div class="card-body p-3 text-center">
+              <h5 class="card-title fw-bold mb-1">Wipro</h5>
+              <p class="card-text text-muted small mb-0">Turbo • 3 Rounds</p>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 text-center">
+              <span class="btn btn-outline-custom btn-sm w-100">Select Track</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Choose Role (shown after company selected) -->
+      <div id="simulationSection" style="display: none;">
+        <div class="d-flex align-items-center justify-content-between mb-3" data-aos="fade-up">
+          <h6 class="fw-bold mb-0"><i class="bi bi-2-circle-fill me-2" style="color:var(--clr-primary);"></i>Selected Company: <span id="selectedCompanyBadge" class="badge bg-primary">Google</span></h6>
+          <button class="btn btn-sm btn-outline-secondary" onclick="window.scrollTo({top: 0, behavior:'smooth'})">Change Company</button>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mb-4">
+          <button class="btn btn-primary-custom active" onclick="selectRole(this)">Software Development Engineer</button>
+          <button class="btn btn-outline-custom" onclick="selectRole(this)">Data Analyst</button>
+          <button class="btn btn-outline-custom" onclick="selectRole(this)">Product Manager</button>
+          <button class="btn btn-outline-custom" onclick="selectRole(this)">DevOps Engineer</button>
+        </div>
+
+        <!-- Step 3: Simulation Rounds (Standard Cards) -->
+        <h6 class="fw-bold mb-3"><i class="bi bi-3-circle-fill me-2" style="color:var(--clr-primary);"></i>Placement Drive Rounds</h6>
+
+        <div class="glass-card mb-4">
+          <!-- Round Stepper -->
+          <div class="sim-stepper">
+            <div class="sim-step completed">
+              <div class="sim-step-icon"><i class="bi bi-check-lg"></i></div>
+              <div class="sim-step-label">Online Assessment</div>
+              <div class="sim-step-status" style="color:var(--clr-success);">Completed — 78%</div>
+            </div>
+            <div class="sim-step active">
+              <div class="sim-step-icon"><i class="bi bi-play-fill"></i></div>
+              <div class="sim-step-label">Technical Interview</div>
+              <div class="sim-step-status" style="color:var(--clr-primary);">In Progress</div>
+            </div>
+            <div class="sim-step">
+              <div class="sim-step-icon"><i class="bi bi-3-circle"></i></div>
+              <div class="sim-step-label">System Design</div>
+              <div class="sim-step-status">Upcoming</div>
+            </div>
+            <div class="sim-step">
+              <div class="sim-step-icon"><i class="bi bi-4-circle"></i></div>
+              <div class="sim-step-label">HR Interview</div>
+              <div class="sim-step-status">Upcoming</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Round Details Cards (Proper card > card-body > card-title + card-text > card-footer) -->
+        <div class="row g-4 mb-4">
+          <!-- Round 1: Completed -->
+          <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid var(--clr-success) !important; background: var(--glass-bg); border-radius: var(--radius-md);">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <h5 class="card-title fw-bold mb-0">Round 1: Online Assessment</h5>
+                  <span class="badge badge-strong">Passed ✓</span>
+                </div>
+                <p class="card-text text-muted small">
+                  MCQ aptitude test (15Q) + 2 DSA coding problems. 90-minute time limit.
+                </p>
+                <div class="d-flex gap-3 mt-2" style="font-size:0.85rem;">
+                  <span><i class="bi bi-clock text-muted"></i> 72 min used</span>
+                  <span><i class="bi bi-bullseye text-success"></i> 78% score</span>
+                </div>
+              </div>
+              <div class="card-footer bg-transparent border-top px-4 py-3" style="border-color: var(--border-clr) !important;">
+                <a href="performance.html" class="btn btn-outline-custom btn-sm">View In-Depth Report</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Round 2: Active -->
+          <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid var(--clr-primary) !important; background: var(--glass-bg); border-radius: var(--radius-md);">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <h5 class="card-title fw-bold mb-0">Round 2: Technical Interview</h5>
+                  <span class="badge rounded-pill" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">
+                    <span class="spinner-grow spinner-grow-sm me-1" role="status"></span>
+                    In Progress
+                  </span>
+                </div>
+                <p class="card-text text-muted small">
+                  AI-powered technical interview covering DSA, problem solving, and coding. The interviewer adapts based on your answers.
+                </p>
+                <div class="d-flex gap-3 mt-2" style="font-size:0.85rem;">
+                  <span><i class="bi bi-clock text-muted"></i> 45 min limit</span>
+                  <span><i class="bi bi-chat-dots text-primary"></i> Chat-based</span>
+                </div>
+              </div>
+              <div class="card-footer bg-transparent border-top px-4 py-3" style="border-color: var(--border-clr) !important;">
+                <button class="btn btn-primary-custom btn-sm" data-bs-toggle="modal" data-bs-target="#interviewModal">
+                  <i class="bi bi-play-fill"></i> Continue Interview
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Round 3: Locked -->
+          <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid var(--clr-border) !important; background: var(--glass-bg); border-radius: var(--radius-md); opacity: 0.75;">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <h5 class="card-title fw-bold mb-0">Round 3: System Design</h5>
+                  <span class="badge" style="background:var(--clr-bg);color:var(--clr-text-muted);font-weight:600;"><i class="bi bi-lock"></i> Locked</span>
+                </div>
+                <p class="card-text text-muted small">
+                  Design a scalable system architecture. Discuss trade-offs, database choices, and scaling strategies.
+                </p>
+                <div class="d-flex gap-3 mt-2" style="font-size:0.85rem;">
+                  <span><i class="bi bi-clock text-muted"></i> 45 min limit</span>
+                  <span><i class="bi bi-lock text-muted"></i> Complete Round 2 first</span>
+                </div>
+              </div>
+              <div class="card-footer bg-transparent border-top px-4 py-3" style="border-color: var(--border-clr) !important;">
+                <button class="btn btn-sm btn-outline-secondary" disabled><i class="bi bi-lock me-1"></i>Locked</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Round 4: Locked -->
+          <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid var(--clr-border) !important; background: var(--glass-bg); border-radius: var(--radius-md); opacity: 0.75;">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <h5 class="card-title fw-bold mb-0">Round 4: HR Interview</h5>
+                  <span class="badge" style="background:var(--clr-bg);color:var(--clr-text-muted);font-weight:600;"><i class="bi bi-lock"></i> Locked</span>
+                </div>
+                <p class="card-text text-muted small">
+                  Behavioral questions, situational judgment, salary negotiation, and cultural fit assessment.
+                </p>
+                <div class="d-flex gap-3 mt-2" style="font-size:0.85rem;">
+                  <span><i class="bi bi-clock text-muted"></i> 30 min limit</span>
+                  <span><i class="bi bi-lock text-muted"></i> Complete Round 3 first</span>
+                </div>
+              </div>
+              <div class="card-footer bg-transparent border-top px-4 py-3" style="border-color: var(--border-clr) !important;">
+                <button class="btn btn-sm btn-outline-secondary" disabled><i class="bi bi-lock me-1"></i>Locked</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interview Preview Modal -->
+  <div class="modal fade" id="interviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content" style="border:none;border-radius:var(--radius-xl);background:var(--clr-surface);overflow:hidden;">
+        <div class="modal-header border-0" style="background:linear-gradient(135deg,var(--clr-primary),#7C3AED);color:#fff;">
+          <h5 class="modal-title fw-bold"><i class="bi bi-person-video3 me-2"></i>Technical Interview — Google SDE</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-0">
+          <!-- Interview Chat UI -->
+          <div class="chat-messages" style="max-height: 400px; padding: 1.5rem;">
+            <div class="chat-message-row">
+              <div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>
+              <div class="chat-bubble ai">
+                Welcome to your Google SDE Technical Interview simulation! I'm your AI interviewer. Let's start with a warm-up.
+                <br><br>
+                <strong>Question 1:</strong> Tell me about a challenging project you've worked on recently. What was your role, and what technical decisions did you make?
+                <span class="bubble-time">Interview Start</span>
+              </div>
+            </div>
+            <div class="chat-message-row user-row">
+              <div class="chat-bubble user">
+                I built a real-time chat application using WebSockets and Node.js. I was the lead developer and made architectural decisions around message queuing and database selection. I chose MongoDB for message storage because of its document-based structure and used Redis for caching active sessions.
+                <span class="bubble-time">1:23</span>
+              </div>
+            </div>
+            <div class="chat-message-row">
+              <div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>
+              <div class="chat-bubble ai">
+                Interesting choice of stack! Follow-up questions:<br><br>
+                1. Why did you choose MongoDB over PostgreSQL for message storage? What trade-offs did you consider?<br>
+                2. How did you handle message ordering and potential duplicates with WebSockets?<br><br>
+                Take your time to think through these.
+                <span class="bubble-time">1:30</span>
+              </div>
+            </div>
+          </div>
+          <div class="chat-input-bar" style="border-top: 1px solid var(--clr-border);">
+            <input type="text" placeholder="Type your response..." aria-label="Interview response">
+            <button class="btn-send" aria-label="Send"><i class="bi bi-send-fill"></i></button>
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <small class="text-muted me-auto"><i class="bi bi-clock"></i> 43:27 remaining</small>
+          <button class="btn btn-outline-custom" data-bs-dismiss="modal">Pause</button>
+          <a href="live-assessment.html" class="btn btn-primary-custom"><i class="bi bi-arrows-fullscreen"></i> Full Screen</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chatbot FAB -->
+  <button class="chatbot-fab" id="chatbotFab" aria-label="Open AI Chat"><i class="bi bi-chat-dots-fill"></i></button>
+  <div class="chatbot-panel" id="chatbotPanel">
+    <div class="panel-header"><div class="d-flex align-items-center gap-2"><div class="chat-avatar ai-avatar"><i class="bi bi-mortarboard-fill"></i></div><div><h6>AI Placement Coach</h6><small style="opacity:0.8;">Online</small></div></div><button class="panel-close" aria-label="Close"><i class="bi bi-x-lg"></i></button></div>
+    <div class="chat-messages"><div class="chat-message-row"><div class="chat-avatar ai-avatar"><i class="bi bi-mortarboard-fill"></i></div><div class="chat-bubble ai">Good choice picking Google! Based on your profile, I'd recommend brushing up on system design before Round 3. Want some Google-specific tips?<span class="bubble-time">Now</span></div></div></div>
+    <div class="quick-replies"><div class="quick-reply-chip">Google interview tips</div><div class="quick-reply-chip">Common Google questions</div></div>
+    <div class="chat-input-bar"><input type="text" placeholder="Ask about the simulation..." aria-label="Chat"><button class="btn-send" aria-label="Send"><i class="bi bi-send-fill"></i></button></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="config.js"></script>
+  <script src="gemini.js"></script>
+  <script src="app.js"></script>
+  <script>
+    function selectCompanyCard(companyName, el) {
+      document.querySelectorAll('.company-select-card').forEach(c => {
+        c.classList.remove('border', 'border-2', 'border-primary', 'shadow');
+      });
+      if (el) {
+        el.classList.add('border', 'border-2', 'border-primary', 'shadow');
+      }
+      const simSec = document.getElementById('simulationSection');
+      const badge = document.getElementById('selectedCompanyBadge');
+      if (badge) badge.textContent = companyName;
+      if (simSec) {
+        simSec.style.display = 'block';
+        simSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function selectCompanyFromCarousel(companyName) {
+      selectCompanyCard(companyName, null);
+    }
+
+    function selectRole(btn) {
+      btn.parentElement.querySelectorAll('.btn').forEach(b => {
+        b.classList.remove('btn-primary-custom', 'active');
+        b.classList.add('btn-outline-custom');
+      });
+      btn.classList.remove('btn-outline-custom');
+      btn.classList.add('btn-primary-custom', 'active');
+    }
+  </script>
+</body>
+</html>

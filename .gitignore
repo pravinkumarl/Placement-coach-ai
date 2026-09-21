@@ -1,0 +1,7 @@
+# Configuration & Secrets
+config.js
+
+# Dependencies & Build artifacts
+node_modules/
+.DS_Store
+Thumbs.db

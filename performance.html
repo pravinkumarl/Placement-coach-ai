@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Detailed performance analysis — topic-wise strengths, weaknesses, accuracy vs time management, and AI-driven feedback.">
+  <title>Performance Report — Placement Coach</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand"><i class="bi bi-mortarboard-fill"></i> Placement Coach</div>
+    <a href="profile.html" class="sidebar-user text-decoration-none d-flex align-items-center gap-2 p-2 rounded-3" title="Click to view & edit profile">
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Rahul Sharma" class="img-fluid rounded-circle user-avatar-img border border-2 border-primary" style="width: 42px; height: 42px; object-fit: cover;">
+      <div class="flex-grow-1 overflow-hidden">
+        <div class="user-name fw-bold text-truncate" id="sidebarUserName">Rahul Sharma</div>
+        <div class="user-role small text-muted text-truncate" id="sidebarUserRole">CSE, 4th Year • Edit <i class="bi bi-pencil-fill" style="font-size:0.75rem;"></i></div>
+      </div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Main</div>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="assessment-hub.html"><i class="bi bi-clipboard2-check"></i> Assessments</a></li>
+        <li class="nav-item"><a class="nav-link active" href="performance.html"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></li>
+        <li class="nav-item"><a class="nav-link" href="roadmap.html"><i class="bi bi-map-fill"></i> Roadmap</a></li>
+        <li class="nav-item"><a class="nav-link" href="progress.html"><i class="bi bi-graph-up-arrow"></i> Progress</a></li>
+        <li class="nav-item"><a class="nav-link" href="profile.html"><i class="bi bi-person-badge-fill"></i> Profile & Settings</a></li>
+      </ul>
+      <div class="nav-label">AI Tools</div>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link" href="chat.html"><i class="bi bi-chat-dots-fill"></i> AI Coach</a></li>
+        <li class="nav-item"><a class="nav-link" href="mock-simulation.html"><i class="bi bi-building"></i> Mock Simulation</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="dark-mode-toggle" title="Toggle dark mode"><i class="bi bi-moon-stars"></i><span>Dark Mode</span><div class="toggle-track ms-auto"><div class="toggle-thumb"></div></div></div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="top-header">
+      <div class="d-flex align-items-center gap-3">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar"><i class="bi bi-list"></i></button>
+        <h1 class="page-title">Performance Report</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-outline-custom btn-sm"><i class="bi bi-download"></i> Export PDF</button>
+        <button class="btn-icon" title="Notifications"><i class="bi bi-bell"></i></button>
+      </div>
+    </header>
+
+    <div class="p-3 p-md-4">
+      <!-- Skill Gap & Improvement Alerts -->
+      <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-3 mb-3 shadow-sm" role="alert" data-aos="fade-up">
+        <i class="bi bi-exclamation-octagon-fill fs-4 text-danger flex-shrink-0"></i>
+        <div class="flex-grow-1">
+          <strong>Critical Skill Gap:</strong> Your DBMS accuracy dropped 20% — needs urgent attention before upcoming company rounds.
+        </div>
+        <a href="assessment-hub.html" class="btn btn-sm btn-danger text-nowrap ms-auto">Practice DBMS</a>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
+      <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-3 mb-4 shadow-sm" role="alert" data-aos="fade-up" data-aos-delay="100">
+        <i class="bi bi-check-circle-fill fs-4 text-success flex-shrink-0"></i>
+        <div class="flex-grow-1">
+          <strong>Verified Improvement:</strong> Logical Reasoning accuracy improved to 82% (+12% vs last attempt) — milestone unlocked!
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
+      <!-- Score Summary Row -->
+      <div class="row g-4 mb-4">
+        <div class="col-md-4" data-aos="fade-up">
+          <div class="glass-card text-center h-100">
+            <h6 class="fw-bold text-muted mb-2">Overall Score</h6>
+            <div class="display-3 fw-bold" style="color: var(--clr-primary);" data-countup="72" data-suffix="%">0%</div>
+            <span class="badge rounded-pill badge-improving px-3 py-2 mt-2">
+              <i class="bi bi-arrow-up"></i> +8% from last attempt
+            </span>
+          </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="glass-card text-center h-100">
+            <h6 class="fw-bold text-muted mb-2">Time Management</h6>
+            <div class="display-3 fw-bold" style="color: var(--clr-warning);" data-countup="65" data-suffix="%">0%</div>
+            <span class="badge rounded-pill" style="background:var(--clr-warning-light);color:var(--clr-warning);font-weight:600;" class="mt-2">
+              Used 78% of allotted time
+            </span>
+          </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="glass-card text-center h-100">
+            <h6 class="fw-bold text-muted mb-2">Accuracy</h6>
+            <div class="display-3 fw-bold" style="color: var(--clr-success);" data-countup="68" data-suffix="%">0%</div>
+            <span class="badge rounded-pill badge-strong px-3 py-2 mt-2">
+              3 of 5 correct on first attempt
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabbed Performance Analysis Card (card-header with tabs) -->
+      <div class="card border-0 shadow-sm mb-4" style="background: var(--glass-bg); border-radius: var(--radius-lg); overflow:hidden;" data-aos="fade-up">
+        <div class="card-header bg-transparent border-bottom px-4 pt-3 pb-0" style="border-color: var(--border-clr) !important;">
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+            <h5 class="fw-bold mb-0"><i class="bi bi-diagram-3-fill text-primary me-2"></i>Performance Analysis by Module</h5>
+            <button class="btn btn-outline-custom btn-sm" id="reanalyzeBtn" onclick="triggerAiAnalysis()">
+              <span class="spinner-border spinner-border-sm d-none me-1" id="reanalyzeSpinner" role="status" aria-hidden="true"></span>
+              <i class="bi bi-arrow-repeat me-1" id="reanalyzeIcon"></i> Re-Analyze With AI
+            </button>
+          </div>
+          <ul class="nav nav-tabs card-header-tabs" id="perfTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active fw-semibold" id="coding-tab" data-bs-toggle="tab" data-bs-target="#coding-pane" type="button" role="tab"><i class="bi bi-code-square me-1 text-danger"></i> Coding & DSA</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link fw-semibold" id="aptitude-tab" data-bs-toggle="tab" data-bs-target="#aptitude-pane" type="button" role="tab"><i class="bi bi-calculator me-1 text-primary"></i> Aptitude</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link fw-semibold" id="interview-tab" data-bs-toggle="tab" data-bs-target="#interview-pane" type="button" role="tab"><i class="bi bi-person-video3 me-1 text-success"></i> Interview</button>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body p-4">
+          <!-- Spinner & Skeleton Container -->
+          <div id="aiAnalyzingSpinner" class="alert alert-primary d-none align-items-center gap-3 mb-3 shadow-sm" role="alert">
+            <div class="spinner-border spinner-border-sm text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="flex-grow-1 small">
+              <strong>AI is analyzing your report...</strong> Parsing runtime profiles, time distribution, and benchmark percentiles.
+            </div>
+          </div>
+
+          <div id="aiSkeletonLoader" class="d-none mb-3">
+            <div class="placeholder-glow mb-2">
+              <span class="placeholder col-12 rounded" style="height: 20px;"></span>
+            </div>
+            <div class="placeholder-glow mb-2">
+              <span class="placeholder col-8 rounded" style="height: 16px;"></span>
+            </div>
+            <div class="placeholder-glow">
+              <span class="placeholder col-10 rounded" style="height: 16px;"></span>
+            </div>
+          </div>
+
+          <div class="tab-content" id="perfTabsContent">
+            <!-- Coding Pane -->
+            <div class="tab-pane fade show active" id="coding-pane" role="tabpanel">
+              <div class="p-3 rounded-3 mb-3" style="background: var(--clr-bg); font-size: 0.92rem; line-height: 1.7;">
+                <strong>Coding Summary:</strong> Solved 3/5 challenges successfully. Strong in HashMaps and recursion (BSTs), but struggled with Dynamic Programming (LIS) and Graph cycle detection. Average coding speed was 18 mins per problem.
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="p-3 rounded-3 border" style="border-color: var(--border-clr) !important;">
+                    <span class="badge bg-success mb-2">Strengths</span>
+                    <p class="small text-muted mb-0">Two-pointer technique, recursion base conditions, and memory efficiency.</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="p-3 rounded-3 border" style="border-color: var(--border-clr) !important;">
+                    <span class="badge bg-danger mb-2">Needs Urgent Focus</span>
+                    <p class="small text-muted mb-0">DP state transition formulas, topological sort (Kahn's BFS), and sliding window edge cases.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Aptitude Pane -->
+            <div class="tab-pane fade" id="aptitude-pane" role="tabpanel">
+              <div class="p-3 rounded-3 mb-3" style="background: var(--clr-bg); font-size: 0.92rem; line-height: 1.7;">
+                <strong>Aptitude Summary:</strong> Scored 82% overall. High accuracy in logical deduction and coding-decoding, but quantitative speed requires practice on time & work shortcuts.
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="p-3 rounded-3 border" style="border-color: var(--border-clr) !important;">
+                    <span class="badge bg-success mb-2">Speed & Accuracy</span>
+                    <p class="small text-muted mb-0">Average 48 seconds per question in Logical Reasoning with 92% first-pass accuracy.</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="p-3 rounded-3 border" style="border-color: var(--border-clr) !important;">
+                    <span class="badge bg-warning text-dark mb-2">Quant Gaps</span>
+                    <p class="small text-muted mb-0">Permutations & combinations formula memorization and fast fraction-to-percentage conversion.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Interview Pane -->
+            <div class="tab-pane fade" id="interview-pane" role="tabpanel">
+              <div class="p-3 rounded-3 mb-3" style="background: var(--clr-bg); font-size: 0.92rem; line-height: 1.7;">
+                <strong>Interview Summary:</strong> Communication clarity rated 8.2/10. Articulated system tradeoffs cleanly. Needs to introduce the STAR method more systematically for behavioral queries.
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="p-3 rounded-3 border" style="border-color: var(--border-clr) !important;">
+                    <span class="badge bg-success mb-2">Technical Delivery</span>
+                    <p class="small text-muted mb-0">Good thinking out loud and asking clarifying questions before designing APIs.</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="p-3 rounded-3 border" style="border-color: var(--border-clr) !important;">
+                    <span class="badge bg-danger mb-2">Database Depth</span>
+                    <p class="small text-muted mb-0">Didn't specify database partitioning/sharding strategies when scaling to 10M concurrent users.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer bg-transparent border-top px-4 py-3 d-flex justify-content-between align-items-center" style="border-color: var(--border-clr) !important;">
+          <small class="text-muted"><i class="bi bi-clock-history me-1"></i>Report synchronized with latest assessment benchmarks</small>
+          <a href="roadmap.html" class="btn btn-primary-custom btn-sm">Update Learning Roadmap <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <!-- Skill Gap Table -->
+      <div class="glass-card" data-aos="fade-up">
+        <h6 class="fw-bold mb-3"><i class="bi bi-list-check me-2"></i>Skill Gap Analysis</h6>
+        <div class="table-responsive">
+          <div class="table-responsive-custom">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Topic</th>
+                  <th>Score</th>
+                  <th>Status</th>
+                  <th>Priority</th>
+                  <th>Recommendation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="fw-medium">Arrays & Hashing</td>
+                  <td><strong style="color:var(--clr-success);">92%</strong></td>
+                  <td><span class="badge badge-strong">Strong</span></td>
+                  <td><span style="color: var(--clr-text-muted);">Low</span></td>
+                  <td style="font-size:0.85rem;">Maintain with weekly practice</td>
+                </tr>
+                <tr>
+                  <td class="fw-medium">Binary Trees</td>
+                  <td><strong style="color:var(--clr-success);">85%</strong></td>
+                  <td><span class="badge badge-strong">Strong</span></td>
+                  <td><span style="color: var(--clr-text-muted);">Low</span></td>
+                  <td style="font-size:0.85rem;">Try advanced tree problems (AVL, Red-Black)</td>
+                </tr>
+                <tr>
+                  <td class="fw-medium">System Design</td>
+                  <td><strong style="color:var(--clr-warning);">60%</strong></td>
+                  <td><span class="badge badge-improving">Improving</span></td>
+                  <td><span class="fw-bold" style="color: var(--clr-warning);">Medium</span></td>
+                  <td style="font-size:0.85rem;">Study caching, load balancing, and database sharding</td>
+                </tr>
+                <tr>
+                  <td class="fw-medium">Dynamic Programming</td>
+                  <td><strong style="color:var(--clr-danger);">35%</strong></td>
+                  <td><span class="badge badge-weak">Weak</span></td>
+                  <td><span class="fw-bold" style="color: var(--clr-danger);">High</span></td>
+                  <td style="font-size:0.85rem;">Start with memoization basics → tabulation → classic problems</td>
+                </tr>
+                <tr>
+                  <td class="fw-medium">Graph Algorithms</td>
+                  <td><strong style="color:var(--clr-danger);">30%</strong></td>
+                  <td><span class="badge badge-weak">Weak</span></td>
+                  <td><span class="fw-bold" style="color: var(--clr-danger);">High</span></td>
+                  <td style="font-size:0.85rem;">BFS/DFS fundamentals → topological sort → shortest paths</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="mt-3 d-flex flex-wrap gap-2">
+          <a href="roadmap.html" class="btn btn-primary-custom btn-sm"><i class="bi bi-map"></i> View Personalized Roadmap</a>
+          <a href="assessment-hub.html" class="btn btn-outline-custom btn-sm"><i class="bi bi-arrow-repeat"></i> Retake Assessment</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chatbot FAB -->
+  <button class="chatbot-fab" id="chatbotFab" aria-label="Open AI Chat"><i class="bi bi-chat-dots-fill"></i></button>
+  <div class="chatbot-panel" id="chatbotPanel">
+    <div class="panel-header"><div class="d-flex align-items-center gap-2"><div class="chat-avatar ai-avatar"><i class="bi bi-mortarboard-fill"></i></div><div><h6>AI Placement Coach</h6><small style="opacity:0.8;">Online</small></div></div><button class="panel-close" aria-label="Close chat"><i class="bi bi-x-lg"></i></button></div>
+    <div class="chat-messages"><div class="chat-message-row"><div class="chat-avatar ai-avatar"><i class="bi bi-mortarboard-fill"></i></div><div class="chat-bubble ai">I see you just completed the DSA challenge! Your DP score dropped — want me to walk you through the LIS problem?<a href="#" class="chat-action-btn"><i class="bi bi-play-fill"></i> Explain LIS</a><span class="bubble-time">Now</span></div></div></div>
+    <div class="quick-replies"><div class="quick-reply-chip">Explain my mistakes</div><div class="quick-reply-chip">Practice DP problems</div></div>
+    <div class="chat-input-bar"><input type="text" placeholder="Ask about your results..." aria-label="Chat"><button class="btn-send" aria-label="Send"><i class="bi bi-send-fill"></i></button></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="config.js"></script>
+  <script src="gemini.js"></script>
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const colors = getChartColors();
+
+      // Topic Strength Bar Chart
+      const topicCtx = document.getElementById('topicChart').getContext('2d');
+      new Chart(topicCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Arrays', 'Trees', 'System Design', 'SQL', 'DP', 'Graphs'],
+          datasets: [{
+            label: 'Score %',
+            data: [92, 85, 60, 55, 35, 30],
+            backgroundColor: [
+              colors.success, colors.success,
+              colors.warning, colors.warning,
+              colors.danger, colors.danger
+            ],
+            borderRadius: 8,
+            borderSkipped: false,
+            barThickness: 36,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: colors.surface,
+              titleColor: colors.text,
+              bodyColor: colors.textMuted,
+              borderColor: colors.grid,
+              borderWidth: 1,
+              padding: 12,
+              cornerRadius: 8,
+            }
+          },
+          scales: {
+            x: {
+              max: 100,
+              grid: { color: colors.grid },
+              ticks: { color: colors.textMuted, callback: v => v + '%' }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { color: colors.text, font: { weight: 600 } }
+            }
+          }
+        }
+      });
+
+      // Radar Chart
+      const radarCtx = document.getElementById('radarChart').getContext('2d');
+      new Chart(radarCtx, {
+        type: 'radar',
+        data: {
+          labels: ['Accuracy', 'Speed', 'Completeness', 'Code Quality', 'Problem Analysis', 'Communication'],
+          datasets: [{
+            label: 'Your Score',
+            data: [75, 60, 70, 80, 65, 85],
+            backgroundColor: 'rgba(79, 70, 229, 0.15)',
+            borderColor: colors.primary,
+            borderWidth: 2,
+            pointBackgroundColor: colors.primary,
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 5,
+          }, {
+            label: 'Target',
+            data: [85, 80, 85, 85, 80, 80],
+            backgroundColor: 'rgba(16, 185, 129, 0.08)',
+            borderColor: colors.success,
+            borderWidth: 2,
+            borderDash: [5, 5],
+            pointBackgroundColor: colors.success,
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: colors.text, usePointStyle: true, pointStyle: 'circle', padding: 16, font: { size: 12 } }
+            }
+          },
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 100,
+              ticks: { stepSize: 20, color: colors.textMuted, backdropColor: 'transparent', font: { size: 10 } },
+              grid: { color: colors.grid },
+              angleLines: { color: colors.grid },
+              pointLabels: { color: colors.text, font: { size: 11, weight: 500 } }
+            }
+          }
+        }
+      });
+    });
+
+    function triggerAiAnalysis() {
+      const spinnerEl = document.getElementById('aiAnalyzingSpinner');
+      const skeletonEl = document.getElementById('aiSkeletonLoader');
+      const btn = document.getElementById('reanalyzeBtn');
+      const btnSpinner = document.getElementById('reanalyzeSpinner');
+      const btnIcon = document.getElementById('reanalyzeIcon');
+      const tabContent = document.getElementById('perfTabsContent');
+
+      if (!spinnerEl || !btn) return;
+
+      btn.disabled = true;
+      btnSpinner.classList.remove('d-none');
+      btnIcon.classList.add('d-none');
+      spinnerEl.classList.remove('d-none');
+      spinnerEl.classList.add('d-flex');
+
+      // Step 1: Spinner for brief initial wait
+      setTimeout(() => {
+        spinnerEl.classList.add('d-none');
+        spinnerEl.classList.remove('d-flex');
+        if (skeletonEl) skeletonEl.classList.remove('d-none');
+        if (tabContent) tabContent.classList.add('opacity-50');
+
+        // Step 2: Skeleton loader for secondary processing wait
+        setTimeout(() => {
+          if (skeletonEl) skeletonEl.classList.add('d-none');
+          if (tabContent) tabContent.classList.remove('opacity-50');
+          btn.disabled = false;
+          btnSpinner.classList.add('d-none');
+          btnIcon.classList.remove('d-none');
+        }, 1200);
+      }, 900);
+    }
+  </script>
+</body>
+</html>
