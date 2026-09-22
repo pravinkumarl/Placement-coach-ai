@@ -88,10 +88,10 @@
         <button class="btn btn-sm btn-outline-custom" data-filter-tab="communication" onclick="filterAssessments('communication', this)">Communication</button>
       </div>
 
-      <!-- Assessment Cards Grid (card > card-img-top > card-body > card-title + card-text > card-footer) -->
-      <div class="row g-4" id="assessmentGrid">
+      <!-- Assessment Cards Grid -->
+      <div class="row g-4" id="assessmentGrid" data-aos="fade-up" data-aos-delay="150">
         <!-- Aptitude: Quant -->
-        <div class="col-lg-4 col-md-6" data-category="aptitude" data-aos="fade-up" data-aos-delay="150">
+        <div class="col-lg-4 col-md-6" data-category="aptitude">
           <div class="card h-100 border-0 shadow-sm assessment-card" style="background:var(--glass-bg); border-radius:var(--radius-lg); overflow:hidden;">
             <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: linear-gradient(135deg, rgba(79,70,229,0.1), rgba(124,58,237,0.1)); height: 90px;">
               <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: var(--clr-primary-light); color: var(--clr-primary); width: 50px; height: 50px;">
@@ -119,7 +119,7 @@
         </div>
 
         <!-- Aptitude: Logical -->
-        <div class="col-lg-4 col-md-6" data-category="aptitude" data-aos="fade-up" data-aos-delay="200">
+        <div class="col-lg-4 col-md-6" data-category="aptitude">
           <div class="card h-100 border-0 shadow-sm assessment-card" style="background:var(--glass-bg); border-radius:var(--radius-lg); overflow:hidden;">
             <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.1)); height: 90px;">
               <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: var(--clr-success-light); color: var(--clr-success); width: 50px; height: 50px;">
@@ -147,7 +147,7 @@
         </div>
 
         <!-- Aptitude: Verbal -->
-        <div class="col-lg-4 col-md-6" data-category="aptitude" data-aos="fade-up" data-aos-delay="250">
+        <div class="col-lg-4 col-md-6" data-category="aptitude">
           <div class="card h-100 border-0 shadow-sm assessment-card" style="background:var(--glass-bg); border-radius:var(--radius-lg); overflow:hidden;">
             <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(217,119,6,0.1)); height: 90px;">
               <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: var(--clr-warning-light); color: var(--clr-warning); width: 50px; height: 50px;">
@@ -175,7 +175,7 @@
         </div>
 
         <!-- Coding: DSA -->
-        <div class="col-lg-4 col-md-6" data-category="coding" data-aos="fade-up" data-aos-delay="150">
+        <div class="col-lg-4 col-md-6" data-category="coding">
           <div class="card h-100 border-0 shadow-sm assessment-card" style="background:var(--glass-bg); border-radius:var(--radius-lg); overflow:hidden;">
             <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(185,28,28,0.1)); height: 90px;">
               <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: var(--clr-danger-light); color: var(--clr-danger); width: 50px; height: 50px;">
@@ -203,7 +203,7 @@
         </div>
 
         <!-- Coding: DBMS & SQL -->
-        <div class="col-lg-4 col-md-6" data-category="coding" data-aos="fade-up" data-aos-delay="200">
+        <div class="col-lg-4 col-md-6" data-category="coding">
           <div class="card h-100 border-0 shadow-sm assessment-card" style="background:var(--glass-bg); border-radius:var(--radius-lg); overflow:hidden;">
             <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: linear-gradient(135deg, rgba(79,70,229,0.1), rgba(6,182,212,0.1)); height: 90px;">
               <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: var(--clr-primary-light); color: var(--clr-primary); width: 50px; height: 50px;">
@@ -231,7 +231,7 @@
         </div>
 
         <!-- Technical Interview -->
-        <div class="col-lg-4 col-md-6" data-category="technical" data-aos="fade-up" data-aos-delay="150">
+        <div class="col-lg-4 col-md-6" data-category="technical">
           <div class="card h-100 border-0 shadow-sm assessment-card" style="background:var(--glass-bg); border-radius:var(--radius-lg); overflow:hidden;">
             <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: linear-gradient(135deg, rgba(79,70,229,0.1), rgba(244,63,94,0.1)); height: 90px;">
               <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: var(--clr-primary-light); color: var(--clr-primary); width: 50px; height: 50px;">
@@ -259,7 +259,7 @@
         </div>
 
         <!-- HR Interview -->
-        <div class="col-lg-4 col-md-6" data-category="hr" data-aos="fade-up" data-aos-delay="150">
+        <div class="col-lg-4 col-md-6" data-category="hr">
           <div class="card h-100 border-0 shadow-sm assessment-card" style="background:var(--glass-bg); border-radius:var(--radius-lg); overflow:hidden;">
             <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(14,165,233,0.1)); height: 90px;">
               <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: var(--clr-success-light); color: var(--clr-success); width: 50px; height: 50px;">
@@ -287,7 +287,7 @@
         </div>
 
         <!-- Communication -->
-        <div class="col-lg-4 col-md-6" data-category="communication" data-aos="fade-up" data-aos-delay="150">
+        <div class="col-lg-4 col-md-6" data-category="communication">
           <div class="card h-100 border-0 shadow-sm assessment-card" style="background:var(--glass-bg); border-radius:var(--radius-lg); overflow:hidden;">
             <div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(239,68,68,0.1)); height: 90px;">
               <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: var(--clr-warning-light); color: var(--clr-warning); width: 50px; height: 50px;">
@@ -424,7 +424,8 @@
       document.querySelectorAll('[data-category]').forEach(card => {
         if (category === 'all' || card.getAttribute('data-category') === category) {
           card.style.display = '';
-          card.style.animation = 'bubbleFadeIn 0.3s ease';
+          card.style.opacity = '1';
+          card.style.animation = 'bubbleFadeIn 0.3s ease forwards';
           visibleCount++;
         } else {
           card.style.display = 'none';
@@ -434,6 +435,10 @@
       const empty = document.getElementById('emptyState');
       if (empty) {
         empty.style.display = visibleCount === 0 ? 'block' : 'none';
+      }
+
+      if (typeof AOS !== 'undefined') {
+        AOS.refresh();
       }
     }
   </script>

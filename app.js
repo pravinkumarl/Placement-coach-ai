@@ -551,7 +551,8 @@ function initAssessmentTabs() {
       cards.forEach(card => {
         if (filter === 'all' || card.getAttribute('data-category') === filter) {
           card.style.display = '';
-          card.style.animation = 'bubbleFadeIn 0.3s ease';
+          card.style.opacity = '1';
+          card.style.animation = 'bubbleFadeIn 0.3s ease forwards';
         } else {
           card.style.display = 'none';
         }
