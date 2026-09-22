@@ -16,15 +16,19 @@ document.addEventListener('DOMContentLoaded', () => {
   initToasts();
   initInterviewModalChat();
 
-  // AOS.js
+  // AOS.js: Snappy, lightweight animations on mobile to prevent rendering delays
   if (typeof AOS !== 'undefined') {
+    const isMobile = window.innerWidth < 768;
     AOS.init({
-      duration: 700,
+      duration: isMobile ? 300 : 600,
       easing: 'ease-out-cubic',
       once: true,
-      offset: 80,
+      offset: isMobile ? 20 : 60,
     });
   }
+
+  // Fast page navigation prefetching
+  initLinkPrefetch();
 });
 
 /* ============================================================
@@ -939,4 +943,27 @@ function navigateQuestion(direction) {
       nextBtn.onclick = () => navigateQuestion('next');
     }
   }
+}
+
+/* ============================================================
+   INSTANT LINK PREFETCH (Mobile & Desktop)
+   ============================================================ */
+function initLinkPrefetch() {
+  const prefetched = new Set();
+  const prefetch = (url) => {
+    if (!url || prefetched.has(url) || url.startsWith('http') || url.startsWith('#') || url.includes(':') || url.startsWith('javascript')) return;
+    prefetched.add(url);
+    const link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.href = url;
+    document.head.appendChild(link);
+  };
+
+  document.querySelectorAll('a[href]').forEach(a => {
+    const href = a.getAttribute('href');
+    if (href && !href.startsWith('#') && !href.startsWith('http') && (href.endsWith('.html') || !href.includes('.'))) {
+      a.addEventListener('touchstart', () => prefetch(href), { passive: true });
+      a.addEventListener('mouseenter', () => prefetch(href), { passive: true });
+    }
+  });
 }
