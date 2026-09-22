@@ -119,6 +119,8 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 body {
@@ -129,6 +131,8 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
   transition: background-color var(--transition-base), color var(--transition-base);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -2114,12 +2118,31 @@ img { max-width: 100%; height: auto; }
   z-index: 10;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 991.98px) {
+  .float-badge-1 {
+    top: -10px;
+    right: 5px;
+  }
+  .float-badge-2 {
+    bottom: 20px;
+    left: 5px;
+  }
+  .float-badge-3 {
+    bottom: -10px;
+    right: 5px;
+  }
+}
+
+@media (max-width: 767.98px) {
   .float-badge-1, .float-badge-2, .float-badge-3 {
     position: static !important;
     animation: none !important;
     display: inline-flex !important;
     margin-bottom: 0.5rem;
+    max-width: 100%;
+    white-space: normal;
+    text-align: left;
+    transform: none !important;
   }
 }
 
@@ -2163,5 +2186,88 @@ img { max-width: 100%; height: auto; }
 .bg-primary-subtle {
   background-color: var(--clr-primary-light) !important;
   color: var(--bs-primary) !important;
+}
+
+/* ============================================================
+   #mainNav — Fixed Navigation Bar & Mobile Responsiveness
+   ============================================================ */
+#mainNav {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all var(--transition-base);
+}
+
+#mainNav .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+#mainNav .navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: calc(100% - 56px);
+  margin-right: 0;
+  min-width: 0;
+}
+
+#mainNav .navbar-brand .brand-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#mainNav .navbar-toggler {
+  flex-shrink: 0;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  color: var(--clr-text);
+  border: 1px solid transparent;
+}
+
+#mainNav .navbar-toggler:focus {
+  box-shadow: 0 0 0 2px var(--clr-primary-light);
+}
+
+@media (max-width: 575.98px) {
+  #mainNav {
+    padding-top: 0.65rem !important;
+    padding-bottom: 0.65rem !important;
+  }
+  #mainNav .navbar-brand .brand-text {
+    font-size: 1.05rem !important;
+  }
+  #mainNav .navbar-brand .badge.rounded-circle {
+    width: 34px !important;
+    height: 34px !important;
+  }
+  #mainNav .navbar-toggler i {
+    font-size: 1.5rem !important;
+  }
+}
+
+@media (max-width: 991.98px) {
+  #mainNav .navbar-collapse {
+    background: var(--clr-surface);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-top: 0.75rem;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--clr-border);
+    width: 100%;
+    flex-basis: 100%;
+  }
+
+  #mainNav .navbar-collapse .nav-link {
+    padding: 0.65rem 1rem;
+    border-radius: var(--radius-sm);
+  }
+
+  #mainNav .navbar-collapse .nav-link:hover {
+    background: var(--clr-primary-light);
+    color: var(--bs-primary);
+  }
 }
 

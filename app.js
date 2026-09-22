@@ -865,18 +865,23 @@ function toggleChatSidebar() {
 }
 
 /* Timer for live assessment */
-function initAssessmentTimer() {
+function initAssessmentTimer(durationMinutes) {
   const timerFill = document.querySelector('.timer-bar-fill');
   const timerText = document.getElementById('timerText');
   if (!timerFill || !timerText) return;
 
-  let totalSeconds = 45 * 60; // 45 minutes
+  const minsVal = parseInt(durationMinutes, 10) || 45;
+  let totalSeconds = minsVal * 60;
   let remaining = totalSeconds;
 
-  const interval = setInterval(() => {
+  if (window._assessmentTimerInterval) {
+    clearInterval(window._assessmentTimerInterval);
+  }
+
+  window._assessmentTimerInterval = setInterval(() => {
     remaining--;
     if (remaining <= 0) {
-      clearInterval(interval);
+      clearInterval(window._assessmentTimerInterval);
       remaining = 0;
     }
 

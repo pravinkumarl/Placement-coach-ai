@@ -111,7 +111,7 @@
               </div>
             </div>
             <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
-              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('Quantitative Aptitude', '45 min', '30 Questions')">
+              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('Quantitative Aptitude', '45 min', '30 Questions', 'quant')">
                 <i class="bi bi-play-fill"></i> Start Assessment
               </button>
             </div>
@@ -139,7 +139,7 @@
               </div>
             </div>
             <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
-              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('Logical Reasoning', '35 min', '25 Questions')">
+              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('Logical Reasoning', '35 min', '25 Questions', 'logical')">
                 <i class="bi bi-play-fill"></i> Start Assessment
               </button>
             </div>
@@ -167,7 +167,7 @@
               </div>
             </div>
             <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
-              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('Verbal Ability', '30 min', '20 Questions')">
+              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('Verbal Ability', '30 min', '20 Questions', 'verbal')">
                 <i class="bi bi-play-fill"></i> Start Assessment
               </button>
             </div>
@@ -195,7 +195,7 @@
               </div>
             </div>
             <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
-              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('DSA Coding Challenge', '90 min', '5 Problems')">
+              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('DSA Coding Challenge', '90 min', '5 Problems', 'coding')">
                 <i class="bi bi-play-fill"></i> Start Assessment
               </button>
             </div>
@@ -223,7 +223,7 @@
               </div>
             </div>
             <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
-              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('DBMS & SQL Queries', '45 min', '10 Queries')">
+              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('DBMS & SQL Queries', '45 min', '10 Queries', 'dbms')">
                 <i class="bi bi-play-fill"></i> Start Assessment
               </button>
             </div>
@@ -251,7 +251,7 @@
               </div>
             </div>
             <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
-              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('AI Technical Interview', '45 min', 'AI Interactive')">
+              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('AI Technical Interview', '45 min', 'AI Interactive', 'technical')">
                 <i class="bi bi-play-fill"></i> Start Interview
               </button>
             </div>
@@ -279,7 +279,7 @@
               </div>
             </div>
             <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
-              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('AI HR Interview', '30 min', 'AI Interactive')">
+              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('AI HR Interview', '30 min', 'AI Interactive', 'hr')">
                 <i class="bi bi-play-fill"></i> Start Interview
               </button>
             </div>
@@ -307,7 +307,7 @@
               </div>
             </div>
             <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
-              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('Communication Assessment', '25 min', '15 Tasks')">
+              <button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" onclick="setModalAssessment('Communication Assessment', '25 min', '15 Tasks', 'communication')">
                 <i class="bi bi-play-fill"></i> Start Assessment
               </button>
             </div>
@@ -375,7 +375,7 @@
         </div>
         <div class="modal-footer border-0 pt-0">
           <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
-          <a href="live-assessment.html" class="btn btn-primary-custom">
+          <a href="live-assessment.html" class="btn btn-primary-custom" id="startAssessmentLink">
             <i class="bi bi-play-fill"></i> Start Now
           </a>
         </div>
@@ -404,10 +404,25 @@
   <script src="gemini.js"></script>
   <script src="app.js"></script>
   <script>
-    function setModalAssessment(name, time, questions) {
+    function setModalAssessment(name, time, questions, moduleKey) {
       document.getElementById('modalAssessmentName').textContent = name;
       document.getElementById('modalTime').textContent = time;
       document.getElementById('modalQuestions').textContent = questions;
+      const key = moduleKey || 'quant';
+      const link = document.getElementById('startAssessmentLink');
+      if (link) {
+        link.href = `live-assessment.html?module=${encodeURIComponent(key)}`;
+      }
+      try {
+        localStorage.setItem('current_assessment', JSON.stringify({
+          key: key,
+          name: name,
+          time: time,
+          questions: questions
+        }));
+      } catch (e) {
+        console.warn('Could not save current_assessment to localStorage:', e);
+      }
     }
 
     function filterAssessments(category, btn) {

@@ -8,6 +8,64 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link href="styles.css" rel="stylesheet">
+  <style>
+    .mcq-option {
+      border: 1.5px solid var(--clr-border);
+      border-radius: var(--radius-md);
+      padding: 0.9rem 1.2rem;
+      background: var(--clr-surface);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-size: 0.95rem;
+      user-select: none;
+    }
+    .mcq-option:hover {
+      border-color: var(--clr-primary);
+      background: var(--clr-primary-light);
+    }
+    .mcq-option.selected {
+      border-color: var(--clr-primary);
+      background: var(--clr-primary-light);
+      color: var(--clr-primary);
+      font-weight: 600;
+      box-shadow: 0 0 0 1px var(--clr-primary);
+    }
+    .mcq-option .option-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid var(--clr-border);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      flex-shrink: 0;
+      transition: all var(--transition-fast);
+    }
+    .mcq-option.selected .option-badge {
+      background: var(--clr-primary);
+      color: #fff;
+      border-color: var(--clr-primary);
+    }
+    .sql-result-table {
+      font-size: 0.85rem;
+      margin-bottom: 0;
+    }
+    .sql-result-table th {
+      background: #282A36;
+      color: #F8F8F2;
+      font-weight: 600;
+    }
+    .sql-result-table td {
+      background: #1E1E2E;
+      color: #CDD6F4;
+      border-color: #313244;
+    }
+  </style>
 </head>
 <body>
 
@@ -17,10 +75,13 @@
       <a href="assessment-hub.html" class="btn-icon" title="Exit Assessment" data-bs-toggle="modal" data-bs-target="#exitModal">
         <i class="bi bi-x-lg"></i>
       </a>
-      <h1 class="page-title">DSA Coding Challenge</h1>
+      <div>
+        <h1 class="page-title fs-5 mb-0" id="assessmentHeaderTitle">DSA Coding Challenge</h1>
+        <small class="text-muted" id="assessmentHeaderCategory">Placement Round Simulation</small>
+      </div>
     </div>
     <div class="d-flex align-items-center gap-3">
-      <span class="fw-bold" id="timerText" style="font-size: 1.1rem; color: var(--clr-primary); font-variant-numeric: tabular-nums;">45:00</span>
+      <span class="fw-bold" id="timerText" style="font-size: 1.15rem; color: var(--clr-primary); font-variant-numeric: tabular-nums;">45:00</span>
       <span class="badge rounded-pill px-3 py-2" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;" id="questionCounter">Question 1 of 5</span>
     </div>
   </header>
@@ -31,213 +92,16 @@
   </div>
 
   <!-- Question Progress -->
-  <div class="progress mx-3 mx-md-4 mt-2" style="height: 4px; border-radius: 2px;">
+  <div class="progress mx-3 mx-md-4 mt-2" style="height: 5px; border-radius: 3px;">
     <div class="progress-bar" role="progressbar" id="questionProgress" style="width: 20%; background: var(--clr-primary);" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
   </div>
 
-  <!-- Main Content (no sidebar) -->
+  <!-- Main Question Container -->
   <div class="p-3 p-md-4" style="margin-left: 0;">
-    <!-- Question 1 (MCQ) -->
-    <div class="question-panel active" id="q1">
-      <div class="row g-4">
-        <div class="col-lg-6">
-          <div class="glass-card h-100">
-            <div class="d-flex align-items-center gap-2 mb-3">
-              <span class="badge rounded-pill" style="background:var(--clr-warning-light);color:var(--clr-warning);font-weight:600;">Medium</span>
-              <span class="badge rounded-pill" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">Arrays</span>
-            </div>
-            <h5 class="fw-bold mb-3">Q1: Two Sum Problem</h5>
-            <p style="color:var(--clr-text-secondary);">Given an array of integers <code>nums</code> and an integer <code>target</code>, return <em>indices of the two numbers</em> such that they add up to <code>target</code>.</p>
-            <p style="color:var(--clr-text-secondary);">You may assume that each input would have exactly one solution, and you may not use the same element twice.</p>
-            <div class="p-3 rounded-3 mt-3" style="background:var(--clr-bg); font-family: monospace; font-size:0.88rem;">
-              <strong>Example:</strong><br>
-              Input: nums = [2,7,11,15], target = 9<br>
-              Output: [0,1]<br>
-              Explanation: nums[0] + nums[1] == 9
-            </div>
-            <div class="mt-3 p-3 rounded-3" style="background:var(--clr-bg); font-size:0.85rem;">
-              <strong>Constraints:</strong><br>
-              • 2 ≤ nums.length ≤ 10⁴<br>
-              • -10⁹ ≤ nums[i] ≤ 10⁹<br>
-              • Only one valid answer exists.
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="glass-card h-100 p-0 overflow-hidden">
-            <div class="d-flex align-items-center justify-content-between px-3 py-2" style="background: #1E1E2E; border-bottom: 1px solid #313244;">
-              <div class="d-flex gap-2">
-                <span style="font-size:0.8rem;color:#CDD6F4;font-weight:500;">Python</span>
-              </div>
-              <div class="d-flex gap-2">
-                <button class="btn btn-sm" style="color:#CDD6F4;font-size:0.75rem;background:rgba(255,255,255,0.1);border:none;border-radius:4px;padding:0.2rem 0.6rem;">Reset</button>
-              </div>
-            </div>
-            <div class="code-editor-mock" style="border-radius: 0; min-height: 350px;">
-<pre style="margin:0; white-space:pre-wrap;"><span class="keyword">def</span> <span class="function">twoSum</span>(nums, target):
-    <span class="comment"># Your solution here</span>
-    <span class="comment"># Hint: Consider using a hash map</span>
-    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="function">len</span>(nums)):
-        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="function">range</span>(i + <span class="number">1</span>, <span class="function">len</span>(nums)):
-            <span class="keyword">if</span> nums[i] + nums[j] == target:
-                <span class="keyword">return</span> [i, j]
-    <span class="keyword">return</span> []</pre>
-            </div>
-            <div class="d-flex gap-2 p-3" style="background: #1E1E2E; border-top: 1px solid #313244;">
-              <button class="btn btn-sm" style="background: var(--clr-success); color: #fff; border: none; border-radius: 6px; padding: 0.4rem 1rem; font-weight: 500; min-height: 36px;">
-                <i class="bi bi-play-fill"></i> Run Code
-              </button>
-              <button class="btn btn-sm" style="background: rgba(255,255,255,0.1); color: #CDD6F4; border: none; border-radius: 6px; padding: 0.4rem 1rem; font-weight: 500; min-height: 36px;">
-                <i class="bi bi-terminal"></i> Test Cases
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Question 2 (MCQ — shown when navigated) -->
-    <div class="question-panel" id="q2" style="display:none;">
-      <div class="row g-4">
-        <div class="col-lg-6">
-          <div class="glass-card h-100">
-            <div class="d-flex align-items-center gap-2 mb-3">
-              <span class="badge rounded-pill" style="background:var(--clr-danger-light);color:var(--clr-danger);font-weight:600;">Hard</span>
-              <span class="badge rounded-pill" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">Dynamic Programming</span>
-            </div>
-            <h5 class="fw-bold mb-3">Q2: Longest Increasing Subsequence</h5>
-            <p style="color:var(--clr-text-secondary);">Given an integer array <code>nums</code>, return the length of the longest strictly increasing subsequence.</p>
-            <div class="p-3 rounded-3 mt-3" style="background:var(--clr-bg); font-family: monospace; font-size:0.88rem;">
-              <strong>Example:</strong><br>
-              Input: nums = [10,9,2,5,3,7,101,18]<br>
-              Output: 4<br>
-              Explanation: [2,3,7,101]
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="glass-card h-100 p-0 overflow-hidden">
-            <div class="d-flex align-items-center px-3 py-2" style="background: #1E1E2E; border-bottom: 1px solid #313244;">
-              <span style="font-size:0.8rem;color:#CDD6F4;font-weight:500;">Python</span>
-            </div>
-            <div class="code-editor-mock" style="border-radius: 0; min-height: 350px;">
-<pre style="margin:0; white-space:pre-wrap;"><span class="keyword">def</span> <span class="function">lengthOfLIS</span>(nums):
-    <span class="comment"># Your solution here</span>
-    <span class="keyword">pass</span></pre>
-            </div>
-            <div class="d-flex gap-2 p-3" style="background: #1E1E2E; border-top: 1px solid #313244;">
-              <button class="btn btn-sm" style="background: var(--clr-success); color: #fff; border: none; border-radius: 6px; padding: 0.4rem 1rem; font-weight: 500; min-height: 36px;">
-                <i class="bi bi-play-fill"></i> Run Code
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Question 3 (Interview-style — chat UI) -->
-    <div class="question-panel" id="q3" style="display:none;">
-      <div class="glass-card">
-        <div class="d-flex align-items-center gap-2 mb-3">
-          <span class="badge rounded-pill" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">Technical Interview</span>
-          <span class="badge rounded-pill" style="background:var(--clr-warning-light);color:var(--clr-warning);font-weight:600;">System Design</span>
-        </div>
-        <h5 class="fw-bold mb-3">Q3: AI Technical Interview — System Design</h5>
-        <div class="chat-container" style="max-height: 450px;">
-          <div class="chat-messages" style="max-height:350px; overflow-y:auto;">
-            <div class="chat-message-row">
-              <div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>
-              <div class="chat-bubble ai">
-                Let's talk about system design. Can you walk me through how you would design a URL shortening service like bit.ly?
-                <span class="bubble-time">Interview Start</span>
-              </div>
-            </div>
-            <div class="chat-message-row user-row">
-              <div class="chat-bubble user">
-                Sure! I'd start with the requirements. We need a service that takes a long URL and returns a short unique code, and can redirect users when they visit the short URL.
-                <span class="bubble-time">00:30</span>
-              </div>
-            </div>
-            <div class="chat-message-row">
-              <div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>
-              <div class="chat-bubble ai">
-                Good start! How would you generate the unique short code? What encoding would you use and how would you handle collisions?
-                <span class="bubble-time">00:45</span>
-              </div>
-            </div>
-          </div>
-          <div class="chat-input-bar" style="border-radius: 0 0 var(--radius-lg) var(--radius-lg);">
-            <input type="text" placeholder="Type your answer..." aria-label="Interview response">
-            <button class="btn-send" aria-label="Send"><i class="bi bi-send-fill"></i></button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Question 4 -->
-    <div class="question-panel" id="q4" style="display:none;">
-      <div class="row g-4">
-        <div class="col-lg-6">
-          <div class="glass-card h-100">
-            <div class="d-flex align-items-center gap-2 mb-3">
-              <span class="badge rounded-pill" style="background:var(--clr-warning-light);color:var(--clr-warning);font-weight:600;">Medium</span>
-              <span class="badge rounded-pill" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">Trees</span>
-            </div>
-            <h5 class="fw-bold mb-3">Q4: Validate Binary Search Tree</h5>
-            <p style="color:var(--clr-text-secondary);">Given the root of a binary tree, determine if it is a valid binary search tree (BST).</p>
-            <div class="p-3 rounded-3 mt-3" style="background:var(--clr-bg); font-family: monospace; font-size:0.88rem;">
-              <strong>Example:</strong><br>
-              Input: root = [2,1,3]<br>
-              Output: true
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="glass-card h-100 p-0 overflow-hidden">
-            <div class="d-flex align-items-center px-3 py-2" style="background: #1E1E2E; border-bottom: 1px solid #313244;">
-              <span style="font-size:0.8rem;color:#CDD6F4;font-weight:500;">Python</span>
-            </div>
-            <div class="code-editor-mock" style="border-radius: 0; min-height: 350px;">
-<pre style="margin:0; white-space:pre-wrap;"><span class="keyword">def</span> <span class="function">isValidBST</span>(root):
-    <span class="comment"># Your solution here</span>
-    <span class="keyword">pass</span></pre>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Question 5 -->
-    <div class="question-panel" id="q5" style="display:none;">
-      <div class="row g-4">
-        <div class="col-lg-6">
-          <div class="glass-card h-100">
-            <div class="d-flex align-items-center gap-2 mb-3">
-              <span class="badge rounded-pill" style="background:var(--clr-danger-light);color:var(--clr-danger);font-weight:600;">Hard</span>
-              <span class="badge rounded-pill" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">Graphs</span>
-            </div>
-            <h5 class="fw-bold mb-3">Q5: Course Schedule (Topological Sort)</h5>
-            <p style="color:var(--clr-text-secondary);">There are <code>numCourses</code> courses labeled from 0 to numCourses-1. You are given an array <code>prerequisites</code>. Return <code>true</code> if you can finish all courses.</p>
-            <div class="p-3 rounded-3 mt-3" style="background:var(--clr-bg); font-family: monospace; font-size:0.88rem;">
-              <strong>Example:</strong><br>
-              Input: numCourses = 2, prerequisites = [[1,0]]<br>
-              Output: true
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="glass-card h-100 p-0 overflow-hidden">
-            <div class="d-flex align-items-center px-3 py-2" style="background: #1E1E2E; border-bottom: 1px solid #313244;">
-              <span style="font-size:0.8rem;color:#CDD6F4;font-weight:500;">Python</span>
-            </div>
-            <div class="code-editor-mock" style="border-radius: 0; min-height: 350px;">
-<pre style="margin:0; white-space:pre-wrap;"><span class="keyword">def</span> <span class="function">canFinish</span>(numCourses, prerequisites):
-    <span class="comment"># Your solution here</span>
-    <span class="keyword">pass</span></pre>
-            </div>
-          </div>
-        </div>
-      </div>
+    <!-- Dynamic Container for Questions -->
+    <div id="dynamicQuestionsWrapper">
+      <!-- Generated by JavaScript based on active module -->
     </div>
 
     <!-- Question Loading Spinner Overlay -->
@@ -254,8 +118,8 @@
         <i class="bi bi-arrow-left"></i> Previous
       </button>
       <div class="d-flex gap-2">
-        <button class="btn" style="background:var(--clr-bg);color:var(--clr-text-secondary);border:1px solid var(--clr-border);border-radius:var(--radius-sm);min-height:44px;" data-bs-toggle="tooltip" title="Flag this question for review">
-          <i class="bi bi-flag"></i> Flag
+        <button class="btn" id="flagBtn" style="background:var(--clr-bg);color:var(--clr-text-secondary);border:1px solid var(--clr-border);border-radius:var(--radius-sm);min-height:44px;" onclick="toggleFlagCurrentQuestion()" data-bs-toggle="tooltip" title="Flag this question for review">
+          <i class="bi bi-flag"></i> <span id="flagText">Flag</span>
         </button>
       </div>
       <button class="btn btn-primary-custom" id="nextBtn" onclick="navigateQuestion('next')">
@@ -273,8 +137,8 @@
           <div style="width:64px;height:64px;border-radius:50%;background:var(--clr-success-light);color:var(--clr-success);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin:0 auto 1rem;">
             <i class="bi bi-check-lg"></i>
           </div>
-          <h5 class="fw-bold">Submit Assessment?</h5>
-          <p style="color:var(--clr-text-secondary);">You've answered 5 of 5 questions. Once submitted, your solution is evaluated by the AI grader.</p>
+          <h5 class="fw-bold" id="submitModalTitle">Submit Assessment?</h5>
+          <p style="color:var(--clr-text-secondary);" id="submitModalSubtitle">You have reached the end of the test. Once submitted, your solution will be analyzed by the AI evaluator.</p>
           <div class="d-flex gap-3 justify-content-center mt-3">
             <button class="btn btn-outline-custom" data-bs-dismiss="modal">Review Answers</button>
             <button type="button" class="btn btn-primary-custom" id="finalSubmitBtn" onclick="handleFinalSubmit()">
@@ -290,8 +154,8 @@
             <div class="spinner-grow text-info" role="status" style="width: 2rem; height: 2rem; animation-delay: 0.2s;"></div>
             <div class="spinner-grow text-success" role="status" style="width: 2rem; height: 2rem; animation-delay: 0.4s;"></div>
           </div>
-          <h5 class="fw-bold mb-2">Evaluating your answer...</h5>
-          <p class="text-muted small mb-3">Testing test cases, time complexity, and generating topic-level AI breakdown.</p>
+          <h5 class="fw-bold mb-2">Evaluating your answers...</h5>
+          <p class="text-muted small mb-3">Analyzing accuracy, time complexity, and generating topic-level AI diagnosis.</p>
           <div class="progress" style="height: 6px; border-radius: 3px;">
             <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 85%;"></div>
           </div>
@@ -309,7 +173,7 @@
             <i class="bi bi-exclamation-triangle"></i>
           </div>
           <h5 class="fw-bold">Exit Assessment?</h5>
-          <p style="color:var(--clr-text-secondary);">Your progress will be lost if you leave now. Are you sure?</p>
+          <p style="color:var(--clr-text-secondary);">Your current progress will be lost if you leave now. Are you sure you want to return to Assessment Hub?</p>
           <div class="d-flex gap-3 justify-content-center mt-3">
             <button class="btn btn-outline-custom" data-bs-dismiss="modal">Continue Assessment</button>
             <a href="assessment-hub.html" class="btn" style="background:var(--clr-danger);color:#fff;border:none;border-radius:var(--radius-sm);font-weight:600;min-height:44px;display:inline-flex;align-items:center;">Exit</a>
@@ -324,64 +188,962 @@
   <script src="gemini.js"></script>
   <script src="app.js"></script>
   <script>
+    /* ============================================================
+       MULTI-MODULE ASSESSMENT QUESTION BANKS
+       ============================================================ */
+    const ASSESSMENT_MODULES = {
+      quant: {
+        title: "Quantitative Aptitude",
+        category: "Aptitude & Problem Solving",
+        duration: 45,
+        questions: [
+          {
+            id: "quant-1",
+            difficulty: "Medium",
+            topic: "Time & Work",
+            type: "mcq",
+            title: "Q1: Time & Work Efficiency",
+            question: "A can do a piece of work in 12 days, and B can do it in 18 days. They worked together for 4 days, then A left. How many days will B take alone to finish the remaining work?",
+            hint: "Compute the combined work rate: 1/12 + 1/18 = 5/36. Find work done in 4 days, then determine B's remaining days.",
+            options: [
+              { key: "A", text: "8 days" },
+              { key: "B", text: "10 days" },
+              { key: "C", text: "6 days" },
+              { key: "D", text: "9 days" }
+            ],
+            correctKey: "A"
+          },
+          {
+            id: "quant-2",
+            difficulty: "Medium",
+            topic: "Profit & Loss",
+            type: "mcq",
+            title: "Q2: Markup and Discount",
+            question: "A trader marks his goods 25% above the cost price and allows a discount of 10% on the marked price for cash payment. What is his net gain percentage?",
+            hint: "Assume Cost Price = 100. Marked Price = 125. Selling Price = 125 - 10% of 125.",
+            options: [
+              { key: "A", text: "15%" },
+              { key: "B", text: "12.5%" },
+              { key: "C", text: "14.2%" },
+              { key: "D", text: "10%" }
+            ],
+            correctKey: "B"
+          },
+          {
+            id: "quant-3",
+            difficulty: "Hard",
+            topic: "Speed & Distance",
+            type: "mcq",
+            title: "Q3: Relative Speed & Trains",
+            question: "Two trains 140 m and 160 m long are moving in opposite directions at speeds of 60 km/h and 48 km/h respectively. In how many seconds will they completely cross each other?",
+            hint: "Relative speed in opposite directions = 60 + 48 = 108 km/h. Convert to m/s: 108 × (5/18) = 30 m/s. Total distance = 140 + 160 = 300 m.",
+            options: [
+              { key: "A", text: "8 seconds" },
+              { key: "B", text: "10 seconds" },
+              { key: "C", text: "12 seconds" },
+              { key: "D", text: "15 seconds" }
+            ],
+            correctKey: "B"
+          },
+          {
+            id: "quant-4",
+            difficulty: "Medium",
+            topic: "Probability",
+            type: "mcq",
+            title: "Q4: Probability of Selection",
+            question: "A bag contains 5 red, 4 blue, and 3 green balls. If 2 balls are drawn at random without replacement, what is the probability that both are blue?",
+            hint: "Total balls = 12. P(First blue) = 4/12. P(Second blue) = 3/11.",
+            options: [
+              { key: "A", text: "1/11" },
+              { key: "B", text: "2/11" },
+              { key: "C", text: "1/9" },
+              { key: "D", text: "3/22" }
+            ],
+            correctKey: "A"
+          },
+          {
+            id: "quant-5",
+            difficulty: "Hard",
+            topic: "Compound Interest",
+            type: "mcq",
+            title: "Q5: CI vs SI Difference",
+            question: "The difference between simple interest and compound interest compounded annually on a certain sum of money for 2 years at 10% per annum is ₹65. What is the principal sum?",
+            hint: "For 2 years: Difference = P × (R / 100)². Here 65 = P × (10/100)².",
+            options: [
+              { key: "A", text: "₹5,500" },
+              { key: "B", text: "₹6,500" },
+              { key: "C", text: "₹7,200" },
+              { key: "D", text: "₹6,000" }
+            ],
+            correctKey: "B"
+          }
+        ]
+      },
+
+      logical: {
+        title: "Logical Reasoning",
+        category: "Analytical & Deduction",
+        duration: 35,
+        questions: [
+          {
+            id: "log-1",
+            difficulty: "Medium",
+            topic: "Syllogisms",
+            type: "mcq",
+            title: "Q1: Deductive Syllogism",
+            question: "Statements:\n1. All engineers are problem solvers.\n2. Some problem solvers are researchers.\n\nConclusions:\nI. Some researchers are engineers.\nII. Some problem solvers are engineers.",
+            hint: "Evaluate Venn diagram overlaps. 'Some problem solvers are engineers' is a direct valid converse of Statement 1.",
+            options: [
+              { key: "A", text: "Only Conclusion I follows" },
+              { key: "B", text: "Only Conclusion II follows" },
+              { key: "C", text: "Both I and II follow" },
+              { key: "D", text: "Neither I nor II follows" }
+            ],
+            correctKey: "B"
+          },
+          {
+            id: "log-2",
+            difficulty: "Hard",
+            topic: "Seating Arrangement",
+            type: "mcq",
+            title: "Q2: Circular Arrangement",
+            question: "Six persons P, Q, R, S, T, and U are seated around a circular table facing the center.\n• P is second to the left of T.\n• Q is to the immediate right of T.\n• R is seated between P and S.\nWho is seated opposite to P?",
+            hint: "Place T at the bottom. T's right is counter-clockwise. Work out the relative circular positions.",
+            options: [
+              { key: "A", text: "Q" },
+              { key: "B", text: "S" },
+              { key: "C", text: "U" },
+              { key: "D", text: "T" }
+            ],
+            correctKey: "A"
+          },
+          {
+            id: "log-3",
+            difficulty: "Medium",
+            topic: "Blood Relations",
+            type: "mcq",
+            title: "Q3: Pointing Relationship",
+            question: "Pointing to a man on stage, Sunita said, 'His mother is the only daughter of my mother.' How is Sunita related to the man on stage?",
+            hint: "'Only daughter of my mother' = Sunita herself (since Sunita is female). Thus the man's mother is Sunita.",
+            options: [
+              { key: "A", text: "Aunt" },
+              { key: "B", text: "Sister" },
+              { key: "C", text: "Mother" },
+              { key: "D", text: "Grandmother" }
+            ],
+            correctKey: "C"
+          },
+          {
+            id: "log-4",
+            difficulty: "Easy",
+            topic: "Coding-Decoding",
+            type: "mcq",
+            title: "Q4: Alphabet Cipher",
+            question: "In a certain code language, if CLOUD is coded as ENQWF (+2 shift for each letter), how is SMILE coded in the same language?",
+            hint: "S(+2) = U, M(+2) = O, I(+2) = K, L(+2) = N, E(+2) = G.",
+            options: [
+              { key: "A", text: "UOKNG" },
+              { key: "B", text: "TNJKF" },
+              { key: "C", text: "UOKNH" },
+              { key: "D", text: "VNLOG" }
+            ],
+            correctKey: "A"
+          },
+          {
+            id: "log-5",
+            difficulty: "Medium",
+            topic: "Pattern Series",
+            type: "mcq",
+            title: "Q5: Number Sequence Progression",
+            question: "Find the next missing number in the sequence:\n3, 7, 15, 31, 63, ?",
+            hint: "Notice the difference doubling: +4, +8, +16, +32, so next is +64. Alternatively: 2n + 1.",
+            options: [
+              { key: "A", text: "95" },
+              { key: "B", text: "125" },
+              { key: "C", text: "127" },
+              { key: "D", text: "131" }
+            ],
+            correctKey: "C"
+          }
+        ]
+      },
+
+      verbal: {
+        title: "Verbal Ability",
+        category: "English Communication & Grammar",
+        duration: 30,
+        questions: [
+          {
+            id: "verb-1",
+            difficulty: "Medium",
+            topic: "Sentence Correction",
+            type: "mcq",
+            title: "Q1: Subject-Verb Agreement",
+            question: "Identify the grammatically correct sentence from the following options:",
+            options: [
+              { key: "A", text: "Neither the team leader nor the engineers was present at the sync." },
+              { key: "B", text: "Neither the team leader nor the engineers were present at the sync." },
+              { key: "C", text: "Neither the team leader or the engineers was present at the sync." },
+              { key: "D", text: "Neither the team leader nor the engineers is present at the sync." }
+            ],
+            correctKey: "B"
+          },
+          {
+            id: "verb-2",
+            difficulty: "Hard",
+            topic: "Vocabulary in Context",
+            type: "mcq",
+            title: "Q2: Vocabulary & Nuance",
+            question: "Choose the word closest in meaning to the highlighted word:\n'The executive gave a brief, **laconic** response that concealed any trace of anxiousness.'",
+            options: [
+              { key: "A", text: "Verbose" },
+              { key: "B", text: "Terse / Concise" },
+              { key: "C", text: "Hostile" },
+              { key: "D", text: "Ambiguous" }
+            ],
+            correctKey: "B"
+          },
+          {
+            id: "verb-3",
+            difficulty: "Medium",
+            topic: "Para-Jumbles",
+            type: "mcq",
+            title: "Q3: Sentence Ordering",
+            question: "Rearrange the sentences into a logically coherent paragraph:\n[P] Consequently, organizations are redesigning their campus hiring pipelines.\n[Q] The rapid adoption of generative AI has changed everyday software engineering.\n[R] Candidates must now demonstrate strong system thinking alongside algorithmic skill.\n[S] Traditional rote memorization is no longer sufficient to assess problem solvers.",
+            options: [
+              { key: "A", text: "Q - S - R - P" },
+              { key: "B", text: "Q - P - S - R" },
+              { key: "C", text: "S - Q - P - R" },
+              { key: "D", text: "P - Q - R - S" }
+            ],
+            correctKey: "A"
+          },
+          {
+            id: "verb-4",
+            difficulty: "Easy",
+            topic: "Idioms & Phrases",
+            type: "mcq",
+            title: "Q4: Professional Idioms",
+            question: "What is the meaning of the idiom **'Touch base'** in a professional workplace context?",
+            options: [
+              { key: "A", text: "To play sports with colleagues" },
+              { key: "B", text: "To briefly connect or communicate with someone to update on progress" },
+              { key: "C", text: "To assign blames for an error" },
+              { key: "D", text: "To start a project from the physical headquarters" }
+            ],
+            correctKey: "B"
+          }
+        ]
+      },
+
+      coding: {
+        title: "DSA Coding Challenge",
+        category: "Data Structures & Algorithms",
+        duration: 90,
+        questions: [
+          {
+            id: "code-1",
+            difficulty: "Medium",
+            topic: "Arrays & Hash Maps",
+            type: "code",
+            title: "Q1: Two Sum Problem",
+            question: "Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two numbers such that they add up to <code>target</code>.<br><br>Each input has exactly one solution and you may not use the same element twice.",
+            example: "Input: nums = [2,7,11,15], target = 9\nOutput: [0,1]\nExplanation: nums[0] + nums[1] == 9",
+            starterCode: `def twoSum(nums, target):
+    # Your solution here
+    lookup = {}
+    for i, num in enumerate(nums):
+        complement = target - num
+        if complement in lookup:
+            return [lookup[complement], i]
+        lookup[num] = i
+    return []`
+          },
+          {
+            id: "code-2",
+            difficulty: "Hard",
+            topic: "Dynamic Programming",
+            type: "code",
+            title: "Q2: Longest Increasing Subsequence",
+            question: "Given an integer array <code>nums</code>, return the length of the longest strictly increasing subsequence in O(N log N) or O(N²).",
+            example: "Input: nums = [10,9,2,5,3,7,101,18]\nOutput: 4\nExplanation: The longest increasing subsequence is [2,3,7,101], length = 4.",
+            starterCode: `def lengthOfLIS(nums):
+    if not nums:
+        return 0
+    # Complete DP solution below
+    dp = [1] * len(nums)
+    for i in range(len(nums)):
+        for j in range(i):
+            if nums[i] > nums[j]:
+                dp[i] = max(dp[i], dp[j] + 1)
+    return max(dp)`
+          },
+          {
+            id: "code-3",
+            difficulty: "Medium",
+            topic: "Binary Trees",
+            type: "code",
+            title: "Q3: Validate Binary Search Tree",
+            question: "Given the root of a binary tree, determine if it is a valid binary search tree (BST). The left subtree contains only nodes with keys less than the node's key, and the right subtree contains only keys greater.",
+            example: "Input: root = [2,1,3]\nOutput: true",
+            starterCode: `def isValidBST(root, low=float('-inf'), high=float('inf')):
+    if not root:
+        return True
+    if not (low < root.val < high):
+        return False
+    return isValidBST(root.left, low, root.val) and isValidBST(root.right, root.val, high)`
+          }
+        ]
+      },
+
+      dbms: {
+        title: "DBMS & SQL Queries",
+        category: "Databases & SQL Engineering",
+        duration: 45,
+        questions: [
+          {
+            id: "sql-1",
+            difficulty: "Medium",
+            topic: "Subqueries & Window Functions",
+            type: "sql",
+            title: "Q1: Second Highest Salary",
+            question: "Write an SQL query to report the second highest salary from the <code>Employee</code> table. If there is no second highest salary, query should return null.",
+            schema: `TABLE Employee (
+  id INT PRIMARY KEY,
+  name VARCHAR(50),
+  salary INT,
+  department_id INT
+);`,
+            starterCode: `SELECT MAX(salary) AS SecondHighestSalary
+FROM Employee
+WHERE salary < (SELECT MAX(salary) FROM Employee);`,
+            expectedResult: [
+              { SecondHighestSalary: 85000 }
+            ]
+          },
+          {
+            id: "sql-2",
+            difficulty: "Hard",
+            topic: "JOINs & Group By",
+            type: "sql",
+            title: "Q2: Department Highest Salary",
+            question: "Write an SQL query to find employees who have the highest salary in each of the departments.",
+            schema: `TABLE Department (
+  id INT PRIMARY KEY,
+  dept_name VARCHAR(50)
+);`,
+            starterCode: `SELECT d.dept_name AS Department, e.name AS Employee, e.salary AS Salary
+FROM Employee e
+JOIN Department d ON e.department_id = d.id
+WHERE (e.department_id, e.salary) IN (
+    SELECT department_id, MAX(salary)
+    FROM Employee
+    GROUP BY department_id
+);`,
+            expectedResult: [
+              { Department: "Engineering", Employee: "Alice", Salary: 95000 },
+              { Department: "Marketing", Employee: "Bob", Salary: 72000 }
+            ]
+          },
+          {
+            id: "sql-3",
+            difficulty: "Medium",
+            topic: "LEFT JOIN & NULL Checks",
+            type: "sql",
+            title: "Q3: Customers Who Never Ordered",
+            question: "Find all customers who never placed any orders using <code>LEFT JOIN</code> on <code>Customers</code> and <code>Orders</code>.",
+            schema: `TABLE Customers (id INT, name VARCHAR);
+TABLE Orders (id INT, customer_id INT);`,
+            starterCode: `SELECT c.name AS Customers
+FROM Customers c
+LEFT JOIN Orders o ON c.id = o.customer_id
+WHERE o.id IS NULL;`,
+            expectedResult: [
+              { Customers: "Henry" },
+              { Customers: "Max" }
+            ]
+          }
+        ]
+      },
+
+      technical: {
+        title: "AI Technical Interview",
+        category: "System Design & Architecture",
+        duration: 45,
+        questions: [
+          {
+            id: "tech-1",
+            difficulty: "Hard",
+            topic: "High-Level System Design",
+            type: "interview",
+            title: "Q1: Design a Scalable URL Shortener (TinyURL)",
+            question: "Design a URL shortening service like TinyURL / Bit.ly handling 100M new URLs per day.<br>Discuss your high-level architecture, database schema, unique hash generation (Base62 vs Snowflake), cache layer, and redirection latency.",
+            starterAiMessage: "Hello! Welcome to your AI Technical Interview round. Let's begin with System Design: Can you walk me through how you would architect a URL shortener like bit.ly? What database and encoding strategy would you choose to ensure unique short codes?"
+          },
+          {
+            id: "tech-2",
+            difficulty: "Medium",
+            topic: "Database Indexing & Internals",
+            type: "interview",
+            title: "Q2: Database Indexing Trade-offs",
+            question: "Explain how B+ Tree indexing works in relational databases (MySQL InnoDB / Postgres). Why do we prefer B+ Trees over Hash Maps or binary search trees for disk-based storage?",
+            starterAiMessage: "Great progress! Now let's dive into Database internals. How does a B+ Tree index optimize disk I/O and range scans compared to a standard binary search tree or hash index?"
+          }
+        ]
+      },
+
+      hr: {
+        title: "AI HR Interview",
+        category: "Behavioral & Culture Fit",
+        duration: 30,
+        questions: [
+          {
+            id: "hr-1",
+            difficulty: "Medium",
+            topic: "STAR Framework: Conflict Resolution",
+            type: "interview",
+            title: "Q1: Team Conflict & Collaboration",
+            question: "Tell me about a time you had a significant technical disagreement or conflict with a teammate or project partner. How did you handle the situation and what was the outcome?",
+            starterAiMessage: "Welcome to your HR & Culture Fit round! I'm your AI HR interviewer. Tell me about a time you faced a difficult conflict or technical disagreement with a team member. Please structure your response using the STAR method (Situation, Task, Action, Result)."
+          },
+          {
+            id: "hr-2",
+            difficulty: "Medium",
+            topic: "Handling Pressure & Deadlines",
+            type: "interview",
+            title: "Q2: Tight Deadlines & Prioritization",
+            question: "Describe a situation where a project deadline was at risk due to an unexpected blocker or scope creep. How did you prioritize your deliverables and communicate with stakeholders?",
+            starterAiMessage: "Excellent. Now imagine your project deadline is 24 hours away and you discover a critical blocker that cannot be resolved in time. What exact steps would you take to communicate with your lead and prioritize deliverables?"
+          }
+        ]
+      },
+
+      communication: {
+        title: "Communication Assessment",
+        category: "Professional Written Communication",
+        duration: 25,
+        questions: [
+          {
+            id: "comm-1",
+            difficulty: "Easy",
+            topic: "Client Incident Communication",
+            type: "communication",
+            title: "Task 1: Incident & Delay Escalation Email",
+            scenario: "You are the tech lead for an enterprise customer onboarding project. A database migration issue has caused a 2-day delay on a promised go-live date.",
+            prompt: "Draft an empathetic, professional email to the client's VP of Engineering explaining the incident, outline the mitigation steps already taken, and provide a clear revised timeline.",
+            starterSubject: "Update regarding production onboarding timeline - Placement Coach platform",
+            starterDraft: "Dear Client Team,\n\nI am writing to provide an important update regarding our upcoming go-live milestone..."
+          },
+          {
+            id: "comm-2",
+            difficulty: "Medium",
+            topic: "Executive Summary",
+            type: "communication",
+            title: "Task 2: Technical Proposal Summary",
+            scenario: "Your team has decided to migrate a monolithic backend to serverless microservices to reduce infrastructure costs.",
+            prompt: "Write a concise 3-paragraph executive summary for non-technical leadership highlighting the business benefits, cost savings, and risk mitigation strategies.",
+            starterSubject: "Executive Summary: Cloud Infrastructure Optimization",
+            starterDraft: "Executive Summary:\n\nOur engineering team has evaluated options to optimize our current infrastructure..."
+          }
+        ]
+      }
+    };
+
+    /* ============================================================
+       CONTROLLER STATE
+       ============================================================ */
+    let currentModuleKey = 'quant';
+    let currentModule = ASSESSMENT_MODULES.quant;
+    let currentQuestionIndex = 0;
+    let userAnswers = {}; // { questionId: value }
+    let flaggedQuestions = new Set();
+
     document.addEventListener('DOMContentLoaded', () => {
-      initAssessmentTimer();
-      // Init tooltips
+      resolveActiveModule();
+      renderCurrentAssessment();
+
+      // Tooltips
       const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
       tooltips.forEach(el => new bootstrap.Tooltip(el));
     });
 
-    // Show active panel, hide others
-    document.querySelectorAll('.question-panel').forEach((panel, idx) => {
-      if (idx === 0) {
-        panel.classList.add('active');
-        panel.style.display = '';
-      } else {
-        panel.classList.remove('active');
-        panel.style.display = 'none';
-      }
-    });
+    /**
+     * Resolve module key from URL query string or localStorage
+     */
+    function resolveActiveModule() {
+      const urlParams = new URLSearchParams(window.location.search);
+      let paramKey = urlParams.get('module') || urlParams.get('type');
 
-    // Handle question navigation with brief spinner state
+      if (!paramKey) {
+        try {
+          const stored = JSON.parse(localStorage.getItem('current_assessment'));
+          if (stored && stored.key) {
+            paramKey = stored.key;
+          }
+        } catch (e) {}
+      }
+
+      if (paramKey && ASSESSMENT_MODULES[paramKey]) {
+        currentModuleKey = paramKey;
+      } else {
+        // Match partials if name was passed
+        const lower = (paramKey || '').toLowerCase();
+        if (lower.includes('quant') || lower.includes('aptitude')) currentModuleKey = 'quant';
+        else if (lower.includes('logical')) currentModuleKey = 'logical';
+        else if (lower.includes('verbal')) currentModuleKey = 'verbal';
+        else if (lower.includes('dbms') || lower.includes('sql')) currentModuleKey = 'dbms';
+        else if (lower.includes('tech')) currentModuleKey = 'technical';
+        else if (lower.includes('hr')) currentModuleKey = 'hr';
+        else if (lower.includes('comm')) currentModuleKey = 'communication';
+        else if (lower.includes('code') || lower.includes('dsa')) currentModuleKey = 'coding';
+        else currentModuleKey = 'quant';
+      }
+
+      currentModule = ASSESSMENT_MODULES[currentModuleKey] || ASSESSMENT_MODULES.quant;
+    }
+
+    /**
+     * Initialize Header, Timer, and Question Views
+     */
+    function renderCurrentAssessment() {
+      // Set Header
+      const headerTitle = document.getElementById('assessmentHeaderTitle');
+      const headerCategory = document.getElementById('assessmentHeaderCategory');
+      if (headerTitle) headerTitle.textContent = currentModule.title;
+      if (headerCategory) headerCategory.textContent = currentModule.category;
+      document.title = `${currentModule.title} — Placement Coach`;
+
+      // Start Timer
+      if (typeof initAssessmentTimer === 'function') {
+        initAssessmentTimer(currentModule.duration);
+      }
+
+      // Render Question Panels
+      const wrapper = document.getElementById('dynamicQuestionsWrapper');
+      wrapper.innerHTML = '';
+
+      currentModule.questions.forEach((q, idx) => {
+        const panel = document.createElement('div');
+        panel.className = `question-panel ${idx === 0 ? 'active' : ''}`;
+        panel.id = `q_panel_${idx}`;
+        if (idx !== 0) panel.style.display = 'none';
+
+        if (q.type === 'mcq') {
+          panel.innerHTML = renderMcqQuestion(q, idx);
+        } else if (q.type === 'code') {
+          panel.innerHTML = renderCodeQuestion(q, idx);
+        } else if (q.type === 'sql') {
+          panel.innerHTML = renderSqlQuestion(q, idx);
+        } else if (q.type === 'interview') {
+          panel.innerHTML = renderInterviewQuestion(q, idx);
+        } else if (q.type === 'communication') {
+          panel.innerHTML = renderCommunicationQuestion(q, idx);
+        }
+
+        wrapper.appendChild(panel);
+      });
+
+      currentQuestionIndex = 0;
+      updateNavigationControls();
+    }
+
+    /* ============================================================
+       QUESTION TEMPLATE GENERATORS
+       ============================================================ */
+
+    function renderMcqQuestion(q, idx) {
+      return `
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div class="glass-card h-100">
+              <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="badge rounded-pill" style="background:var(--clr-warning-light);color:var(--clr-warning);font-weight:600;">${q.difficulty}</span>
+                <span class="badge rounded-pill" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">${q.topic}</span>
+              </div>
+              <h5 class="fw-bold mb-3">${q.title}</h5>
+              <div class="mb-3" style="color:var(--clr-text); font-size:1.02rem; line-height:1.6; white-space:pre-line;">
+                ${q.question}
+              </div>
+              ${q.hint ? `
+                <div class="p-3 rounded-3 mt-3 border" style="background:var(--clr-bg); font-size:0.88rem;">
+                  <strong class="text-primary"><i class="bi bi-lightbulb-fill me-1"></i> Question Guide:</strong><br>
+                  <span class="text-muted">${q.hint}</span>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="glass-card h-100 d-flex flex-column justify-content-center">
+              <h6 class="fw-bold mb-3 text-muted">Select One Option:</h6>
+              <div class="d-flex flex-column gap-3">
+                ${q.options.map(opt => `
+                  <div class="mcq-option" onclick="selectMcqOption('${q.id}', '${opt.key}', this)">
+                    <span class="option-badge">${opt.key}</span>
+                    <span class="flex-grow-1">${opt.text}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCodeQuestion(q, idx) {
+      return `
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div class="glass-card h-100">
+              <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="badge rounded-pill" style="background:var(--clr-danger-light);color:var(--clr-danger);font-weight:600;">${q.difficulty}</span>
+                <span class="badge rounded-pill" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">${q.topic}</span>
+              </div>
+              <h5 class="fw-bold mb-3">${q.title}</h5>
+              <div class="mb-3 text-muted" style="line-height:1.6;">${q.question}</div>
+              <div class="p-3 rounded-3 mt-3 font-monospace" style="background:var(--clr-bg);font-size:0.88rem;">
+                <strong>Example:</strong><br>${q.example.replace(/\n/g, '<br>')}
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="glass-card h-100 p-0 overflow-hidden d-flex flex-column">
+              <div class="d-flex align-items-center justify-content-between px-3 py-2" style="background: #1E1E2E; border-bottom: 1px solid #313244;">
+                <span style="font-size:0.8rem;color:#CDD6F4;font-weight:500;"><i class="bi bi-filetype-py text-warning me-1"></i> Python 3</span>
+                <button class="btn btn-sm" style="color:#CDD6F4;font-size:0.75rem;background:rgba(255,255,255,0.1);border:none;border-radius:4px;padding:0.2rem 0.6rem;" onclick="resetCodeEditor('${q.id}')">Reset</button>
+              </div>
+              <div class="p-3 flex-grow-1" style="background: #1E1E2E;">
+                <textarea id="code_area_${q.id}" class="form-control font-monospace border-0 shadow-none text-light" style="background:transparent; resize:none; min-height: 280px; font-size:0.9rem;">${q.starterCode}</textarea>
+              </div>
+              <div class="d-flex align-items-center justify-content-between p-3" style="background: #1E1E2E; border-top: 1px solid #313244;">
+                <button class="btn btn-sm text-white" style="background:var(--clr-success);" onclick="runCodeSimulation('${q.id}')">
+                  <i class="bi bi-play-fill"></i> Run Code
+                </button>
+                <span id="code_status_${q.id}" class="small text-success d-none"><i class="bi bi-check-circle-fill"></i> 3/3 Test cases passed (42ms)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSqlQuestion(q, idx) {
+      return `
+        <div class="row g-4">
+          <div class="col-lg-5">
+            <div class="glass-card h-100">
+              <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="badge rounded-pill" style="background:var(--clr-warning-light);color:var(--clr-warning);font-weight:600;">${q.difficulty}</span>
+                <span class="badge rounded-pill" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">${q.topic}</span>
+              </div>
+              <h5 class="fw-bold mb-3">${q.title}</h5>
+              <p class="text-muted small">${q.question}</p>
+              <h6 class="fw-bold small text-muted mt-3">Database Schema:</h6>
+              <pre class="p-3 rounded-3 font-monospace mb-0" style="background:var(--clr-bg);font-size:0.82rem;">${q.schema}</pre>
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="glass-card h-100 p-0 overflow-hidden d-flex flex-column">
+              <div class="d-flex align-items-center justify-content-between px-3 py-2" style="background: #1E1E2E; border-bottom: 1px solid #313244;">
+                <span style="font-size:0.8rem;color:#CDD6F4;font-weight:500;"><i class="bi bi-database me-1 text-info"></i> SQL Query Editor</span>
+              </div>
+              <div class="p-3 flex-grow-1" style="background: #1E1E2E;">
+                <textarea id="sql_area_${q.id}" class="form-control font-monospace border-0 shadow-none text-light" style="background:transparent; resize:none; min-height: 180px; font-size:0.88rem;">${q.starterCode}</textarea>
+              </div>
+              <div class="p-3" style="background: #1E1E2E; border-top: 1px solid #313244;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <button class="btn btn-sm text-white" style="background:var(--clr-primary);" onclick="runSqlSimulation('${q.id}')">
+                    <i class="bi bi-lightning-fill"></i> Run SQL Query
+                  </button>
+                  <small class="text-muted">Dialect: PostgreSQL / ANSI SQL</small>
+                </div>
+                <div id="sql_result_${q.id}" class="table-responsive rounded-2 border border-secondary mt-2">
+                  <table class="table table-sm sql-result-table">
+                    <thead>
+                      <tr>${Object.keys(q.expectedResult[0] || {}).map(k => `<th>${k}</th>`).join('')}</tr>
+                    </thead>
+                    <tbody>
+                      ${q.expectedResult.map(row => `
+                        <tr>${Object.values(row).map(val => `<td>${val}</td>`).join('')}</tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderInterviewQuestion(q, idx) {
+      return `
+        <div class="row g-4">
+          <div class="col-lg-4">
+            <div class="glass-card h-100">
+              <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="badge rounded-pill" style="background:var(--clr-danger-light);color:var(--clr-danger);font-weight:600;">${q.difficulty}</span>
+                <span class="badge rounded-pill" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">${q.topic}</span>
+              </div>
+              <h5 class="fw-bold mb-3">${q.title}</h5>
+              <div class="text-muted small mb-3" style="line-height:1.6;">${q.question}</div>
+              <div class="p-3 rounded-3" style="background:var(--clr-bg);font-size:0.85rem;">
+                <strong class="text-primary"><i class="bi bi-robot me-1"></i> AI Interviewer Tips:</strong>
+                <ul class="mb-0 ps-3 mt-1 text-muted">
+                  <li>Speak or type concisely with structured points.</li>
+                  <li>Incorporate technical trade-offs or the STAR method.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <div class="glass-card h-100 p-0 overflow-hidden d-flex flex-column">
+              <div class="d-flex align-items-center gap-2 px-3 py-2 bg-light border-bottom">
+                <span class="badge bg-success rounded-circle p-1"><i class="bi bi-circle-fill" style="font-size:6px;"></i></span>
+                <strong class="small text-body">AI Interviewer — Active Session</strong>
+              </div>
+              <div class="chat-messages p-3 flex-grow-1" id="interview_messages_${q.id}" style="min-height: 280px; max-height: 360px; overflow-y: auto;">
+                <div class="chat-message-row">
+                  <div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>
+                  <div class="chat-bubble ai">${q.starterAiMessage}<span class="bubble-time">Just now</span></div>
+                </div>
+              </div>
+              <div class="chat-input-bar border-top p-2 d-flex gap-2">
+                <input type="text" id="interview_input_${q.id}" class="form-control" placeholder="Type your response to the AI interviewer..." onkeydown="if(event.key==='Enter') sendInterviewReply('${q.id}')">
+                <button class="btn btn-primary-custom" onclick="sendInterviewReply('${q.id}')">
+                  <i class="bi bi-send-fill"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCommunicationQuestion(q, idx) {
+      return `
+        <div class="row g-4">
+          <div class="col-lg-5">
+            <div class="glass-card h-100">
+              <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="badge rounded-pill" style="background:var(--clr-success-light);color:var(--clr-success);font-weight:600;">${q.difficulty}</span>
+                <span class="badge rounded-pill" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">${q.topic}</span>
+              </div>
+              <h5 class="fw-bold mb-3">${q.title}</h5>
+              <div class="p-3 rounded-3 mb-3" style="background:var(--clr-bg);font-size:0.9rem;">
+                <strong>Scenario:</strong><br>
+                <span class="text-muted">${q.scenario}</span>
+              </div>
+              <p class="text-muted small">${q.prompt}</p>
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="glass-card h-100 d-flex flex-column">
+              <h6 class="fw-bold mb-2">Subject:</h6>
+              <input type="text" class="form-control mb-3" value="${q.starterSubject}">
+              <h6 class="fw-bold mb-2">Message Body:</h6>
+              <textarea id="comm_body_${q.id}" class="form-control flex-grow-1 mb-2" style="min-height: 200px;" oninput="updateWordCount('${q.id}')">${q.starterDraft}</textarea>
+              <div class="d-flex justify-content-between align-items-center small text-muted">
+                <span id="word_count_${q.id}">Word count: 18 words</span>
+                <button class="btn btn-sm btn-outline-custom" onclick="checkTone('${q.id}')">
+                  <i class="bi bi-magic me-1"></i> Check Tone & Clarity
+                </button>
+              </div>
+              <div id="tone_feedback_${q.id}" class="alert alert-success small py-2 mt-2 mb-0 d-none">
+                <i class="bi bi-check-circle-fill me-1"></i> Tone: Empathetic & Professional (Score: 92/100). Clear next steps communicated.
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /* ============================================================
+       INTERACTION HANDLERS
+       ============================================================ */
+
+    function selectMcqOption(qId, key, el) {
+      const parent = el.closest('.glass-card');
+      parent.querySelectorAll('.mcq-option').forEach(opt => opt.classList.remove('selected'));
+      el.classList.add('selected');
+      userAnswers[qId] = key;
+    }
+
+    function resetCodeEditor(qId) {
+      const q = currentModule.questions.find(x => x.id === qId);
+      if (q) {
+        document.getElementById(`code_area_${qId}`).value = q.starterCode;
+      }
+    }
+
+    function runCodeSimulation(qId) {
+      const statusEl = document.getElementById(`code_status_${qId}`);
+      if (statusEl) {
+        statusEl.classList.remove('d-none');
+        statusEl.innerHTML = `<i class="bi bi-check-circle-fill"></i> 3/3 Test cases passed (38ms)`;
+      }
+    }
+
+    function runSqlSimulation(qId) {
+      const resEl = document.getElementById(`sql_result_${qId}`);
+      if (resEl) {
+        resEl.style.opacity = '0.5';
+        setTimeout(() => { resEl.style.opacity = '1'; }, 200);
+      }
+    }
+
+    async function sendInterviewReply(qId) {
+      const input = document.getElementById(`interview_input_${qId}`);
+      const container = document.getElementById(`interview_messages_${qId}`);
+      if (!input || !input.value.trim() || !container) return;
+
+      const userText = input.value.trim();
+      input.value = '';
+
+      // Append User message
+      const userRow = document.createElement('div');
+      userRow.className = 'chat-message-row user-row';
+      userRow.innerHTML = `<div class="chat-bubble user">${escapeHtml(userText)}<span class="bubble-time">Just now</span></div>`;
+      container.appendChild(userRow);
+      container.scrollTop = container.scrollHeight;
+
+      // Typing indicator
+      const typingRow = document.createElement('div');
+      typingRow.className = 'chat-message-row';
+      typingRow.innerHTML = `
+        <div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>
+        <div class="chat-bubble ai d-flex align-items-center gap-1">
+          <span class="spinner-grow spinner-grow-sm text-primary"></span>
+          <span class="spinner-grow spinner-grow-sm text-primary" style="animation-delay: 0.15s;"></span>
+          <span class="spinner-grow spinner-grow-sm text-primary" style="animation-delay: 0.3s;"></span>
+        </div>
+      `;
+      container.appendChild(typingRow);
+      container.scrollTop = container.scrollHeight;
+
+      // Check Gemini or intelligent fallback
+      let aiResponse = "Great explanation. How would you handle high concurrency spikes in this scenario?";
+      if (typeof askGemini === 'function' && typeof hasGeminiAccess === 'function' && hasGeminiAccess()) {
+        try {
+          aiResponse = await askGemini(`You are an expert technical/HR interviewer conducting a campus interview. The candidate just answered: "${userText}". Give a constructive 2-sentence response and ask a thoughtful follow-up question.`);
+        } catch (e) {
+          console.warn('Gemini interview fallback:', e);
+        }
+      }
+
+      typingRow.remove();
+      const aiRow = document.createElement('div');
+      aiRow.className = 'chat-message-row';
+      aiRow.innerHTML = `<div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div><div class="chat-bubble ai">${aiResponse}<span class="bubble-time">Just now</span></div>`;
+      container.appendChild(aiRow);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function updateWordCount(qId) {
+      const textarea = document.getElementById(`comm_body_${qId}`);
+      const counter = document.getElementById(`word_count_${qId}`);
+      if (!textarea || !counter) return;
+      const count = textarea.value.trim().split(/\s+/).filter(Boolean).length;
+      counter.textContent = `Word count: ${count} words`;
+    }
+
+    function checkTone(qId) {
+      const feedback = document.getElementById(`tone_feedback_${qId}`);
+      if (feedback) {
+        feedback.classList.remove('d-none');
+      }
+    }
+
+    function toggleFlagCurrentQuestion() {
+      const btn = document.getElementById('flagBtn');
+      const text = document.getElementById('flagText');
+      if (flaggedQuestions.has(currentQuestionIndex)) {
+        flaggedQuestions.delete(currentQuestionIndex);
+        btn.classList.remove('btn-warning');
+        btn.style.color = 'var(--clr-text-secondary)';
+        text.textContent = 'Flag';
+      } else {
+        flaggedQuestions.add(currentQuestionIndex);
+        btn.classList.add('btn-warning');
+        btn.style.color = '#fff';
+        text.textContent = 'Flagged';
+      }
+    }
+
+    /* ============================================================
+       QUESTION NAVIGATION & PROGRESS
+       ============================================================ */
+
     window.navigateQuestion = function(direction) {
       const panels = document.querySelectorAll('.question-panel');
-      const current = document.querySelector('.question-panel.active');
       const overlay = document.getElementById('questionLoadingOverlay');
-      if (!current) return;
+      if (!panels.length) return;
 
-      let idx = Array.from(panels).indexOf(current);
-      if (direction === 'next' && idx < panels.length - 1) idx++;
-      else if (direction === 'prev' && idx > 0) idx--;
+      if (direction === 'next' && currentQuestionIndex < panels.length - 1) {
+        currentQuestionIndex++;
+      } else if (direction === 'prev' && currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+      }
 
-      // Hide all panels, show brief loader
       panels.forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
       if (overlay) overlay.classList.remove('d-none');
 
       setTimeout(() => {
         if (overlay) overlay.classList.add('d-none');
-        panels[idx].classList.add('active');
-        panels[idx].style.display = '';
-        panels[idx].style.animation = 'bubbleFadeIn 0.3s ease';
+        panels[currentQuestionIndex].classList.add('active');
+        panels[currentQuestionIndex].style.display = '';
+        panels[currentQuestionIndex].style.animation = 'bubbleFadeIn 0.3s ease';
 
-        // Update progress
-        const progress = document.getElementById('questionProgress');
-        if (progress) {
-          const pct = ((idx + 1) / panels.length) * 100;
-          progress.style.width = pct + '%';
-        }
-        document.getElementById('questionCounter').textContent = `Question ${idx + 1} of ${panels.length}`;
+        updateNavigationControls();
+      }, 150);
+    };
 
-        document.getElementById('prevBtn').disabled = (idx === 0);
-        const nextBtn = document.getElementById('nextBtn');
-        if (idx === panels.length - 1) {
+    function updateNavigationControls() {
+      const total = currentModule.questions.length;
+      const idx = currentQuestionIndex;
+
+      // Update Counter & Progress
+      const counter = document.getElementById('questionCounter');
+      if (counter) counter.textContent = `Question ${idx + 1} of ${total}`;
+
+      const progress = document.getElementById('questionProgress');
+      if (progress) {
+        const pct = ((idx + 1) / total) * 100;
+        progress.style.width = pct + '%';
+      }
+
+      // Prev / Next Buttons
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      if (prevBtn) prevBtn.disabled = (idx === 0);
+
+      if (nextBtn) {
+        if (idx === total - 1) {
           nextBtn.innerHTML = '<i class="bi bi-check-lg"></i> Submit';
-          nextBtn.onclick = () => new bootstrap.Modal(document.getElementById('submitModal')).show();
+          nextBtn.onclick = () => {
+            const submitModal = new bootstrap.Modal(document.getElementById('submitModal'));
+            submitModal.show();
+          };
         } else {
           nextBtn.innerHTML = 'Next <i class="bi bi-arrow-right"></i>';
           nextBtn.onclick = () => navigateQuestion('next');
         }
-      }, 250);
-    };
+      }
+
+      // Flag state
+      const flagBtn = document.getElementById('flagBtn');
+      const flagText = document.getElementById('flagText');
+      if (flagBtn && flagText) {
+        if (flaggedQuestions.has(idx)) {
+          flagBtn.classList.add('btn-warning');
+          flagBtn.style.color = '#fff';
+          flagText.textContent = 'Flagged';
+        } else {
+          flagBtn.classList.remove('btn-warning');
+          flagBtn.style.color = 'var(--clr-text-secondary)';
+          flagText.textContent = 'Flag';
+        }
+      }
+    }
 
     function handleFinalSubmit() {
       const confirmState = document.getElementById('submitConfirmState');
@@ -389,6 +1151,17 @@
       if (confirmState && evalState) {
         confirmState.classList.add('d-none');
         evalState.classList.remove('d-none');
+
+        // Save completed assessment record
+        try {
+          localStorage.setItem('latest_assessment_result', JSON.stringify({
+            moduleKey: currentModuleKey,
+            title: currentModule.title,
+            timestamp: new Date().toISOString(),
+            score: Math.floor(Math.random() * 15) + 80 // 80-95%
+          }));
+        } catch (e) {}
+
         setTimeout(() => {
           window.location.href = 'performance.html';
         }, 1500);
