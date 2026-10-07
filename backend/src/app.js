@@ -24,14 +24,22 @@ app.use(
 
 const corsOptions = {
   origin(origin, callback) {
-    // Allow same origin and configured client origins (no wildcard with credentials).
-    if (!origin || origin === env.clientUrl || origin.replace(/\/$/, '') === env.clientUrl.replace(/\/$/, '')) {
+    // No Origin header: same-origin navigations, curl, server-to-server.
+    if (!origin) {
       return callback(null, true);
     }
-    if (!env.isProduction) {
-      return callback(null, true); // dev: allow any local origin (file://, other ports)
+    const normalized = origin.replace(/\/$/, '');
+    const allowed = String(env.clientUrl || '').replace(/\/$/, '');
+    // Same origin as the API itself, or the configured client origin.
+    if (normalized === allowed || normalized === `http://localhost:${env.port}`) {
+      return callback(null, true);
     }
-    return callback(null, true);
+    // Dev only: allow any local origin (file://, other local ports).
+    if (!env.isProduction) {
+      return callback(null, true);
+    }
+    // Production: never reflect arbitrary origins with credentials.
+    return callback(null, false);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -64,6 +72,22 @@ const staticRoot = env.repoRoot;
 
 // Never expose server source, dependency or env files through the web root.
 app.use(['/backend', '/node_modules'], (req, res) => res.status(404).send('Not found'));
+
+// Never serve repository internals (logs, docs, manifests, VCS or env files).
+const BLOCKED_STATIC = [
+  /\.(log|md|pid|sqlite|db)$/i,
+  /(^|\/)package(-lock)?\.json$/i,
+  /(^|\/)\.git(\/|$)/i,
+  /(^|\/)\.env/i,
+  /(^|\/)server\.(log|err\.log)$/i,
+];
+app.use((req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+  if (BLOCKED_STATIC.some((re) => re.test(req.path))) {
+    return res.status(404).send('Not found');
+  }
+  return next();
+});
 
 const staticOptions = {
   index: 'index.html',
