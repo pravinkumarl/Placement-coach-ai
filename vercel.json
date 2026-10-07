@@ -5,6 +5,10 @@
     {
       "source": "/config.js",
       "destination": "/config.example.js"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
     }
   ],
   "headers": [
