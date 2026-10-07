@@ -51,7 +51,7 @@
     </nav>
     <div class="sidebar-footer">
       <div class="dark-mode-toggle" title="Toggle dark mode"><i class="bi bi-moon-stars"></i><span>Dark Mode</span><div class="toggle-track ms-auto"><div class="toggle-thumb"></div></div></div>
-      <a href="login.html" class="nav-link mt-2 d-flex align-items-center gap-2" style="color:var(--clr-text-muted);font-size:0.85rem;"><i class="bi bi-box-arrow-left"></i> Logout</a>
+      <a href="login.html" data-logout class="nav-link mt-2 d-flex align-items-center gap-2" style="color:var(--clr-text-muted);font-size:0.85rem;"><i class="bi bi-box-arrow-left"></i> Logout</a>
     </div>
   </aside>
 
@@ -83,7 +83,7 @@
             <p class="mb-0" style="color:var(--clr-text-secondary); font-size:0.9rem;">Pick a module to test your skills. AI will analyze your answers and give you topic-level feedback.</p>
           </div>
           <span class="badge rounded-pill px-3 py-2" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">
-            <i class="bi bi-lightning-charge-fill"></i> 7 modules available
+            <i class="bi bi-lightning-charge-fill"></i> <span id="moduleCountText">Loading modules…</span>
           </span>
         </div>
       </div>
@@ -97,6 +97,11 @@
         <button class="btn btn-sm btn-outline-custom" data-filter-tab="hr" onclick="filterAssessments('hr', this)">HR Interview</button>
         <button class="btn btn-sm btn-outline-custom" data-filter-tab="communication" onclick="filterAssessments('communication', this)">Communication</button>
       </div>
+
+      <!-- Offline / API warning (muted, non-blocking) -->
+      <p id="hubApiWarning" class="small text-muted mb-3 d-none" role="status">
+        <i class="bi bi-exclamation-triangle-fill text-warning me-1"></i><span id="hubApiWarningText"></span>
+      </p>
 
       <!-- Assessment Cards Grid -->
       <div class="row g-4" id="assessmentGrid" data-aos="fade-up" data-aos-delay="150">
@@ -411,30 +416,209 @@
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js" defer></script>
   <script src="config.js" defer></script>
   <script src="gemini.js" defer></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth-guard.js"></script>
   <script src="app.js" defer></script>
   <script>
-    function setModalAssessment(name, time, questions, moduleKey) {
+    /* ============================================================
+       Assessment Hub — cards loaded from GET /api/assessments
+       ============================================================ */
+    let hubAssessments = [];
+    let hubFilter = 'all';
+    let pendingAssessment = null;
+
+    // Server moduleKey / category → the filter tabs this page already has.
+    const HUB_TAB_BY_MODULE = {
+      quant: 'aptitude',
+      logical: 'aptitude',
+      verbal: 'aptitude',
+      coding: 'coding',
+      dbms: 'coding',
+      technical: 'technical',
+      hr: 'hr',
+      communication: 'communication'
+    };
+
+    const HUB_ICONS = {
+      quant: 'bi-calculator',
+      logical: 'bi-puzzle',
+      verbal: 'bi-translate',
+      coding: 'bi-code-slash',
+      dbms: 'bi-database',
+      technical: 'bi-person-video3',
+      hr: 'bi-people-fill',
+      communication: 'bi-mic-fill'
+    };
+
+    function escText(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function hubCategoryFor(assessment) {
+      const byModule = HUB_TAB_BY_MODULE[assessment.moduleKey];
+      if (byModule) return byModule;
+      const category = String(assessment.category || '').toLowerCase();
+      if (category.indexOf('aptitude') !== -1 || category.indexOf('analytical') !== -1) return 'aptitude';
+      if (category.indexOf('data structures') !== -1 || category.indexOf('coding') !== -1 ||
+          category.indexOf('database') !== -1 || category.indexOf('sql') !== -1) return 'coding';
+      if (category.indexOf('system design') !== -1 || category.indexOf('technical') !== -1) return 'technical';
+      if (category.indexOf('behavioral') !== -1 || category.indexOf('culture') !== -1 ||
+          category.indexOf(' hr') !== -1) return 'hr';
+      if (category.indexOf('communication') !== -1 || category.indexOf('grammar') !== -1 ||
+          category.indexOf('english') !== -1) return 'communication';
+      // No matching tab: only visible under the "All" tab.
+      return 'other';
+    }
+
+    function difficultyBadgeStyle(difficulty) {
+      const key = String(difficulty || '').toLowerCase();
+      if (key === 'easy') return 'background:var(--clr-success-light);color:var(--clr-success);';
+      if (key === 'hard') return 'background:var(--clr-danger-light);color:var(--clr-danger);';
+      if (key === 'medium') return 'background:var(--clr-warning-light);color:var(--clr-warning);';
+      return 'background:var(--clr-bg);color:var(--clr-text-muted);';
+    }
+
+    function assessmentCardTemplate(assessment, index) {
+      const tab = hubCategoryFor(assessment);
+      const icon = HUB_ICONS[assessment.moduleKey] || 'bi-clipboard2-check';
+      const difficulty = assessment.difficulty || 'Mixed';
+      const questionCount = Number(assessment.questionCount) || 0;
+      const duration = Number(assessment.durationMinutes) || 0;
+      const lastScore = (assessment.lastScore === null || assessment.lastScore === undefined)
+        ? 'Not attempted'
+        : assessment.lastScore + '%';
+
+      return '' +
+        '<div class="col-lg-4 col-md-6" data-category="' + escText(tab) + '">' +
+          '<div class="card h-100 border-0 shadow-sm assessment-card" style="background:var(--glass-bg); border-radius:var(--radius-lg); overflow:hidden;">' +
+            '<div class="card-img-top d-flex align-items-center justify-content-center p-3" style="background: linear-gradient(135deg, rgba(79,70,229,0.1), rgba(124,58,237,0.1)); height: 90px;">' +
+              '<div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: var(--clr-primary-light); color: var(--clr-primary); width: 50px; height: 50px;">' +
+                '<i class="bi ' + icon + ' fs-3 img-fluid"></i>' +
+              '</div>' +
+            '</div>' +
+            '<div class="card-body p-4">' +
+              '<h5 class="card-title fw-bold">' + escText(assessment.title) + '</h5>' +
+              '<p class="card-text text-muted small">' + escText(assessment.category) + '</p>' +
+              '<div class="d-flex flex-wrap gap-2 mb-3">' +
+                '<span class="badge badge-difficulty" style="' + difficultyBadgeStyle(difficulty) + '">' + escText(difficulty) + '</span>' +
+                '<span class="badge badge-difficulty" style="background:var(--clr-primary-light);color:var(--clr-primary);">' + questionCount + ' Questions</span>' +
+              '</div>' +
+              '<div class="d-flex justify-content-between text-muted small border-top pt-2">' +
+                '<span><i class="bi bi-clock"></i> ' + duration + ' min</span>' +
+                '<span><i class="bi bi-bar-chart"></i> Last score: ' + escText(lastScore) + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">' +
+              '<button class="btn btn-primary-custom w-100" data-bs-toggle="modal" data-bs-target="#startModal" data-assessment-index="' + index + '">' +
+                '<i class="bi bi-play-fill"></i> Start Assessment' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function renderAssessmentCards(list) {
+      const grid = document.getElementById('assessmentGrid');
+      if (!grid) return;
+
+      // Replace the built-in demo cards with the server list (same markup/classes).
+      Array.from(grid.children).forEach((child) => {
+        if (child.id !== 'emptyState') child.remove();
+      });
+      grid.insertAdjacentHTML('beforeend', list.map(assessmentCardTemplate).join(''));
+
+      grid.querySelectorAll('button[data-assessment-index]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const assessment = hubAssessments[Number(button.getAttribute('data-assessment-index'))];
+          if (!assessment) return;
+          setModalAssessment(
+            assessment.title,
+            (Number(assessment.durationMinutes) || 0) + ' min',
+            (Number(assessment.questionCount) || 0) + ' Questions',
+            assessment.moduleKey,
+            assessment._id
+          );
+        });
+      });
+
+      setText('moduleCountText', list.length + (list.length === 1 ? ' module available' : ' modules available'));
+
+      const activeTab = document.querySelector('[data-filter-tab="' + hubFilter + '"]');
+      filterAssessments(hubFilter, activeTab);
+    }
+
+    function showHubWarning(message) {
+      const warning = document.getElementById('hubApiWarning');
+      if (!warning) return;
+      setText('hubApiWarningText',
+        'Could not reach the server (' + message + ') — showing the built-in assessment list.');
+      warning.classList.remove('d-none');
+
+      // Keep the module counter honest while the API is offline.
+      const fallbackCount = document.querySelectorAll('#assessmentGrid [data-category]').length;
+      if (fallbackCount) setText('moduleCountText', fallbackCount + ' modules available');
+    }
+
+    async function loadAssessments() {
+      if (!window.API || !API.isAuthenticated()) return;
+      try {
+        const payload = await API.get('/api/assessments');
+        hubAssessments = (payload.data && payload.data.assessments) || [];
+        renderAssessmentCards(hubAssessments);
+        const warning = document.getElementById('hubApiWarning');
+        if (warning) warning.classList.add('d-none');
+      } catch (error) {
+        if (error && error.status === 401) {
+          if (window.AuthGuard) AuthGuard.requireAuth();
+          return;
+        }
+        console.warn('Assessment list load failed:', error && error.message);
+        showHubWarning((error && error.message) || 'network error');
+      }
+    }
+
+    function setModalAssessment(name, time, questions, moduleKey, assessmentId) {
       document.getElementById('modalAssessmentName').textContent = name;
       document.getElementById('modalTime').textContent = time;
       document.getElementById('modalQuestions').textContent = questions;
       const key = moduleKey || 'quant';
+
+      const known = hubAssessments.find((a) => String(a._id) === String(assessmentId || '')) ||
+        hubAssessments.find((a) => a.moduleKey === key) || null;
+      const id = assessmentId || (known && known._id) || '';
+      const durationMinutes = (known && known.durationMinutes) || parseInt(time, 10) || 45;
+      const questionCount = (known && known.questionCount) || parseInt(questions, 10) || 0;
+
       const link = document.getElementById('startAssessmentLink');
       if (link) {
         link.href = `live-assessment.html?module=${encodeURIComponent(key)}`;
       }
+
+      // Written before the user hits "Start Now" — live-assessment.html reads this.
+      pendingAssessment = {
+        id: id,
+        moduleKey: key,
+        title: name,
+        durationMinutes: durationMinutes,
+        questionCount: questionCount
+      };
       try {
-        localStorage.setItem('current_assessment', JSON.stringify({
-          key: key,
-          name: name,
-          time: time,
-          questions: questions
-        }));
+        localStorage.setItem('current_assessment', JSON.stringify(pendingAssessment));
       } catch (e) {
         console.warn('Could not save current_assessment to localStorage:', e);
       }
     }
 
     function filterAssessments(category, btn) {
+      hubFilter = category || 'all';
+
       document.querySelectorAll('[data-filter-tab]').forEach(b => {
         b.classList.remove('btn-primary-custom', 'active');
         b.classList.add('btn-outline-custom');
@@ -446,7 +630,7 @@
 
       let visibleCount = 0;
       document.querySelectorAll('[data-category]').forEach(card => {
-        if (category === 'all' || card.getAttribute('data-category') === category) {
+        if (hubFilter === 'all' || card.getAttribute('data-category') === hubFilter) {
           card.style.display = '';
           card.style.opacity = '1';
           card.style.animation = 'bubbleFadeIn 0.3s ease forwards';
@@ -465,6 +649,20 @@
         AOS.refresh();
       }
     }
+
+    // Guarantee current_assessment is persisted right before navigation.
+    const startAssessmentLink = document.getElementById('startAssessmentLink');
+    if (startAssessmentLink) {
+      startAssessmentLink.addEventListener('click', () => {
+        try {
+          if (pendingAssessment) {
+            localStorage.setItem('current_assessment', JSON.stringify(pendingAssessment));
+          }
+        } catch (e) { /* ignore */ }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadAssessments);
   </script>
 </body>
 </html>

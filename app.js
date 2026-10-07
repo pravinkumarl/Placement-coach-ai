@@ -286,11 +286,11 @@ function initChatbotWidget() {
 
       try {
         let replyText = '';
-        if (window.GeminiService && (GeminiService.getApiKey() || (GeminiService.hasAccess && GeminiService.hasAccess()))) {
+        if (window.GeminiService) {
           const systemPrompt = `You are a concise, supportive AI Placement Coach widget assistant. Give brief, punchy, and actionable placement advice in 2-3 short sentences.`;
           replyText = await GeminiService.callGemini(widgetHistory, systemPrompt);
         } else {
-          replyText = "Based on your current readiness score (73%), focus on practicing Dynamic Programming and SQL subqueries this week!";
+          replyText = 'The AI client failed to load. Please refresh the page.';
         }
 
         widgetHistory.push({ role: 'model', parts: [{ text: replyText }] });
@@ -606,12 +606,9 @@ function initFullPageChat() {
   if (!sendBtn || !chatInput || !messagesContainer) return;
 
   const conversationHistory = [];
-  const systemPrompt = `You are an expert AI Placement Coach for a college student named Rahul Sharma (4th Year CSE).
-Current Student Stats:
-- Readiness: 73% (Target: 85% for Placement Ready badge)
-- Weak areas: Dynamic Programming (35%), Graphs (30%), System Design (60%)
-- Strong areas: DBMS/SQL (62%), Trees, Verbal Ability
-- Last mock interview: 65% (Good communication, needs improvement in problem decomposition and edge cases)
+  const studentName = (API && API.getUser && (API.getUser() || {}).name) || 'student';
+  const systemPrompt = `You are an expert AI Placement Coach for a college student named ${studentName}.
+The student's live readiness score, weak topics and roadmap are available to you through the Placement Coach app.
 
 When responding:
 - Address the student's question directly with clear, actionable advice.
@@ -655,10 +652,10 @@ When responding:
 
     try {
       let replyText = '';
-      if (window.GeminiService && (GeminiService.getApiKey() || (GeminiService.hasAccess && GeminiService.hasAccess()))) {
+      if (window.GeminiService) {
         replyText = await GeminiService.callGemini(conversationHistory, systemPrompt);
       } else {
-        replyText = "I'm ready to coach you! Please ensure the GEMINI_API_KEY is configured in `config.js` to enable live reasoning.";
+        replyText = 'The AI client failed to load. Please refresh the page.';
       }
 
       conversationHistory.push({ role: 'model', parts: [{ text: replyText }] });
@@ -685,10 +682,10 @@ When responding:
         <div class="chat-avatar ai-avatar text-danger"><i class="bi bi-exclamation-octagon-fill"></i></div>
         <div class="chat-bubble ai border border-danger-subtle bg-danger-subtle text-danger-emphasis">
           <strong>Connection Error:</strong> ${escapeHtml(err.message || 'Failed to generate response')}.
-          <br><small class="text-muted">Please check your network and Gemini API key.</small>
+          <br><small class="text-muted">${err.status === 503 ? 'The server has no AI key configured — set GEMINI_API_KEY in the backend .env.' : 'Please check your network and try again.'}</small>
           <div class="mt-2">
-            <button class="btn btn-sm btn-outline-danger py-1 px-3" data-bs-toggle="modal" data-bs-target="#apiKeyModal">
-              <i class="bi bi-key-fill"></i> Enter / Change Gemini API Key
+            <button class="btn btn-sm btn-outline-secondary py-1 px-3" data-bs-toggle="modal" data-bs-target="#apiKeyModal">
+              <i class="bi bi-gear-fill"></i> AI Connection Status
             </button>
           </div>
           <span class="bubble-time">Just now</span>
@@ -704,36 +701,28 @@ When responding:
     if (e.key === 'Enter') sendMessage();
   });
 
-  // API Key Modal Handling
+  // AI connection status modal (the key itself lives on the server)
   const apiKeyModalEl = document.getElementById('apiKeyModal');
   const apiKeyInput = document.getElementById('geminiApiKeyInput');
   const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
   const apiKeyMsg = document.getElementById('apiKeyModalMsg');
 
-  if (apiKeyModalEl && apiKeyInput && saveApiKeyBtn) {
-    apiKeyModalEl.addEventListener('show.bs.modal', () => {
-      apiKeyInput.value = localStorage.getItem('GEMINI_API_KEY') || (typeof GEMINI_API_KEY !== 'undefined' ? GEMINI_API_KEY : '');
-      if (apiKeyMsg) apiKeyMsg.className = 'alert d-none small py-2 mb-0';
-    });
+  if (apiKeyModalEl && apiKeyMsg) {
+    apiKeyModalEl.addEventListener('show.bs.modal', async () => {
+      apiKeyMsg.className = 'alert alert-info small py-2 mb-0';
+      apiKeyMsg.textContent = 'Checking server AI connection...';
+      if (apiKeyInput) apiKeyInput.disabled = true;
+      if (saveApiKeyBtn) saveApiKeyBtn.disabled = true;
 
-    saveApiKeyBtn.addEventListener('click', () => {
-      const keyVal = apiKeyInput.value.trim();
-      if (!keyVal) {
-        localStorage.removeItem('GEMINI_API_KEY');
-        if (apiKeyMsg) {
+      if (window.GeminiService && GeminiService.checkAiStatus) {
+        try {
+          const status = await GeminiService.checkAiStatus();
+          apiKeyMsg.className = `alert small py-2 mb-0 alert-${status.ok ? 'success' : 'warning'}`;
+          apiKeyMsg.textContent = status.message;
+        } catch (e) {
           apiKeyMsg.className = 'alert alert-warning small py-2 mb-0';
-          apiKeyMsg.textContent = 'API key cleared. System will use serverless proxy if available.';
+          apiKeyMsg.textContent = e.message || 'Unable to verify the AI connection.';
         }
-      } else {
-        localStorage.setItem('GEMINI_API_KEY', keyVal);
-        if (apiKeyMsg) {
-          apiKeyMsg.className = 'alert alert-success small py-2 mb-0';
-          apiKeyMsg.textContent = 'API Key saved successfully! Gemini 3.6 Flash is ready.';
-        }
-        setTimeout(() => {
-          const modalInstance = bootstrap.Modal.getInstance(apiKeyModalEl);
-          if (modalInstance) modalInstance.hide();
-        }, 1200);
       }
     });
   }
@@ -818,10 +807,10 @@ Keep your tone professional, crisp, and realistic.`;
 
     try {
       let reply = '';
-      if (window.GeminiService && (GeminiService.getApiKey() || (GeminiService.hasAccess && GeminiService.hasAccess()))) {
+      if (window.GeminiService) {
         reply = await GeminiService.callGemini(interviewHistory, interviewSystemPrompt);
       } else {
-        reply = "Good point. How would you handle distributed locking if multiple workers attempt to update the same record?";
+        reply = 'The AI interviewer could not load. Please refresh the page.';
       }
 
       interviewHistory.push({ role: 'model', parts: [{ text: reply }] });

@@ -51,6 +51,9 @@
     </nav>
     <div class="sidebar-footer">
       <div class="dark-mode-toggle" title="Toggle dark mode"><i class="bi bi-moon-stars"></i><span>Dark Mode</span><div class="toggle-track ms-auto"><div class="toggle-thumb"></div></div></div>
+      <a href="login.html" data-logout class="nav-link mt-2 d-flex align-items-center gap-2" style="color: var(--clr-text-muted); font-size: 0.85rem;">
+        <i class="bi bi-box-arrow-left"></i> Logout
+      </a>
     </div>
   </aside>
 
@@ -78,6 +81,7 @@
         </div>
         <div class="chart-wrapper" style="height: 300px;">
           <canvas id="progressChart"></canvas>
+          <div id="progressChartEmpty" class="text-muted text-center py-5 d-none">No attempts yet — complete an assessment to see your readiness trend.</div>
         </div>
       </div>
 
@@ -85,28 +89,28 @@
       <div class="row g-4 mb-4">
         <div class="col-md-6" data-aos="fade-up">
           <div class="glass-card text-center h-100">
-            <h6 class="fw-bold text-muted mb-3">First Assessment (Aug 20)</h6>
-            <div class="display-4 fw-bold" style="color: var(--clr-danger);" data-countup="42" data-suffix="%">0%</div>
-            <p class="mt-2 mb-0" style="color:var(--clr-text-muted); font-size:0.9rem;">Starting readiness score</p>
+            <h6 class="fw-bold text-muted mb-3" id="firstAssessmentHeading">First Assessment (Aug 20)</h6>
+            <div class="display-4 fw-bold" id="firstAssessmentScore" style="color: var(--clr-danger);" data-countup="42" data-suffix="%">0%</div>
+            <p class="mt-2 mb-0" id="firstAssessmentCaption" style="color:var(--clr-text-muted); font-size:0.9rem;">Starting readiness score</p>
             <div class="d-flex justify-content-center gap-3 mt-3">
-              <div><small class="text-muted">Weak Topics</small><div class="fw-bold" style="color:var(--clr-danger);">9</div></div>
-              <div><small class="text-muted">Accuracy</small><div class="fw-bold">48%</div></div>
-              <div><small class="text-muted">Tests</small><div class="fw-bold">3</div></div>
+              <div><small class="text-muted">Weak Topics</small><div class="fw-bold" id="firstWeakTopics" style="color:var(--clr-danger);">9</div></div>
+              <div><small class="text-muted">Accuracy</small><div class="fw-bold" id="firstAccuracy">48%</div></div>
+              <div><small class="text-muted">Tests</small><div class="fw-bold" id="firstTests">3</div></div>
             </div>
           </div>
         </div>
         <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
           <div class="glass-card text-center h-100" style="border-color: var(--clr-success); border-width: 2px;">
-            <h6 class="fw-bold text-muted mb-3">Latest Assessment (Today)</h6>
-            <div class="display-4 fw-bold" style="color: var(--clr-success);" data-countup="73" data-suffix="%">0%</div>
-            <p class="mt-2 mb-0" style="font-size:0.9rem;">
-              <span style="color: var(--clr-success); font-weight: 700;"><i class="bi bi-arrow-up"></i> +31%</span>
+            <h6 class="fw-bold text-muted mb-3" id="latestAssessmentHeading">Latest Assessment (Today)</h6>
+            <div class="display-4 fw-bold" id="latestAssessmentScore" style="color: var(--clr-success);" data-countup="73" data-suffix="%">0%</div>
+            <p class="mt-2 mb-0" id="latestImprovementWrap" style="font-size:0.9rem;">
+              <span style="color: var(--clr-success); font-weight: 700;" id="latestImprovement"><i class="bi bi-arrow-up"></i> +31%</span>
               <span class="text-muted ms-1">improvement</span>
             </p>
             <div class="d-flex justify-content-center gap-3 mt-3">
-              <div><small class="text-muted">Weak Topics</small><div class="fw-bold" style="color:var(--clr-success);">5 <small class="text-success">↓4</small></div></div>
-              <div><small class="text-muted">Accuracy</small><div class="fw-bold">68% <small class="text-success">↑20%</small></div></div>
-              <div><small class="text-muted">Tests</small><div class="fw-bold">24 <small class="text-success">↑21</small></div></div>
+              <div><small class="text-muted">Weak Topics</small><div class="fw-bold" style="color:var(--clr-success);"><span id="latestWeakTopics">5</span> <small class="text-success" id="latestWeakDelta">↓4</small></div></div>
+              <div><small class="text-muted">Accuracy</small><div class="fw-bold"><span id="latestAccuracy">68%</span> <small class="text-success" id="latestAccuracyDelta">↑20%</small></div></div>
+              <div><small class="text-muted">Tests</small><div class="fw-bold"><span id="latestTests">24</span> <small class="text-success" id="latestTestsDelta">↑21</small></div></div>
             </div>
           </div>
         </div>
@@ -180,7 +184,7 @@
                   <th>Action</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="historyBody">
                 <tr>
                   <td>Sep 17, 2026</td>
                   <td>Coding/DSA</td>
@@ -267,13 +271,151 @@
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js" defer></script>
   <script src="config.js" defer></script>
   <script src="gemini.js" defer></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth-guard.js"></script>
   <script src="app.js" defer></script>
   <script>
     let progressChartInstance;
+    const progressSeries = { activeRange: 'all' };
+
+    const CODING_CATEGORIES = ['Data Structures', 'Databases', 'Algorithms'];
+    const INTERVIEW_CATEGORIES = ['System Design', 'Behavioral', 'Professional Written'];
+    const DAY_MS = 86400000;
+
+    // ================= Progress data binding =================
+    function progressEsc(str) {
+      return String(str == null ? '' : str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function progressSetText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+
+    function progressSetCount(el, value, suffix) {
+      if (!el) return;
+      const alreadyCounted = el.getAttribute('data-counted') === 'true';
+      el.setAttribute('data-countup', String(value));
+      el.setAttribute('data-suffix', suffix);
+      if (alreadyCounted && typeof animateCounter === 'function') animateCounter(el);
+      else el.textContent = value + suffix;
+    }
+
+    function progressShowWarning() {
+      const container = document.querySelector('.main-content .p-3.p-md-4');
+      if (!container || document.getElementById('progressLoadWarning')) return;
+      const note = document.createElement('small');
+      note.id = 'progressLoadWarning';
+      note.className = 'text-muted d-block mb-3';
+      note.textContent = 'Could not refresh data — backend may be offline.';
+      container.insertBefore(note, container.firstChild);
+    }
+
+    function dateLabel(value) {
+      return new Date(value || Date.now()).toLocaleDateString(undefined, {
+        month: 'short', day: 'numeric', year: 'numeric'
+      });
+    }
+
+    function accuracyOf(attempt) {
+      const total = attempt.questionCount || 0;
+      return total ? Math.round(((attempt.correctAnswers || 0) / total) * 100) : 0;
+    }
+
+    function categoryMatches(value, keywords) {
+      const text = String(value || '').toLowerCase();
+      return keywords.some((k) => text.indexOf(k.toLowerCase()) !== -1);
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
+      loadProgress();
+
+      // Search filter for history table
+      const search = document.getElementById('historySearch');
+      if (search) {
+        search.addEventListener('input', function() {
+          const query = this.value.toLowerCase();
+          document.querySelectorAll('#historyTable tbody tr').forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(query) ? '' : 'none';
+          });
+        });
+      }
+    });
+
+    async function loadProgress() {
+      if (!window.API || !API.isAuthenticated()) return;
+      let payload;
+      try {
+        payload = await API.get('/api/performance');
+      } catch (error) {
+        if (error.status === 401) return;
+        console.warn('Progress load failed:', error.message);
+        progressShowWarning();
+        return;
+      }
+
+      const data = payload.data || {};
+      const summary = data.summary || {};
+      const attempts = (Array.isArray(data.attempts) ? data.attempts : [])
+        .slice()
+        .sort((a, b) => new Date(a.completedAt || 0) - new Date(b.completedAt || 0));
+
+      buildProgressSeries(attempts);
+      renderProgressChart();
+      renderComparison(attempts, summary);
+      renderAchievements(attempts, summary);
+      renderHistory(attempts);
+    }
+
+    function buildProgressSeries(attempts) {
+      const now = Date.now();
+      const points = attempts.filter((a) => a.completedAt).map((a) => ({
+        time: new Date(a.completedAt).getTime(),
+        label: new Date(a.completedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+        value: a.percentage || 0,
+      }));
+
+      const windowed = (days) => {
+        const from = now - days * DAY_MS;
+        const recent = points.filter((p) => p.time >= from);
+        return { labels: recent.map((p) => p.label), values: recent.map((p) => p.value) };
+      };
+
+      progressSeries.all = { labels: points.map((p) => p.label), values: points.map((p) => p.value) };
+      progressSeries['1m'] = windowed(30);
+      progressSeries['3m'] = windowed(90);
+      if (!progressSeries['1m'].values.length) progressSeries['1m'] = progressSeries.all;
+      if (!progressSeries['3m'].values.length) progressSeries['3m'] = progressSeries.all;
+    }
+
+    function renderProgressChart() {
+      const canvas = document.getElementById('progressChart');
+      const emptyEl = document.getElementById('progressChartEmpty');
+      const series = progressSeries[progressSeries.activeRange] || progressSeries.all;
+      const labels = series ? series.labels : [];
+      const values = series ? series.values : [];
+
+      if (!values.length) {
+        if (canvas) canvas.style.display = 'none';
+        if (emptyEl) emptyEl.classList.remove('d-none');
+        return;
+      }
+      if (canvas) canvas.style.display = '';
+      if (emptyEl) emptyEl.classList.add('d-none');
+
+      if (progressChartInstance) {
+        progressChartInstance.data.labels = labels;
+        progressChartInstance.data.datasets[0].data = values;
+        progressChartInstance.update();
+        return;
+      }
+      if (!canvas || typeof Chart === 'undefined' || typeof getChartColors !== 'function') return;
+
       const colors = getChartColors();
-      const ctx = document.getElementById('progressChart').getContext('2d');
+      const ctx = canvas.getContext('2d');
 
       const gradient = ctx.createLinearGradient(0, 0, 0, 300);
       gradient.addColorStop(0, 'rgba(79, 70, 229, 0.2)');
@@ -282,10 +424,10 @@
       progressChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: ['Aug 20', 'Aug 25', 'Aug 30', 'Sep 3', 'Sep 7', 'Sep 10', 'Sep 13', 'Sep 15', 'Sep 17'],
+          labels: labels,
           datasets: [{
             label: 'Readiness Score',
-            data: [42, 45, 48, 52, 58, 62, 66, 70, 73],
+            data: values,
             borderColor: colors.primary,
             backgroundColor: gradient,
             borderWidth: 3,
@@ -330,16 +472,166 @@
           interaction: { intersect: false, mode: 'index' }
         }
       });
+    }
 
-      // Search filter for history table
-      document.getElementById('historySearch').addEventListener('input', function() {
-        const query = this.value.toLowerCase();
-        document.querySelectorAll('#historyTable tbody tr').forEach(row => {
-          const text = row.textContent.toLowerCase();
-          row.style.display = text.includes(query) ? '' : 'none';
+    function renderComparison(attempts, summary) {
+      const first = attempts[0];
+      const latest = attempts[attempts.length - 1];
+
+      if (first) {
+        progressSetText('firstAssessmentHeading', 'First Assessment (' + dateLabel(first.completedAt) + ')');
+        progressSetCount(document.getElementById('firstAssessmentScore'), first.percentage || 0, '%');
+        progressSetText('firstAssessmentCaption', 'First assessment score');
+        const firstWeak = (first.topicResults || []).filter((r) => (r.percentage || 0) < 70).length;
+        progressSetText('firstWeakTopics', String(firstWeak));
+        progressSetText('firstAccuracy', accuracyOf(first) + '%');
+        progressSetText('firstTests', '1');
+      } else {
+        progressSetText('firstAssessmentHeading', 'First Assessment');
+        progressSetCount(document.getElementById('firstAssessmentScore'), 0, '%');
+        progressSetText('firstAssessmentCaption', 'No assessments yet.');
+        progressSetText('firstWeakTopics', '0');
+        progressSetText('firstAccuracy', '0%');
+        progressSetText('firstTests', '0');
+      }
+
+      const improvementWrap = document.getElementById('latestImprovementWrap');
+      if (!latest) {
+        progressSetText('latestAssessmentHeading', 'Latest Assessment');
+        progressSetCount(document.getElementById('latestAssessmentScore'), 0, '%');
+        if (improvementWrap) improvementWrap.classList.add('d-none');
+        progressSetText('latestWeakTopics', '0');
+        progressSetText('latestAccuracy', '0%');
+        progressSetText('latestTests', '0');
+        ['latestWeakDelta', 'latestAccuracyDelta', 'latestTestsDelta'].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.classList.add('d-none');
         });
+        return;
+      }
+
+      const isToday = new Date(latest.completedAt || 0).toDateString() === new Date().toDateString();
+      progressSetText('latestAssessmentHeading', 'Latest Assessment (' + (isToday ? 'Today' : dateLabel(latest.completedAt)) + ')');
+      progressSetCount(document.getElementById('latestAssessmentScore'), latest.percentage || 0, '%');
+
+      if (attempts.length > 1 && improvementWrap) {
+        const delta = (latest.percentage || 0) - (first.percentage || 0);
+        const improvement = document.getElementById('latestImprovement');
+        if (improvement) {
+          improvement.style.color = delta >= 0 ? 'var(--clr-success)' : 'var(--clr-danger)';
+          improvement.innerHTML = '<i class="bi bi-arrow-' + (delta >= 0 ? 'up' : 'down') + '"></i> ' +
+            (delta >= 0 ? '+' : '') + delta + '%';
+        }
+        improvementWrap.classList.remove('d-none');
+      } else if (improvementWrap) {
+        improvementWrap.classList.add('d-none');
+      }
+
+      const firstWeak = first ? (first.topicResults || []).filter((r) => (r.percentage || 0) < 70).length : 0;
+      const latestWeak = summary.weakCount || 0;
+      progressSetText('latestWeakTopics', String(latestWeak));
+      setDelta('latestWeakDelta', firstWeak - latestWeak, (d) => '↓' + d, true);
+
+      const latestAccuracy = accuracyOf(latest);
+      progressSetText('latestAccuracy', latestAccuracy + '%');
+      setDelta('latestAccuracyDelta', first ? latestAccuracy - accuracyOf(first) : 0, (d) => '↑' + d + '%', true);
+
+      progressSetText('latestTests', String(summary.totalAttempts || 0));
+      setDelta('latestTestsDelta', attempts.length - 1, (d) => '↑' + d, true);
+    }
+
+    function setDelta(id, delta, format, higherIsBetter) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (!delta) {
+        el.textContent = '–';
+        el.className = 'text-muted';
+        return;
+      }
+      el.textContent = format(Math.abs(delta));
+      const good = higherIsBetter ? delta > 0 : delta < 0;
+      el.className = good ? 'text-success' : 'text-danger';
+    }
+
+    function maxStreakDays(attempts) {
+      const days = [];
+      attempts.forEach((a) => {
+        if (!a.completedAt) return;
+        const day = new Date(a.completedAt);
+        day.setHours(0, 0, 0, 0);
+        const time = day.getTime();
+        if (days.indexOf(time) === -1) days.push(time);
       });
-    });
+      days.sort((a, b) => a - b);
+      let best = 0;
+      let run = 0;
+      days.forEach((time, index) => {
+        run = index > 0 && time - days[index - 1] === DAY_MS ? run + 1 : 1;
+        if (run > best) best = run;
+      });
+      return best;
+    }
+
+    function renderAchievements(attempts, summary) {
+      if (!attempts.length) {
+        document.querySelectorAll('.badge-card').forEach((card) => {
+          card.classList.remove('unlocked');
+          card.classList.add('locked');
+        });
+        return;
+      }
+
+      const first = attempts[0];
+      const latest = attempts[attempts.length - 1];
+      const improvement = attempts.length > 1 ? (latest.percentage || 0) - (first.percentage || 0) : 0;
+      const codingCount = attempts.filter((a) => categoryMatches(a.category, CODING_CATEGORIES)).length;
+      const interviewAce = attempts.some(
+        (a) => categoryMatches(a.category, INTERVIEW_CATEGORIES) && (a.percentage || 0) >= 90
+      );
+
+      const checks = {
+        'First Test': attempts.length >= 1,
+        '7-Day Streak': maxStreakDays(attempts) >= 7,
+        'Score Booster': improvement >= 20,
+        'Code Warrior': codingCount >= 10,
+        'Placement Ready': (summary.readinessScore || 0) >= 85,
+        'Interview Ace': interviewAce,
+      };
+
+      document.querySelectorAll('.badge-card').forEach((card) => {
+        const nameEl = card.querySelector('.badge-name');
+        const name = nameEl ? nameEl.textContent.trim() : '';
+        if (!(name in checks)) return;
+        card.classList.toggle('unlocked', checks[name]);
+        card.classList.toggle('locked', !checks[name]);
+      });
+    }
+
+    function renderHistory(attempts) {
+      const body = document.getElementById('historyBody');
+      if (!body) return;
+      if (!attempts.length) {
+        body.innerHTML =
+          '<tr><td colspan="6" class="text-muted">No assessments yet — your history appears after your first attempt.</td></tr>';
+        return;
+      }
+
+      body.innerHTML = attempts.slice().reverse().slice(0, 20).map((a) => {
+        const pct = a.percentage || 0;
+        const color = pct >= 70 ? 'var(--clr-success)' : pct >= 50 ? 'var(--clr-warning)' : 'var(--clr-danger)';
+        const badge = pct >= 70 ? ['badge-strong', 'Strong']
+          : pct >= 50 ? ['badge-improving', 'Improving'] : ['badge-weak', 'Weak'];
+
+        return '<tr>' +
+          '<td>' + progressEsc(dateLabel(a.completedAt)) + '</td>' +
+          '<td>' + progressEsc(a.moduleKey || a.category || '—') + '</td>' +
+          '<td>' + progressEsc(a.title || 'Assessment') + '</td>' +
+          '<td><strong style="color:' + color + ';">' + pct + '%</strong></td>' +
+          '<td><span class="badge ' + badge[0] + '">' + badge[1] + '</span></td>' +
+          '<td><a href="performance.html" class="btn btn-sm btn-outline-custom" style="font-size:0.78rem;min-height:32px;">View Report</a></td>' +
+          '</tr>';
+      }).join('');
+    }
 
     function updateChartRange(range, btn) {
       document.querySelectorAll('[onclick*="updateChartRange"]').forEach(b => {
@@ -349,16 +641,8 @@
       btn.classList.remove('btn-outline-custom');
       btn.classList.add('btn-primary-custom', 'active');
 
-      // Mock different data ranges
-      const data = {
-        '1m': { labels: ['Aug 20', 'Aug 25', 'Aug 30', 'Sep 3', 'Sep 7', 'Sep 10', 'Sep 13', 'Sep 15', 'Sep 17'], values: [42, 45, 48, 52, 58, 62, 66, 70, 73] },
-        '3m': { labels: ['Jul', 'Jul W2', 'Jul W3', 'Aug', 'Aug W2', 'Aug W3', 'Sep', 'Sep W2', 'Sep W3'], values: [25, 28, 32, 36, 42, 52, 62, 68, 73] },
-        'all': { labels: ['Jun', 'Jul', 'Aug', 'Sep'], values: [20, 30, 45, 73] },
-      };
-
-      progressChartInstance.data.labels = data[range].labels;
-      progressChartInstance.data.datasets[0].data = data[range].values;
-      progressChartInstance.update();
+      progressSeries.activeRange = progressSeries[range] ? range : 'all';
+      renderProgressChart();
     }
   </script>
 </body>
