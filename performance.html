@@ -51,6 +51,9 @@
     </nav>
     <div class="sidebar-footer">
       <div class="dark-mode-toggle" title="Toggle dark mode"><i class="bi bi-moon-stars"></i><span>Dark Mode</span><div class="toggle-track ms-auto"><div class="toggle-thumb"></div></div></div>
+      <a href="login.html" data-logout class="nav-link mt-2 d-flex align-items-center gap-2" style="color: var(--clr-text-muted); font-size: 0.85rem;">
+        <i class="bi bi-box-arrow-left"></i> Logout
+      </a>
     </div>
   </aside>
 
@@ -68,16 +71,16 @@
 
     <div class="p-3 p-md-4">
       <!-- Skill Gap & Improvement Alerts -->
-      <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-3 mb-3 shadow-sm" role="alert" data-aos="fade-up">
+      <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-3 mb-3 shadow-sm" role="alert" id="insightAlertOne" data-aos="fade-up">
         <i class="bi bi-exclamation-octagon-fill fs-4 text-danger flex-shrink-0"></i>
         <div class="flex-grow-1">
           <strong>Critical Skill Gap:</strong> Your DBMS accuracy dropped 20% — needs urgent attention before upcoming company rounds.
         </div>
-        <a href="assessment-hub.html" class="btn btn-sm btn-danger text-nowrap ms-auto">Practice DBMS</a>
+        <a href="assessment-hub.html" class="btn btn-sm btn-danger text-nowrap ms-auto" id="insightAlertOneAction">Practice DBMS</a>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
 
-      <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-3 mb-4 shadow-sm" role="alert" data-aos="fade-up" data-aos-delay="100">
+      <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-3 mb-4 shadow-sm" role="alert" id="insightAlertTwo" data-aos="fade-up" data-aos-delay="100">
         <i class="bi bi-check-circle-fill fs-4 text-success flex-shrink-0"></i>
         <div class="flex-grow-1">
           <strong>Verified Improvement:</strong> Logical Reasoning accuracy improved to 82% (+12% vs last attempt) — milestone unlocked!
@@ -90,17 +93,17 @@
         <div class="col-md-4" data-aos="fade-up">
           <div class="glass-card text-center h-100">
             <h6 class="fw-bold text-muted mb-2">Overall Score</h6>
-            <div class="display-3 fw-bold" style="color: var(--clr-primary);" data-countup="72" data-suffix="%">0%</div>
-            <span class="badge rounded-pill badge-improving px-3 py-2 mt-2">
-              <i class="bi bi-arrow-up"></i> +8% from last attempt
+            <div class="display-3 fw-bold" id="kpiOverall" style="color: var(--clr-primary);" data-countup="72" data-suffix="%">0%</div>
+            <span class="badge rounded-pill badge-improving px-3 py-2 mt-2" id="kpiOverallBadge">
+              <i class="bi bi-arrow-up"></i> <span id="kpiOverallBadgeText">+8% from last attempt</span>
             </span>
           </div>
         </div>
         <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
           <div class="glass-card text-center h-100">
             <h6 class="fw-bold text-muted mb-2">Time Management</h6>
-            <div class="display-3 fw-bold" style="color: var(--clr-warning);" data-countup="65" data-suffix="%">0%</div>
-            <span class="badge rounded-pill" style="background:var(--clr-warning-light);color:var(--clr-warning);font-weight:600;" class="mt-2">
+            <div class="display-3 fw-bold" id="kpiTime" style="color: var(--clr-warning);" data-countup="65" data-suffix="%">0%</div>
+            <span class="badge rounded-pill mt-2" id="kpiTimeBadge" style="background:var(--clr-warning-light);color:var(--clr-warning);font-weight:600;">
               Used 78% of allotted time
             </span>
           </div>
@@ -108,8 +111,8 @@
         <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
           <div class="glass-card text-center h-100">
             <h6 class="fw-bold text-muted mb-2">Accuracy</h6>
-            <div class="display-3 fw-bold" style="color: var(--clr-success);" data-countup="68" data-suffix="%">0%</div>
-            <span class="badge rounded-pill badge-strong px-3 py-2 mt-2">
+            <div class="display-3 fw-bold" id="kpiAccuracy" style="color: var(--clr-success);" data-countup="68" data-suffix="%">0%</div>
+            <span class="badge rounded-pill badge-strong px-3 py-2 mt-2" id="kpiAccuracyBadge">
               3 of 5 correct on first attempt
             </span>
           </div>
@@ -227,7 +230,7 @@
           </div>
         </div>
         <div class="card-footer bg-transparent border-top px-4 py-3 d-flex justify-content-between align-items-center" style="border-color: var(--border-clr) !important;">
-          <small class="text-muted"><i class="bi bi-clock-history me-1"></i>Report synchronized with latest assessment benchmarks</small>
+          <small class="text-muted" id="perfFooterNote"><i class="bi bi-clock-history me-1"></i>Report synchronized with latest assessment benchmarks</small>
           <a href="roadmap.html" class="btn btn-primary-custom btn-sm">Update Learning Roadmap <i class="bi bi-arrow-right"></i></a>
         </div>
       </div>
@@ -247,7 +250,7 @@
                   <th>Recommendation</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="skillGapBody">
                 <tr>
                   <td class="fw-medium">Arrays & Hashing</td>
                   <td><strong style="color:var(--clr-success);">92%</strong></td>
@@ -293,6 +296,31 @@
           <a href="assessment-hub.html" class="btn btn-outline-custom btn-sm"><i class="bi bi-arrow-repeat"></i> Retake Assessment</a>
         </div>
       </div>
+
+      <!-- Recent Attempts -->
+      <div class="glass-card mt-4" data-aos="fade-up">
+        <h6 class="fw-bold mb-3"><i class="bi bi-clock-history me-2"></i>Recent Attempts</h6>
+        <div class="table-responsive">
+          <div class="table-responsive-custom">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Assessment</th>
+                  <th>Category</th>
+                  <th>Score</th>
+                  <th>Result</th>
+                </tr>
+              </thead>
+              <tbody id="attemptsBody">
+                <tr>
+                  <td colspan="5" class="text-muted">Loading attempt history…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -310,110 +338,407 @@
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js" defer></script>
   <script src="config.js" defer></script>
   <script src="gemini.js" defer></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth-guard.js"></script>
   <script src="app.js" defer></script>
   <script>
+    // ================= Performance data binding =================
+    const PERF = { summary: {}, topics: [], attempts: [] };
+
+    const PANE_MATCHERS = {
+      'coding-pane': ['Data Structures', 'Algorithms', 'Databases'],
+      'aptitude-pane': ['Aptitude', 'Analytical', 'English'],
+      'interview-pane': ['System Design', 'Behavioral', 'Professional Written'],
+    };
+
+    const INSIGHT_STYLES = {
+      weak_area: { alertClass: 'alert-danger', icon: 'bi bi-exclamation-octagon-fill fs-4 text-danger flex-shrink-0' },
+      recent_result: { alertClass: 'alert-success', icon: 'bi bi-check-circle-fill fs-4 text-success flex-shrink-0' },
+      getting_started: { alertClass: 'alert-info', icon: 'bi bi-info-circle-fill fs-4 text-info flex-shrink-0' },
+      default: { alertClass: 'alert-secondary', icon: 'bi bi-lightbulb-fill fs-4 text-secondary flex-shrink-0' },
+    };
+
+    function perfEsc(str) {
+      return String(str == null ? '' : str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function perfSetText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+
+    function perfSetCount(el, value, suffix) {
+      if (!el) return;
+      const alreadyCounted = el.getAttribute('data-counted') === 'true';
+      el.setAttribute('data-countup', String(value));
+      el.setAttribute('data-suffix', suffix);
+      if (alreadyCounted && typeof animateCounter === 'function') animateCounter(el);
+      else el.textContent = value + suffix;
+    }
+
+    function perfShowWarning() {
+      const container = document.querySelector('.main-content .p-3.p-md-4');
+      if (!container || document.getElementById('perfLoadWarning')) return;
+      const note = document.createElement('small');
+      note.id = 'perfLoadWarning';
+      note.className = 'text-muted d-block mb-3';
+      note.textContent = 'Could not refresh data — backend may be offline.';
+      container.insertBefore(note, container.firstChild);
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+      loadPerformance();
+      loadInsights();
+    });
+
+    async function loadPerformance() {
+      if (!window.API || !API.isAuthenticated()) return;
+      let payload;
+      try {
+        payload = await API.get('/api/performance');
+      } catch (error) {
+        if (error.status === 401) return;
+        console.warn('Performance load failed:', error.message);
+        perfShowWarning();
+        const attemptsBody = document.getElementById('attemptsBody');
+        if (attemptsBody) {
+          attemptsBody.innerHTML =
+            '<tr><td colspan="5" class="text-muted">Could not refresh data — backend may be offline.</td></tr>';
+        }
+        return;
+      }
+
+      const data = payload.data || {};
+      PERF.summary = data.summary || {};
+      PERF.topics = Array.isArray(data.topics) ? data.topics : [];
+      PERF.attempts = Array.isArray(data.attempts) ? data.attempts : [];
+
+      renderSummary();
+      renderSkillGap();
+      renderPaneSummaries();
+      renderAttempts();
+      renderCharts();
+    }
+
+    function renderSummary() {
+      const s = PERF.summary;
+      const attempts = PERF.attempts;
+      const totalQuestions = attempts.reduce((n, a) => n + (a.questionCount || 0), 0);
+      const totalCorrect = attempts.reduce((n, a) => n + (a.correctAnswers || 0), 0);
+      const accuracy = totalQuestions ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+      const totalSeconds = attempts.reduce((n, a) => n + (a.timeTakenSeconds || 0), 0);
+      const avgMinutes = attempts.length && totalSeconds ? Math.round(totalSeconds / attempts.length / 60) : 0;
+
+      perfSetCount(document.getElementById('kpiOverall'), s.averageScore || 0, '%');
+      perfSetText('kpiOverallBadgeText', attempts.length ? 'Best score ' + (s.bestScore || 0) + '%' : 'No attempts yet');
+
+      perfSetCount(document.getElementById('kpiTime'), avgMinutes, 'm');
+      perfSetText('kpiTimeBadge', attempts.length
+        ? 'Average minutes per attempt (' + attempts.length + ' recorded)'
+        : 'No attempts yet');
+
+      perfSetCount(document.getElementById('kpiAccuracy'), accuracy, '%');
+      perfSetText('kpiAccuracyBadge', (s.strongCount || 0) + ' strong · ' + (s.weakCount || 0) + ' need work');
+
+      const footer = document.getElementById('perfFooterNote');
+      if (footer) {
+        footer.innerHTML = '<i class="bi bi-clock-history me-1"></i>' + (attempts.length
+          ? 'Readiness ' + (s.readinessScore || 0) + '% · ' + attempts.length + ' attempt(s) · average ' +
+            (s.averageScore || 0) + '% · best ' + (s.bestScore || 0) + '%'
+          : 'No attempts yet — complete an assessment to build your report.');
+      }
+    }
+
+    function renderSkillGap() {
+      const body = document.getElementById('skillGapBody');
+      if (!body) return;
+      if (!PERF.topics.length) {
+        body.innerHTML =
+          '<tr><td colspan="5" class="text-muted">No topic data yet — complete an assessment to see your skill gap analysis.</td></tr>';
+        return;
+      }
+
+      body.innerHTML = PERF.topics.map((t) => {
+        const score = t.averageScore || 0;
+        const strong = t.strength === 'strong';
+        const scoreColor = score >= 70 ? 'var(--clr-success)' : score >= 50 ? 'var(--clr-warning)' : 'var(--clr-danger)';
+        const priorityHtml = strong
+          ? '<span style="color: var(--clr-text-muted);">Low</span>'
+          : score >= 50
+            ? '<span class="fw-bold" style="color: var(--clr-warning);">Medium</span>'
+            : '<span class="fw-bold" style="color: var(--clr-danger);">High</span>';
+        const recommendation = strong
+          ? 'Maintain with weekly practice'
+          : score >= 50
+            ? 'Review mistakes and retake this topic'
+            : 'Prioritise fundamentals before the next attempt';
+
+        return '<tr>' +
+          '<td class="fw-medium">' + perfEsc(t.topic) + '</td>' +
+          '<td><strong style="color:' + scoreColor + ';">' + score + '%</strong></td>' +
+          '<td><span class="badge ' + (strong ? 'badge-strong' : 'badge-weak') + '">' +
+          (strong ? 'Strong' : 'Needs Work') + '</span></td>' +
+          '<td>' + priorityHtml + '</td>' +
+          '<td style="font-size:0.85rem;">' + recommendation + '</td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    function topicsForAttempts(attempts) {
+      const totals = {};
+      attempts.forEach((a) => {
+        (a.topicResults || []).forEach((r) => {
+          const name = String(r.topic || '').trim();
+          if (!name) return;
+          if (!totals[name]) totals[name] = { sum: 0, count: 0 };
+          totals[name].sum += r.percentage || 0;
+          totals[name].count += 1;
+        });
+      });
+      return Object.keys(totals).map((name) => {
+        const score = Math.round(totals[name].sum / totals[name].count);
+        return { topic: name, averageScore: score, strength: score >= 70 ? 'strong' : 'needs_work' };
+      }).sort((a, b) => b.averageScore - a.averageScore);
+    }
+
+    function renderPaneSummaries() {
+      Object.keys(PANE_MATCHERS).forEach((paneId) => {
+        const pane = document.getElementById(paneId);
+        if (!pane) return;
+        const keywords = PANE_MATCHERS[paneId];
+        const matches = (value) => {
+          const text = String(value || '').toLowerCase();
+          return keywords.some((k) => text.indexOf(k.toLowerCase()) !== -1);
+        };
+
+        const attempts = PERF.attempts.filter((a) => matches(a.category));
+        const topics = topicsForAttempts(attempts);
+        const strong = topics.filter((t) => t.strength === 'strong');
+        const weak = topics.filter((t) => t.strength !== 'strong');
+        const label = paneId === 'coding-pane' ? 'Coding' : paneId === 'aptitude-pane' ? 'Aptitude' : 'Interview';
+
+        const summaryBox = pane.querySelector('.p-3.rounded-3.mb-3');
+        const detailParas = pane.querySelectorAll('.row .p-3.rounded-3.border p.small');
+
+        let summaryText;
+        if (!attempts.length && !topics.length) {
+          summaryText = 'No attempts recorded in this area yet.';
+        } else {
+          const avg = attempts.length
+            ? Math.round(attempts.reduce((n, a) => n + (a.percentage || 0), 0) / attempts.length)
+            : 0;
+          summaryText = attempts.length + ' assessment(s) completed, averaging ' + avg + '% · ' +
+            topics.length + ' tracked topic(s): ' + strong.length + ' strong, ' + weak.length + ' need work.';
+        }
+
+        if (summaryBox) summaryBox.innerHTML = '<strong>' + label + ' Summary:</strong> ' + perfEsc(summaryText);
+        if (detailParas[0]) {
+          detailParas[0].textContent = strong.length
+            ? strong.map((t) => t.topic + ' (' + (t.averageScore || 0) + '%)').join(', ')
+            : 'No strong topics here yet — keep practising.';
+        }
+        if (detailParas[1]) {
+          detailParas[1].textContent = weak.length
+            ? weak.map((t) => t.topic + ' (' + (t.averageScore || 0) + '%)').join(', ')
+            : 'Nothing flagged in this area right now.';
+        }
+      });
+    }
+
+    function renderAttempts() {
+      const body = document.getElementById('attemptsBody');
+      if (!body) return;
+      if (!PERF.attempts.length) {
+        body.innerHTML =
+          '<tr><td colspan="5" class="text-muted">No attempts yet — complete an assessment to see your history here.</td></tr>';
+        return;
+      }
+
+      body.innerHTML = PERF.attempts.slice(0, 10).map((a) => {
+        const pct = a.percentage || 0;
+        const color = pct >= 70 ? 'var(--clr-success)' : pct >= 50 ? 'var(--clr-warning)' : 'var(--clr-danger)';
+        const badge = pct >= 70 ? 'badge-strong' : pct >= 50 ? 'badge-improving' : 'badge-weak';
+        const label = pct >= 70 ? 'Strong' : pct >= 50 ? 'Improving' : 'Weak';
+        const when = a.completedAt ? new Date(a.completedAt).toLocaleString() : '—';
+
+        return '<tr>' +
+          '<td>' + perfEsc(when) + '</td>' +
+          '<td class="fw-medium">' + perfEsc(a.title || a.moduleKey || 'Assessment') + '</td>' +
+          '<td class="text-muted">' + perfEsc(a.category || '') + '</td>' +
+          '<td><strong style="color:' + color + ';">' + pct + '%</strong>' +
+          ' <small class="text-muted">(' + (a.correctAnswers != null ? a.correctAnswers : 0) + '/' +
+          (a.questionCount != null ? a.questionCount : '-') + ')</small></td>' +
+          '<td><span class="badge ' + badge + '">' + label + '</span></td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    function renderCharts() {
+      if (typeof Chart === 'undefined' || typeof getChartColors !== 'function') return;
       const colors = getChartColors();
 
-      // Topic Strength Bar Chart
-      const topicCtx = document.getElementById('topicChart').getContext('2d');
-      new Chart(topicCtx, {
-        type: 'bar',
-        data: {
-          labels: ['Arrays', 'Trees', 'System Design', 'SQL', 'DP', 'Graphs'],
-          datasets: [{
-            label: 'Score %',
-            data: [92, 85, 60, 55, 35, 30],
-            backgroundColor: [
-              colors.success, colors.success,
-              colors.warning, colors.warning,
-              colors.danger, colors.danger
-            ],
-            borderRadius: 8,
-            borderSkipped: false,
-            barThickness: 36,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          indexAxis: 'y',
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              backgroundColor: colors.surface,
-              titleColor: colors.text,
-              bodyColor: colors.textMuted,
-              borderColor: colors.grid,
-              borderWidth: 1,
-              padding: 12,
-              cornerRadius: 8,
-            }
+      // Topic Strength Bar Chart (real topic scores)
+      const topicCanvas = document.getElementById('topicChart');
+      if (topicCanvas && PERF.topics.length) {
+        const chartTopics = PERF.topics.slice(0, 8);
+        new Chart(topicCanvas.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: chartTopics.map((t) => t.topic),
+            datasets: [{
+              label: 'Score %',
+              data: chartTopics.map((t) => t.averageScore || 0),
+              backgroundColor: chartTopics.map((t) => {
+                const score = t.averageScore || 0;
+                return score >= 70 ? colors.success : score >= 50 ? colors.warning : colors.danger;
+              }),
+              borderRadius: 8,
+              borderSkipped: false,
+              barThickness: 36,
+            }]
           },
-          scales: {
-            x: {
-              max: 100,
-              grid: { color: colors.grid },
-              ticks: { color: colors.textMuted, callback: v => v + '%' }
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: colors.surface,
+                titleColor: colors.text,
+                bodyColor: colors.textMuted,
+                borderColor: colors.grid,
+                borderWidth: 1,
+                padding: 12,
+                cornerRadius: 8,
+              }
             },
-            y: {
-              grid: { display: false },
-              ticks: { color: colors.text, font: { weight: 600 } }
+            scales: {
+              x: {
+                max: 100,
+                grid: { color: colors.grid },
+                ticks: { color: colors.textMuted, callback: v => v + '%' }
+              },
+              y: {
+                grid: { display: false },
+                ticks: { color: colors.text, font: { weight: 600 } }
+              }
             }
           }
-        }
-      });
+        });
+      }
 
-      // Radar Chart
-      const radarCtx = document.getElementById('radarChart').getContext('2d');
-      new Chart(radarCtx, {
-        type: 'radar',
-        data: {
-          labels: ['Accuracy', 'Speed', 'Completeness', 'Code Quality', 'Problem Analysis', 'Communication'],
-          datasets: [{
-            label: 'Your Score',
-            data: [75, 60, 70, 80, 65, 85],
-            backgroundColor: 'rgba(79, 70, 229, 0.15)',
-            borderColor: colors.primary,
-            borderWidth: 2,
-            pointBackgroundColor: colors.primary,
-            pointBorderColor: '#fff',
-            pointBorderWidth: 2,
-            pointRadius: 5,
-          }, {
-            label: 'Target',
-            data: [85, 80, 85, 85, 80, 80],
-            backgroundColor: 'rgba(16, 185, 129, 0.08)',
-            borderColor: colors.success,
-            borderWidth: 2,
-            borderDash: [5, 5],
-            pointBackgroundColor: colors.success,
-            pointBorderColor: '#fff',
-            pointBorderWidth: 2,
-            pointRadius: 4,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              labels: { color: colors.text, usePointStyle: true, pointStyle: 'circle', padding: 16, font: { size: 12 } }
-            }
+      // Radar Chart (real topic scores vs the 70% strong threshold)
+      const radarCanvas = document.getElementById('radarChart');
+      if (radarCanvas && PERF.topics.length) {
+        const radarTopics = PERF.topics.slice(0, 6);
+        new Chart(radarCanvas.getContext('2d'), {
+          type: 'radar',
+          data: {
+            labels: radarTopics.map((t) => t.topic),
+            datasets: [{
+              label: 'Your Score',
+              data: radarTopics.map((t) => t.averageScore || 0),
+              backgroundColor: 'rgba(79, 70, 229, 0.15)',
+              borderColor: colors.primary,
+              borderWidth: 2,
+              pointBackgroundColor: colors.primary,
+              pointBorderColor: '#fff',
+              pointBorderWidth: 2,
+              pointRadius: 5,
+            }, {
+              label: 'Strong threshold',
+              data: radarTopics.map(() => 70),
+              backgroundColor: 'rgba(16, 185, 129, 0.08)',
+              borderColor: colors.success,
+              borderWidth: 2,
+              borderDash: [5, 5],
+              pointBackgroundColor: colors.success,
+              pointBorderColor: '#fff',
+              pointBorderWidth: 2,
+              pointRadius: 4,
+            }]
           },
-          scales: {
-            r: {
-              beginAtZero: true,
-              max: 100,
-              ticks: { stepSize: 20, color: colors.textMuted, backdropColor: 'transparent', font: { size: 10 } },
-              grid: { color: colors.grid },
-              angleLines: { color: colors.grid },
-              pointLabels: { color: colors.text, font: { size: 11, weight: 500 } }
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: { color: colors.text, usePointStyle: true, pointStyle: 'circle', padding: 16, font: { size: 12 } }
+              }
+            },
+            scales: {
+              r: {
+                beginAtZero: true,
+                max: 100,
+                ticks: { stepSize: 20, color: colors.textMuted, backdropColor: 'transparent', font: { size: 10 } },
+                grid: { color: colors.grid },
+                angleLines: { color: colors.grid },
+                pointLabels: { color: colors.text, font: { size: 11, weight: 500 } }
+              }
             }
+          }
+        });
+      }
+    }
+
+    // ================= Insights =================
+    async function loadInsights() {
+      if (!window.API || !API.isAuthenticated()) return;
+      let payload;
+      try {
+        payload = await API.get('/api/performance/insights');
+      } catch (error) {
+        if (error.status !== 401) console.warn('Insights load failed:', error.message);
+        return;
+      }
+      renderInsights((payload.data && payload.data.insights) || []);
+    }
+
+    function firstWeakTopic(insight) {
+      const weak = PERF.topics.filter((t) => t.strength !== 'strong');
+      if (weak.length) return weak[0].topic;
+      const match = /Focus on (.+)$/.exec((insight && insight.title) || '');
+      return match ? match[1].split(',')[0].trim() : '';
+    }
+
+    function renderInsights(insights) {
+      const slots = [
+        { el: document.getElementById('insightAlertOne'), action: document.getElementById('insightAlertOneAction'), mb: 'mb-3' },
+        { el: document.getElementById('insightAlertTwo'), action: null, mb: 'mb-4' },
+      ];
+
+      slots.forEach((slot, index) => {
+        if (!slot.el) return;
+        const insight = insights[index];
+        if (!insight) {
+          slot.el.classList.add('d-none');
+          return;
+        }
+        const style = INSIGHT_STYLES[insight.type] || INSIGHT_STYLES.default;
+        slot.el.className = 'alert ' + style.alertClass + ' alert-dismissible fade show d-flex align-items-center gap-3 ' +
+          slot.mb + ' shadow-sm';
+        slot.el.classList.remove('d-none');
+        const icon = slot.el.querySelector('i');
+        if (icon) icon.className = style.icon;
+        const text = slot.el.querySelector('div');
+        if (text) {
+          text.innerHTML = '<strong>' + perfEsc(insight.title) + ':</strong> ' + perfEsc(insight.detail || '');
+        }
+        if (slot.action) {
+          const topic = insight.type === 'weak_area' ? firstWeakTopic(insight) : '';
+          if (topic) {
+            slot.action.textContent = 'Practice ' + topic;
+            slot.action.classList.remove('d-none');
+          } else {
+            slot.action.classList.add('d-none');
           }
         }
       });
-    });
+    }
+
 
     function triggerAiAnalysis() {
       const spinnerEl = document.getElementById('aiAnalyzingSpinner');
