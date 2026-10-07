@@ -65,8 +65,8 @@
         </div>
       </div>
       <div class="header-actions">
-        <button class="btn btn-sm btn-outline-custom" id="apiKeyModalBtn" title="Gemini API Key Settings" data-bs-toggle="modal" data-bs-target="#apiKeyModal">
-          <i class="bi bi-key-fill text-warning"></i> <span class="d-none d-sm-inline">API Key</span>
+        <button class="btn btn-sm btn-outline-custom" id="apiKeyModalBtn" title="AI connection status" data-bs-toggle="modal" data-bs-target="#apiKeyModal">
+          <i class="bi bi-activity text-success"></i> <span class="d-none d-sm-inline">AI Status</span>
         </button>
         <button class="btn btn-sm btn-outline-custom d-lg-none" onclick="toggleChatSidebar()">
           <i class="bi bi-chat-left-text"></i> History
@@ -81,50 +81,8 @@
         <div class="chat-search">
           <input type="text" class="form-control form-control-custom" placeholder="Search conversations..." style="font-size: 0.85rem;">
         </div>
-        <div class="conversation-list">
-          <div class="conversation-item active">
-            <div class="conv-icon"><i class="bi bi-chat-dots"></i></div>
-            <div class="flex-grow-1">
-              <div class="conv-title">Today's Session</div>
-              <div class="conv-time">Just now</div>
-            </div>
-          </div>
-          <div class="conversation-item">
-            <div class="conv-icon"><i class="bi bi-code-slash"></i></div>
-            <div class="flex-grow-1">
-              <div class="conv-title">DP Problem Help</div>
-              <div class="conv-time">Yesterday</div>
-            </div>
-          </div>
-          <div class="conversation-item">
-            <div class="conv-icon"><i class="bi bi-person-video3"></i></div>
-            <div class="flex-grow-1">
-              <div class="conv-title">Interview Feedback</div>
-              <div class="conv-time">Sep 15</div>
-            </div>
-          </div>
-          <div class="conversation-item">
-            <div class="conv-icon"><i class="bi bi-map"></i></div>
-            <div class="flex-grow-1">
-              <div class="conv-title">Roadmap Discussion</div>
-              <div class="conv-time">Sep 13</div>
-            </div>
-          </div>
-          <div class="conversation-item">
-            <div class="conv-icon"><i class="bi bi-database"></i></div>
-            <div class="flex-grow-1">
-              <div class="conv-title">SQL Tips & Tricks</div>
-              <div class="conv-time">Sep 10</div>
-            </div>
-          </div>
-          <div class="conversation-item">
-            <div class="conv-icon"><i class="bi bi-graph-up"></i></div>
-            <div class="flex-grow-1">
-              <div class="conv-title">Progress Check</div>
-              <div class="conv-time">Sep 8</div>
-            </div>
-          </div>
-        </div>
+        <div class="conversation-list" id="conversationList"></div>
+        <div id="chatHistoryNotice" class="small text-muted px-3 py-2" style="display:none;"></div>
       </div>
 
       <!-- Chat Main Area -->
@@ -132,7 +90,7 @@
         <!-- Chat Messages -->
         <div class="chat-messages flex-grow-1" style="padding: 1.5rem; overflow-y: auto;">
           <!-- Welcome -->
-          <div class="text-center mb-4">
+          <div class="text-center mb-4" id="chatWelcome">
             <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--clr-primary),#7C3AED);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;margin:0 auto 1rem;">
               <i class="bi bi-mortarboard-fill"></i>
             </div>
@@ -140,145 +98,6 @@
             <p style="color:var(--clr-text-muted);font-size:0.9rem;max-width:400px;margin:0 auto;">
               I know your strengths, weaknesses, and learning history. Ask me anything about your placement prep!
             </p>
-          </div>
-
-          <!-- Pre-loaded mock conversation -->
-          <div class="chat-message-row">
-            <div class="chat-avatar ai-avatar"><i class="bi bi-mortarboard-fill"></i></div>
-            <div class="chat-bubble ai">
-              Hi Rahul! 👋 Good to see you back. Let me give you a quick status update:
-              <br><br>
-              📊 <strong>Readiness Score:</strong> 73% (+5% since last week)<br>
-              ⚠️ <strong>Weak Areas:</strong> Dynamic Programming (35%), Graph Algorithms (30%)<br>
-              ✅ <strong>Strong Areas:</strong> Arrays (92%), Trees (85%), Logical Reasoning (82%)<br>
-              🔥 <strong>Streak:</strong> 12 days — your personal best!
-              <br><br>
-              Want me to create today's personalized practice plan?
-              <a href="roadmap.html" class="chat-action-btn"><i class="bi bi-map"></i> View Roadmap</a>
-              <a href="assessment-hub.html" class="chat-action-btn"><i class="bi bi-play-fill"></i> Start Practice</a>
-              <span class="bubble-time">2:30 PM</span>
-            </div>
-          </div>
-
-          <div class="chat-message-row user-row">
-            <div class="chat-bubble user">
-              Yes, give me a practice plan for today. I have about 2 hours.
-              <span class="bubble-time">2:31 PM</span>
-            </div>
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Student" class="img-fluid rounded-circle shadow-sm ms-2" style="width: 36px; height: 36px; object-fit: cover; flex-shrink: 0;">
-          </div>
-
-          <div class="chat-message-row">
-            <div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>
-            <div class="chat-bubble ai">
-              Here's your personalized 2-hour practice plan:
-              <br><br>
-              <strong>🕐 Hour 1 — Dynamic Programming Focus</strong><br>
-              <em>(Your weakest area at 35%)</em><br>
-              • 15 min: Watch "Memoization vs Tabulation" refresher<br>
-              • 30 min: Solve 3 easy DP problems (Climbing Stairs, House Robber, Fibonacci)<br>
-              • 15 min: Review solutions and understand state transitions<br>
-              <br>
-              <strong>🕐 Hour 2 — Mixed Practice</strong><br>
-              • 20 min: SQL subqueries practice (3 queries)<br>
-              • 25 min: Graph BFS/DFS — solve 2 medium problems<br>
-              • 15 min: Quick aptitude quiz (verbal ability)
-              <br><br>
-              This plan targets your 3 weakest areas while keeping your strengths fresh. Ready to start?
-              <a href="assessment-hub.html" class="chat-action-btn"><i class="bi bi-play-fill"></i> Start DP Practice</a>
-              <span class="bubble-time">2:31 PM</span>
-            </div>
-          </div>
-
-          <div class="chat-message-row user-row">
-            <div class="chat-bubble user">
-              I keep failing DP problems. Can you explain how to approach them?
-              <span class="bubble-time">2:32 PM</span>
-            </div>
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Student" class="img-fluid rounded-circle shadow-sm ms-2" style="width: 36px; height: 36px; object-fit: cover; flex-shrink: 0;">
-          </div>
-
-          <div class="chat-message-row">
-            <div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>
-            <div class="chat-bubble ai">
-              I've looked at your DP assessment history and I see a pattern. Here's what's happening:
-              <br><br>
-              <strong>🔍 Your DP Mistakes (from 3 assessments):</strong><br>
-              1. You tend to jump to coding without identifying the <em>state</em> and <em>recurrence relation</em> first<br>
-              2. You're strong with 1D DP but struggle with 2D DP (like LCS, Edit Distance)<br>
-              3. Time management: you spent 40% of time on a single DP question last test<br>
-              <br>
-              <strong>💡 The IDEAL Framework for DP:</strong><br>
-              <strong>I</strong> — Identify if it's a DP problem (overlapping subproblems + optimal substructure)<br>
-              <strong>D</strong> — Define the state (what variables change between subproblems?)<br>
-              <strong>E</strong> — Establish the recurrence (how does dp[i] relate to previous states?)<br>
-              <strong>A</strong> — Add base cases (smallest subproblem you can solve directly)<br>
-              <strong>L</strong> — Look at optimization (can you reduce space complexity?)<br>
-              <br>
-              Try this framework on the Longest Increasing Subsequence problem — that's where you got stuck last time. Want me to walk you through it step by step?
-              <a href="#" class="chat-action-btn" onclick="event.preventDefault();"><i class="bi bi-book"></i> LIS Walkthrough</a>
-              <a href="assessment-hub.html" class="chat-action-btn"><i class="bi bi-code-slash"></i> Practice DP</a>
-              <span class="bubble-time">2:33 PM</span>
-            </div>
-          </div>
-
-          <div class="chat-message-row user-row">
-            <div class="chat-bubble user">
-              How did my last mock interview go? Any specific tips?
-              <span class="bubble-time">2:35 PM</span>
-            </div>
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Student" class="img-fluid rounded-circle shadow-sm ms-2" style="width: 36px; height: 36px; object-fit: cover; flex-shrink: 0;">
-          </div>
-
-          <div class="chat-message-row">
-            <div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>
-            <div class="chat-bubble ai">
-              Here's your mock interview analysis from Sep 16:
-              <br><br>
-              <strong>Technical Interview — 65%</strong><br>
-              ✅ <strong>Strengths:</strong><br>
-              • Clear communication style — you explain your thought process well<br>
-              • Good at identifying brute force approaches quickly<br>
-              • Strong understanding of tree data structures<br>
-              <br>
-              ⚠️ <strong>Areas to improve:</strong><br>
-              • <strong>Problem decomposition:</strong> You jump into coding too quickly. Spend 2-3 minutes planning before writing code<br>
-              • <strong>Edge cases:</strong> You missed the empty input case in 2 out of 3 problems<br>
-              • <strong>Time complexity analysis:</strong> When asked "can you optimize?", you couldn't identify the bottleneck<br>
-              <br>
-              <strong>🎯 Tip for next interview:</strong> Practice the "think aloud" technique. Before coding, say: "My approach is ___. The time complexity will be ___. Let me handle these edge cases: ___."
-              <a href="performance.html" class="chat-action-btn"><i class="bi bi-bar-chart"></i> Full Report</a>
-              <a href="mock-simulation.html" class="chat-action-btn"><i class="bi bi-play-fill"></i> Practice Again</a>
-              <span class="bubble-time">2:35 PM</span>
-            </div>
-          </div>
-
-          <div class="chat-message-row user-row">
-            <div class="chat-bubble user">
-              When will I be placement ready?
-              <span class="bubble-time">2:37 PM</span>
-            </div>
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Student" class="img-fluid rounded-circle shadow-sm ms-2" style="width: 36px; height: 36px; object-fit: cover; flex-shrink: 0;">
-          </div>
-
-          <div class="chat-message-row">
-            <div class="chat-avatar ai-avatar"><i class="bi bi-mortarboard-fill"></i></div>
-            <div class="chat-bubble ai">
-              Based on your current trajectory, here's my prediction:
-              <br><br>
-              📈 You're at <strong>73%</strong> readiness now (up from 42% in 4 weeks).<br>
-              🎯 Target for "Placement Ready" badge: <strong>85%</strong><br>
-              ⏱️ Estimated time to reach 85%: <strong>~3 weeks</strong> (if you maintain current pace)<br>
-              <br>
-              <strong>What needs to happen:</strong><br>
-              1. DP score: 35% → 65% (biggest impact, ~+8% readiness)<br>
-              2. Graph score: 30% → 60% (~+6% readiness)<br>
-              3. System Design: 60% → 75% (~+3% readiness)<br>
-              <br>
-              The DP and Graph improvements alone would push you past 85%. Focus on those first!
-              <a href="progress.html" class="chat-action-btn"><i class="bi bi-graph-up"></i> View Progress</a>
-              <span class="bubble-time">2:37 PM</span>
-            </div>
           </div>
         </div>
 
@@ -298,29 +117,29 @@
         </div>
       </div>
     </div>
-  <!-- API Key Settings Modal -->
+  <!-- AI Connection Status Modal -->
   <div class="modal fade" id="apiKeyModal" tabindex="-1" aria-labelledby="apiKeyModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content shadow" style="border-radius: 1rem;">
         <div class="modal-header">
           <h5 class="modal-title d-flex align-items-center gap-2" id="apiKeyModalLabel">
-            <i class="bi bi-key-fill text-warning"></i> Gemini API Key Settings
+            <i class="bi bi-activity text-success"></i> AI Connection Status
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <p class="text-muted small mb-3">
-            Enter your Google Gemini API key to run live AI reasoning using <strong><code>gemini-3.6-flash</code></strong>. Your key is stored safely in your browser's local storage.
+            The AI coach runs on the Placement Coach server with a secured key — the browser never holds a Gemini key and you never need to paste one here. This panel only reports the live connection status.
           </p>
-          <div class="mb-3">
+          <div class="mb-3" style="display: none;">
             <label for="geminiApiKeyInput" class="form-label small fw-semibold">Gemini API Key</label>
-            <input type="password" class="form-control form-control-custom" id="geminiApiKeyInput" placeholder="Paste your Gemini API key here...">
+            <input type="password" class="form-control form-control-custom" id="geminiApiKeyInput" placeholder="Paste your Gemini API key here..." disabled>
           </div>
           <div id="apiKeyModalMsg" class="alert d-none small py-2 mb-0"></div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-sm btn-primary-custom" id="saveApiKeyBtn">Save Key</button>
+          <button type="button" class="btn btn-sm btn-primary-custom" id="saveApiKeyBtn" disabled>Re-check Status</button>
         </div>
       </div>
     </div>
@@ -330,14 +149,330 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="config.js"></script>
   <script src="gemini.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth-guard.js"></script>
   <script src="app.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      initFullPageChat();
-      // Scroll chat to bottom on load
-      const messages = document.querySelector('.full-chat .chat-messages');
-      if (messages) messages.scrollTop = messages.scrollHeight;
-    });
+    /* ------------------------------------------------------------
+       Conversation history + persistence for chat.html.
+       Sending/receiving/typing UI stays in app.js initFullPageChat();
+       this block only wires js/api.js endpoints around it.
+       ------------------------------------------------------------ */
+    (function () {
+      const listEl = document.querySelector('.chat-sidebar .conversation-list');
+      const noticeEl = document.getElementById('chatHistoryNotice');
+      const container = document.querySelector('.full-chat .chat-messages');
+      const searchInput = document.querySelector('.chat-sidebar .chat-search input');
+      const defaultAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80';
+      const welcomeHTML = container ? container.innerHTML : '';
+
+      let sessions = [];
+      let activeSessionId = null;
+      let suppressRender = false;
+      let searchQuery = '';
+      let noticeTimer = null;
+
+      function esc(value) {
+        return String(value == null ? '' : value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function relTime(iso) {
+        const when = new Date(iso);
+        if (isNaN(when.getTime())) return '';
+        const diff = Date.now() - when.getTime();
+        if (diff < 60000) return 'Just now';
+        if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
+        if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+        if (diff < 604800000) return Math.floor(diff / 86400000) + 'd ago';
+        const sameYear = when.getFullYear() === new Date().getFullYear();
+        return when.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: sameYear ? undefined : 'numeric' });
+      }
+
+      function clockTime(iso) {
+        const when = iso ? new Date(iso) : new Date();
+        if (isNaN(when.getTime())) return '';
+        return when.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+      }
+
+      function showNotice(text) {
+        if (!noticeEl) return;
+        noticeEl.textContent = text;
+        noticeEl.style.display = 'block';
+        if (noticeTimer) clearTimeout(noticeTimer);
+        noticeTimer = setTimeout(hideNotice, 8000);
+      }
+
+      function hideNotice() {
+        if (!noticeEl) return;
+        noticeEl.style.display = 'none';
+        noticeEl.textContent = '';
+      }
+
+      function avatarSrc() {
+        const user = (window.API && API.getUser && API.getUser()) || {};
+        return user.avatar || defaultAvatar;
+      }
+
+      function renderList() {
+        if (!listEl) return;
+        if (!sessions.length) {
+          listEl.innerHTML = '<div class="px-3 py-2 text-muted" style="font-size:0.8rem;">No conversations yet — ask your first question below.</div>';
+          return;
+        }
+        const filtered = searchQuery
+          ? sessions.filter((s) => String(s.title || '').toLowerCase().indexOf(searchQuery) !== -1)
+          : sessions;
+        if (!filtered.length) {
+          listEl.innerHTML = '<div class="px-3 py-2 text-muted" style="font-size:0.8rem;">No conversations match your search.</div>';
+          return;
+        }
+        listEl.innerHTML = filtered.map((s) => {
+          const isActive = activeSessionId && String(s._id) === String(activeSessionId) ? ' active' : '';
+          const count = s.messageCount == null ? '' : s.messageCount + (s.messageCount === 1 ? ' message · ' : ' messages · ');
+          return '<div class="conversation-item' + isActive + '" data-session-id="' + esc(s._id) + '">' +
+            '<div class="conv-icon"><i class="bi bi-chat-dots"></i></div>' +
+            '<div class="flex-grow-1">' +
+              '<div class="conv-title">' + esc(s.title || 'Untitled conversation') + '</div>' +
+              '<div class="conv-time">' + count + esc(relTime(s.lastMessageAt || s.createdAt)) + '</div>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
+
+      function messageRow(message) {
+        const time = clockTime(message.at);
+        if (message.role === 'user') {
+          return '<div class="chat-message-row user-row" data-loaded="1">' +
+            '<div class="chat-bubble user">' + esc(message.content) + '<span class="bubble-time">' + time + '</span></div>' +
+            '<img src="' + esc(avatarSrc()) + '" alt="Student" class="img-fluid rounded-circle shadow-sm ms-2 chat-user-avatar" style="width:34px;height:34px;object-fit:cover;flex-shrink:0;">' +
+          '</div>';
+        }
+        const body = window.GeminiService
+          ? GeminiService.renderMarkdown(String(message.content || ''))
+          : esc(message.content);
+        return '<div class="chat-message-row" data-loaded="1">' +
+          '<div class="chat-avatar ai-avatar"><i class="bi bi-mortarboard-fill"></i></div>' +
+          '<div class="chat-bubble ai">' + body + '<span class="bubble-time">' + time + '</span></div>' +
+        '</div>';
+      }
+
+      function renderMessages(messages) {
+        if (!container) return;
+        suppressRender = true;
+        if (!messages || !messages.length) {
+          container.innerHTML = welcomeHTML;
+        } else {
+          container.innerHTML = messages.map(messageRow).join('');
+        }
+        queueMicrotask(() => { suppressRender = false; });
+        container.scrollTop = container.scrollHeight;
+      }
+
+      async function openSession(id) {
+        activeSessionId = id;
+        renderList();
+        if (!window.API) return;
+        try {
+          const payload = await API.get('/api/chat/sessions/' + id);
+          const session = payload && payload.data && payload.data.session;
+          if (!session) return;
+          activeSessionId = session._id;
+          renderMessages(session.messages || []);
+        } catch (error) {
+          if (error && error.status === 401) return;
+          showNotice(error && error.network
+            ? 'Cannot reach the server — conversation history is unavailable.'
+            : ((error && error.message) || 'Could not open that conversation.'));
+        }
+      }
+
+      async function fetchSessions() {
+        if (!window.API || !API.isAuthenticated()) return null;
+        try {
+          const payload = await API.get('/api/chat/sessions');
+          return (payload && payload.data && payload.data.sessions) || [];
+        } catch (error) {
+          if (error && error.status === 401) return null;
+          if (error && error.network) {
+            showNotice('Cannot reach the server — conversation history is unavailable.');
+          } else {
+            showNotice((error && error.message) || 'Could not load conversations.');
+          }
+          return null;
+        }
+      }
+
+      async function loadSessions() {
+        const list = await fetchSessions();
+        if (!list) return;
+        sessions = list;
+        hideNotice();
+        renderList();
+        if (sessions.length && !activeSessionId) openSession(sessions[0]._id);
+      }
+
+      async function refreshList() {
+        const list = await fetchSessions();
+        if (!list) return;
+        sessions = list;
+        renderList();
+      }
+
+      function userRowText(row) {
+        const bubble = row.querySelector('.chat-bubble.user');
+        if (!bubble) return '';
+        const clone = bubble.cloneNode(true);
+        clone.querySelectorAll('.bubble-time').forEach((el) => el.remove());
+        return (clone.textContent || '').replace(/\s+/g, ' ').trim();
+      }
+
+      function appendCoachReply(text) {
+        if (!container) return;
+        const row = document.createElement('div');
+        row.className = 'chat-message-row';
+        row.setAttribute('data-source', 'persist');
+        const body = window.GeminiService ? GeminiService.renderMarkdown(String(text)) : esc(text);
+        row.innerHTML = '<div class="chat-avatar ai-avatar"><i class="bi bi-mortarboard-fill"></i></div>' +
+          '<div class="chat-bubble ai">' + body + '<span class="bubble-time">' + clockTime() + '</span></div>';
+        container.appendChild(row);
+        container.scrollTop = container.scrollHeight;
+      }
+
+      // True when app.js already rendered its own reply for this turn.
+      function waitForCoachReply(userRow, timeout) {
+        return new Promise((resolve) => {
+          if (!container) return resolve(true);
+          const started = Date.now();
+          const check = () => {
+            const all = Array.from(container.children);
+            const index = all.indexOf(userRow);
+            if (index === -1) return resolve(true);
+            for (let i = index + 1; i < all.length; i += 1) {
+              const candidate = all[i];
+              if (!candidate.classList || !candidate.classList.contains('chat-message-row')) continue;
+              if (candidate.classList.contains('user-row')) continue;
+              if (candidate.getAttribute('data-source') === 'persist') continue;
+              if (candidate.querySelector('.spinner-grow')) continue;
+              if (candidate.querySelector('.bg-danger-subtle')) continue;
+              return resolve(true);
+            }
+            if (Date.now() - started >= timeout) return resolve(false);
+            setTimeout(check, 250);
+          };
+          setTimeout(check, 300);
+        });
+      }
+
+      async function persistTurn(text, row) {
+        if (!window.API || !API.isAuthenticated()) return;
+        try {
+          const payload = await API.post('/api/chat/messages', { content: text });
+          const data = (payload && payload.data) || {};
+          if (data.session && data.session._id) activeSessionId = data.session._id;
+          if (data.reply) {
+            const alreadyRendered = await waitForCoachReply(row, 3500);
+            if (!alreadyRendered) appendCoachReply(data.reply);
+          }
+          refreshList();
+        } catch (error) {
+          if (error && error.status === 401) return;
+          if (error && error.network) {
+            showNotice('History not saved — cannot reach the server.');
+          } else {
+            console.warn('Could not persist chat turn:', error && error.message);
+            refreshList();
+          }
+        }
+      }
+
+      function setupPersistenceObserver() {
+        if (!container || typeof MutationObserver === 'undefined') return;
+        const observer = new MutationObserver((mutations) => {
+          if (suppressRender) return;
+          for (const mutation of mutations) {
+            const added = mutation.addedNodes;
+            for (let i = 0; i < added.length; i += 1) {
+              const node = added[i];
+              if (!node || node.nodeType !== 1 || !node.classList) continue;
+              if (!node.classList.contains('chat-message-row') || !node.classList.contains('user-row')) continue;
+              if (node.getAttribute('data-loaded') === '1') continue;
+              const text = userRowText(node);
+              if (text) persistTurn(text, node);
+            }
+          }
+        });
+        observer.observe(container, { childList: true });
+      }
+
+      function setupStatusModal() {
+        const modalEl = document.getElementById('apiKeyModal');
+        const saveBtn = document.getElementById('saveApiKeyBtn');
+        const msgEl = document.getElementById('apiKeyModalMsg');
+        if (modalEl && saveBtn) {
+          modalEl.addEventListener('show.bs.modal', () => { saveBtn.disabled = false; });
+        }
+        if (!saveBtn) return;
+        saveBtn.addEventListener('click', async () => {
+          if (!window.GeminiService || !GeminiService.checkAiStatus) return;
+          saveBtn.disabled = true;
+          if (msgEl) {
+            msgEl.className = 'alert alert-info small py-2 mb-0';
+            msgEl.textContent = 'Checking server AI connection...';
+          }
+          let status;
+          try {
+            status = await GeminiService.checkAiStatus();
+          } catch (error) {
+            status = { ok: false, message: (error && error.message) || 'Unable to verify the AI connection.' };
+          }
+          if (msgEl) {
+            msgEl.className = 'alert small py-2 mb-0 alert-' + (status.ok ? 'success' : 'warning');
+            msgEl.textContent = status.message;
+          }
+          saveBtn.disabled = false;
+        });
+      }
+
+      function wireControls() {
+        if (listEl) {
+          listEl.addEventListener('click', (event) => {
+            const item = event.target && event.target.closest ? event.target.closest('.conversation-item') : null;
+            if (!item) return;
+            const id = item.getAttribute('data-session-id');
+            if (id) openSession(id);
+          });
+        }
+        if (searchInput) {
+          searchInput.addEventListener('input', () => {
+            searchQuery = String(searchInput.value || '').trim().toLowerCase();
+            renderList();
+          });
+        }
+        const newChatBtn = document.getElementById('newChatBtn');
+        if (newChatBtn) {
+          newChatBtn.addEventListener('click', () => {
+            activeSessionId = null;
+            renderList();
+          });
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        initFullPageChat();
+        // Scroll chat to bottom on load
+        const messages = document.querySelector('.full-chat .chat-messages');
+        if (messages) messages.scrollTop = messages.scrollHeight;
+        setupPersistenceObserver();
+        setupStatusModal();
+        wireControls();
+        loadSessions();
+      });
+    })();
   </script>
 </body>
 </html>
