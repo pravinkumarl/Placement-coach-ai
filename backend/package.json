@@ -1,0 +1,8 @@
+{
+  "name": "placement-coach-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Express + MongoDB backend for Placement Coach AI",
+  "type": "module",
+  "main": "src/server.js"
+}

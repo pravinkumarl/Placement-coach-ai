@@ -1,7 +1,16 @@
 # Configuration & Secrets
 config.js
+.env
+.env.*
+!.env.example
 
 # Dependencies & Build artifacts
 node_modules/
 .DS_Store
 Thumbs.db
+
+# Logs & test artifacts
+*.log
+npm-debug.log*
+coverage/
+.nyc_output/
