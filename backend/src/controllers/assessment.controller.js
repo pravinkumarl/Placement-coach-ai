@@ -131,30 +131,46 @@ export const submitAssessment = asyncHandler(async (req, res) => {
   }
 
   let attempt = null;
-  if (attemptId && mongoose.Types.ObjectId.isValid(String(attemptId))) {
+  if (attemptId !== undefined && attemptId !== null && String(attemptId).trim() !== '') {
+    // An attemptId was supplied: it must be a valid id belonging to THIS user
+    // and it must still be open. Anything else is rejected so one student can
+    // never grade another student's attempt and duplicate submits cannot
+    // silently create extra attempts.
+    if (!mongoose.Types.ObjectId.isValid(String(attemptId))) {
+      throw ApiError.badRequest('attemptId is not a valid id.');
+    }
     attempt = await AssessmentAttempt.findOne({
       _id: attemptId,
       userId: req.user._id,
-      status: 'in_progress',
     });
-  }
-  if (!attempt) {
+    if (!attempt) {
+      throw ApiError.notFound('Assessment attempt not found.');
+    }
+    if (String(attempt.assessmentId) !== String(assessment._id)) {
+      throw ApiError.badRequest('This attempt does not belong to the requested assessment.');
+    }
+    if (attempt.status !== 'in_progress') {
+      throw ApiError.conflict('This assessment attempt has already been submitted.');
+    }
+  } else {
+    // No attemptId given: resume the student's own latest open attempt for
+    // this module, or open one for them.
     attempt = await AssessmentAttempt.findOne({
       userId: req.user._id,
       assessmentId: assessment._id,
       status: 'in_progress',
     }).sort('-startedAt');
-  }
-  if (!attempt) {
-    attempt = new AssessmentAttempt({
-      userId: req.user._id,
-      assessmentId: assessment._id,
-      moduleKey: assessment.moduleKey,
-      title: assessment.title,
-      category: assessment.category,
-      status: 'in_progress',
-      startedAt: new Date(),
-    });
+    if (!attempt) {
+      attempt = new AssessmentAttempt({
+        userId: req.user._id,
+        assessmentId: assessment._id,
+        moduleKey: assessment.moduleKey,
+        title: assessment.title,
+        category: assessment.category,
+        status: 'in_progress',
+        startedAt: new Date(),
+      });
+    }
   }
 
   const questions = assessment.questions || [];
