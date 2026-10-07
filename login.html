@@ -190,7 +190,7 @@
             <form class="needs-validation" id="loginForm" novalidate onsubmit="handleLoginSubmit(event)">
               <div class="mb-3">
                 <label for="loginEmail" class="form-label small fw-semibold">Email address</label>
-                <input type="email" class="form-control form-control-custom" id="loginEmail" placeholder="you@college.edu" value="student@placementcoach.ai" required>
+                <input type="email" class="form-control form-control-custom" id="loginEmail" placeholder="you@college.edu" required>
                 <div class="text-danger small mt-1 d-none" id="loginEmailError">Email address is required (e.g. you@college.edu).</div>
               </div>
 
@@ -200,7 +200,7 @@
                   <a href="#" class="small text-decoration-none text-primary fw-medium">Forgot password?</a>
                 </div>
                 <div class="position-relative">
-                  <input type="password" class="form-control form-control-custom" id="loginPassword" placeholder="Enter your password" value="Placement@2026" required minlength="6">
+                  <input type="password" class="form-control form-control-custom" id="loginPassword" placeholder="Enter your password" required minlength="6">
                   <button type="button" class="btn position-absolute end-0 top-50 translate-middle-y me-2 p-0 border-0 text-muted" onclick="togglePasswordVisibility('loginPassword', this)">
                     <i class="bi bi-eye"></i>
                   </button>
@@ -284,6 +284,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+  <script src="js/api.js"></script>
   <script src="app.js" defer></script>
   <script>
     function togglePasswordVisibility(inputId, btn) {
@@ -331,13 +332,20 @@
       }
     }
 
-    function handleLoginSubmit(e) {
+    function setAlert(element, html) {
+      element.querySelector('div.flex-grow-1').innerHTML = html;
+      element.classList.remove('d-none');
+      element.classList.add('d-flex');
+    }
+
+    async function handleLoginSubmit(e) {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value.trim();
-      const pass = document.getElementById('loginPassword').value.trim();
+      const pass = document.getElementById('loginPassword').value;
       const emailErr = document.getElementById('loginEmailError');
       const passErr = document.getElementById('loginPasswordError');
       const danger = document.getElementById('loginAlertDanger');
+      const submitBtn = e.target.querySelector('button[type="submit"]');
 
       let valid = true;
       if (!email) {
@@ -355,21 +363,35 @@
       }
 
       if (!valid) {
-        danger.classList.remove('d-none');
-        danger.classList.add('d-flex');
+        setAlert(danger, '<strong>Login Failed:</strong> Please enter a valid email and password to proceed.');
         return;
       }
 
       danger.classList.add('d-none');
-      window.location.href = 'dashboard.html';
+      submitBtn.disabled = true;
+
+      try {
+        const payload = await API.login({ email, password: pass });
+        API.setSession(payload.data.token, payload.data.user);
+        API.updateUserCache(payload.data.user);
+        const next = new URLSearchParams(window.location.search).get('next');
+        window.location.href = next ? decodeURIComponent(next) : 'dashboard.html';
+      } catch (error) {
+        setAlert(danger, '<strong>Login Failed:</strong> ' + (error.message || 'Please try again.'));
+        submitBtn.disabled = false;
+      }
     }
 
-    function handleSignupSubmit(e) {
+    async function handleSignupSubmit(e) {
       e.preventDefault();
+      const name = document.getElementById('signupName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
       const pass = document.getElementById('signupPassword').value;
       const confirm = document.getElementById('signupConfirmPassword').value;
       const matchErr = document.getElementById('passwordMatchError');
       const success = document.getElementById('signupAlertSuccess');
+      const danger = document.getElementById('loginAlertDanger');
+      const submitBtn = e.target.querySelector('button[type="submit"]');
 
       if (pass !== confirm) {
         matchErr.classList.remove('d-none');
@@ -377,11 +399,20 @@
       }
 
       matchErr.classList.add('d-none');
-      success.classList.remove('d-none');
-      success.classList.add('d-flex');
-      setTimeout(() => {
-        window.location.href = 'dashboard.html';
-      }, 1200);
+      submitBtn.disabled = true;
+
+      try {
+        const payload = await API.register({ name, email, password: pass });
+        API.setSession(payload.data.token, payload.data.user);
+        API.updateUserCache(payload.data.user);
+        setAlert(success, '<strong>Account Created:</strong> Welcome aboard! Launching your diagnostic roadmap...');
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1000);
+      } catch (error) {
+        setAlert(danger, '<strong>Sign up Failed:</strong> ' + (error.message || 'Please try again.'));
+        submitBtn.disabled = false;
+      }
     }
   </script>
 </body>
