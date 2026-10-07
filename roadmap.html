@@ -62,7 +62,7 @@
       </div>
       <div class="header-actions">
         <span class="badge rounded-pill px-3 py-2" style="background:var(--clr-success-light);color:var(--clr-success);font-weight:600;">
-          <i class="bi bi-check-circle"></i> 3 of 8 milestones completed
+          <i class="bi bi-check-circle"></i> <span id="milestoneCountText">Loading roadmap…</span>
         </span>
         <button class="btn btn-primary-custom btn-sm" id="recalcRoadmapBtn" onclick="generatePersonalizedRoadmap()">
           <span class="spinner-border spinner-border-sm d-none me-1" id="recalcSpinner" role="status"></span>
@@ -85,9 +85,9 @@
 
       <!-- Success toast / notification when refreshed -->
       <div id="roadmapUpdatedAlert" class="alert alert-success alert-dismissible fade show d-none align-items-center gap-2 mb-4 shadow-sm" role="alert">
-        <i class="bi bi-check-circle-fill fs-5 text-success"></i>
+        <i class="bi bi-check-circle-fill fs-5 text-success" id="roadmapNoticeIcon"></i>
         <div class="flex-grow-1">
-          <strong>Roadmap Updated:</strong> Your personalized path has been adapted! Milestone 4 priority shifted to DBMS Normalization.
+          <strong id="roadmapNoticeTitle">Roadmap Updated:</strong><span id="roadmapNoticeText"> Your personalized path has been adapted!</span>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
@@ -97,19 +97,20 @@
         <div class="row align-items-center g-3">
           <div class="col-md-6">
             <h5 class="fw-bold mb-1">Your Learning Path</h5>
-            <p class="mb-0" style="color:var(--clr-text-secondary);font-size:0.9rem;">
+            <p class="mb-0" id="roadmapSummary" style="color:var(--clr-text-secondary);font-size:0.9rem;">
               AI-generated roadmap based on your assessment results. Complete milestones to boost your readiness score.
             </p>
+            <div id="focusAreaChips" class="d-flex flex-wrap gap-2 mt-2"></div>
           </div>
           <div class="col-md-6">
             <div class="d-flex align-items-center gap-3">
               <div class="flex-grow-1">
                 <div class="d-flex justify-content-between mb-1">
                   <small class="fw-bold">Overall Progress</small>
-                  <small class="fw-bold" style="color:var(--clr-primary);">37.5%</small>
+                  <small class="fw-bold" style="color:var(--clr-primary);" id="roadmapProgressPct">—</small>
                 </div>
                 <div class="progress" style="height:10px;border-radius:5px;">
-                  <div class="progress-bar" style="width:37.5%;background:linear-gradient(90deg,var(--clr-primary),#7C3AED);border-radius:5px;"></div>
+                  <div class="progress-bar" id="roadmapProgressBar" style="width:0%;background:linear-gradient(90deg,var(--clr-primary),#7C3AED);border-radius:5px;"></div>
                 </div>
               </div>
             </div>
@@ -118,163 +119,13 @@
       </div>
 
       <!-- Roadmap Timeline -->
-      <div class="roadmap-timeline">
-        <!-- Milestone 1: Completed -->
+      <div class="roadmap-timeline" id="roadmapTimeline">
+        <!-- Populated from GET /api/roadmap by the inline script below -->
         <div class="roadmap-item" data-aos="fade-up">
-          <div class="roadmap-dot completed"><i class="bi bi-check-lg"></i></div>
+          <div class="roadmap-dot upcoming"><i class="bi bi-hourglass-split"></i></div>
           <div class="roadmap-card">
-            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-              <div>
-                <span class="badge badge-strong mb-2">Completed</span>
-                <h6>Master Arrays & String Manipulation</h6>
-                <p>Two pointers, sliding window, prefix sums, and string hashing techniques.</p>
-              </div>
-              <button class="btn btn-outline-success btn-sm" disabled><i class="bi bi-check-lg"></i> Completed</button>
-            </div>
-            <div class="accordion" id="acc1">
-              <div class="accordion-item border-0">
-                <h2 class="accordion-header"><button class="accordion-button collapsed py-2" style="font-size:0.85rem;background:transparent;color:var(--clr-text);" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">View Resources & Practice Sets</button></h2>
-                <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#acc1">
-                  <div class="accordion-body py-2" style="font-size:0.88rem;">
-                    <ul class="list-unstyled mb-0">
-                      <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Two Pointers Pattern — 10 problems ✓</li>
-                      <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Sliding Window — 8 problems ✓</li>
-                      <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Video: "Master Arrays in 2 Hours" ✓</li>
-                      <li><i class="bi bi-check-circle-fill text-success me-2"></i> Assessment: Arrays — 92% ✓</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="roadmap-meta mt-2"><span><i class="bi bi-clock"></i> Completed Sep 13</span><span><i class="bi bi-star-fill" style="color:var(--clr-warning);"></i> Score: 92%</span></div>
-          </div>
-        </div>
-
-        <!-- Milestone 2: Completed -->
-        <div class="roadmap-item" data-aos="fade-up" data-aos-delay="100">
-          <div class="roadmap-dot completed"><i class="bi bi-check-lg"></i></div>
-          <div class="roadmap-card">
-            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-              <div>
-                <span class="badge badge-strong mb-2">Completed</span>
-                <h6>Strengthen Logical Reasoning</h6>
-                <p>Syllogisms, coding-decoding, blood relations, seating arrangement, and puzzles.</p>
-              </div>
-              <button class="btn btn-outline-success btn-sm" disabled><i class="bi bi-check-lg"></i> Completed</button>
-            </div>
-            <div class="roadmap-meta mt-2"><span><i class="bi bi-clock"></i> Completed Sep 14</span><span><i class="bi bi-star-fill" style="color:var(--clr-warning);"></i> Score: 82%</span></div>
-          </div>
-        </div>
-
-        <!-- Milestone 3: Completed -->
-        <div class="roadmap-item" data-aos="fade-up" data-aos-delay="150">
-          <div class="roadmap-dot completed"><i class="bi bi-check-lg"></i></div>
-          <div class="roadmap-card">
-            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-              <div>
-                <span class="badge badge-strong mb-2">Completed</span>
-                <h6>Binary Trees & BST Fundamentals</h6>
-                <p>Traversals, BST validation, LCA, and serialization/deserialization.</p>
-              </div>
-              <button class="btn btn-outline-success btn-sm" disabled><i class="bi bi-check-lg"></i> Completed</button>
-            </div>
-            <div class="roadmap-meta mt-2"><span><i class="bi bi-clock"></i> Completed Sep 16</span><span><i class="bi bi-star-fill" style="color:var(--clr-warning);"></i> Score: 85%</span></div>
-          </div>
-        </div>
-
-        <!-- Milestone 4: In Progress -->
-        <div class="roadmap-item" data-aos="fade-up" data-aos-delay="200">
-          <div class="roadmap-dot in-progress"><i class="bi bi-play-fill"></i></div>
-          <div class="roadmap-card" style="border-color: var(--clr-primary);">
-            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-              <div>
-                <span class="badge rounded-pill px-2 py-1 mb-2" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">In Progress</span>
-                <h6>SQL Queries & Database Mastery</h6>
-                <p>JOINs, subqueries, window functions, normalization, and indexing strategies.</p>
-              </div>
-              <button class="btn btn-primary-custom btn-sm" onclick="markAsDone(this)"><i class="bi bi-check-lg"></i> Mark as Done</button>
-            </div>
-            <div class="accordion" id="acc4">
-              <div class="accordion-item border-0">
-                <h2 class="accordion-header"><button class="accordion-button collapsed py-2" style="font-size:0.85rem;background:transparent;color:var(--clr-text);" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4">View Resources & Practice Sets</button></h2>
-                <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#acc4">
-                  <div class="accordion-body py-2" style="font-size:0.88rem;">
-                    <ul class="list-unstyled mb-0">
-                      <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Basic JOINs — 8 queries ✓</li>
-                      <li class="mb-2"><i class="bi bi-circle text-muted me-2"></i> Subqueries & CTEs — 6 queries</li>
-                      <li class="mb-2"><i class="bi bi-circle text-muted me-2"></i> Window Functions — 5 queries</li>
-                      <li class="mb-2"><i class="bi bi-circle text-muted me-2"></i> Video: "DBMS Normalization Deep Dive"</li>
-                      <li><i class="bi bi-circle text-muted me-2"></i> Assessment: SQL & DBMS</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="roadmap-meta mt-2"><span><i class="bi bi-clock"></i> Est. 2 weeks</span><span><i class="bi bi-bar-chart"></i> Current: 55%</span></div>
-          </div>
-        </div>
-
-        <!-- Milestone 5: Upcoming -->
-        <div class="roadmap-item" data-aos="fade-up" data-aos-delay="250">
-          <div class="roadmap-dot upcoming"><i class="bi bi-5-circle"></i></div>
-          <div class="roadmap-card">
-            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-              <div>
-                <span class="badge rounded-pill px-2 py-1 mb-2" style="background:var(--clr-bg);color:var(--clr-text-muted);font-weight:600;">Upcoming</span>
-                <h6>System Design Fundamentals</h6>
-                <p>Load balancing, caching, database sharding, microservices, and API design patterns.</p>
-              </div>
-              <button class="btn btn-outline-custom btn-sm" disabled>Locked</button>
-            </div>
-            <div class="roadmap-meta mt-2"><span><i class="bi bi-clock"></i> Est. 3 weeks</span><span><i class="bi bi-lock"></i> Complete SQL first</span></div>
-          </div>
-        </div>
-
-        <!-- Milestone 6: Upcoming -->
-        <div class="roadmap-item" data-aos="fade-up" data-aos-delay="300">
-          <div class="roadmap-dot upcoming"><i class="bi bi-6-circle"></i></div>
-          <div class="roadmap-card">
-            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-              <div>
-                <span class="badge rounded-pill px-2 py-1 mb-2" style="background:var(--clr-bg);color:var(--clr-text-muted);font-weight:600;">Upcoming</span>
-                <h6>Dynamic Programming Mastery</h6>
-                <p>Memoization, tabulation, classic DP patterns (knapsack, LIS, LCS, matrix chain).</p>
-              </div>
-              <button class="btn btn-outline-custom btn-sm" disabled>Locked</button>
-            </div>
-            <div class="roadmap-meta mt-2"><span><i class="bi bi-clock"></i> Est. 4 weeks</span><span><i class="bi bi-exclamation-triangle" style="color:var(--clr-danger);"></i> High priority</span></div>
-          </div>
-        </div>
-
-        <!-- Milestone 7: Upcoming -->
-        <div class="roadmap-item" data-aos="fade-up" data-aos-delay="350">
-          <div class="roadmap-dot upcoming"><i class="bi bi-7-circle"></i></div>
-          <div class="roadmap-card">
-            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-              <div>
-                <span class="badge rounded-pill px-2 py-1 mb-2" style="background:var(--clr-bg);color:var(--clr-text-muted);font-weight:600;">Upcoming</span>
-                <h6>Graph Algorithms Deep Dive</h6>
-                <p>BFS, DFS, topological sort, shortest paths (Dijkstra, Bellman-Ford), and MST.</p>
-              </div>
-              <button class="btn btn-outline-custom btn-sm" disabled>Locked</button>
-            </div>
-            <div class="roadmap-meta mt-2"><span><i class="bi bi-clock"></i> Est. 3 weeks</span><span><i class="bi bi-exclamation-triangle" style="color:var(--clr-danger);"></i> High priority</span></div>
-          </div>
-        </div>
-
-        <!-- Milestone 8: Upcoming -->
-        <div class="roadmap-item" data-aos="fade-up" data-aos-delay="400">
-          <div class="roadmap-dot upcoming"><i class="bi bi-trophy"></i></div>
-          <div class="roadmap-card" style="background: linear-gradient(135deg, rgba(var(--clr-primary-rgb), 0.05), rgba(124, 58, 237, 0.05));">
-            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-              <div>
-                <span class="badge rounded-pill px-2 py-1 mb-2" style="background:var(--clr-warning-light);color:var(--clr-warning);font-weight:600;"><i class="bi bi-trophy"></i> Final Milestone</span>
-                <h6>Full Mock Placement Drive</h6>
-                <p>Complete a simulated placement drive: Online assessment → Technical Interview → HR Interview → Offer.</p>
-              </div>
-              <button class="btn btn-outline-custom btn-sm" disabled>Locked</button>
-            </div>
-            <div class="roadmap-meta mt-2"><span><i class="bi bi-clock"></i> 1 day</span><span><i class="bi bi-star-fill" style="color:var(--clr-warning);"></i> Unlocks at 85% readiness</span></div>
+            <h6>Loading your roadmap…</h6>
+            <p class="mb-0" style="color:var(--clr-text-secondary);font-size:0.9rem;">Fetching your milestones from the Placement Coach server.</p>
           </div>
         </div>
       </div>
@@ -294,35 +145,280 @@
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js" defer></script>
   <script src="config.js" defer></script>
   <script src="gemini.js" defer></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth-guard.js"></script>
   <script src="app.js" defer></script>
   <script>
-    function generatePersonalizedRoadmap() {
+    /* ============================================================
+       Roadmap page — bound to the REST API
+       GET    /api/roadmap
+       PATCH  /api/roadmap/milestones/:milestoneId
+       POST   /api/roadmap/generate
+       ============================================================ */
+    let roadmapData = null;
+
+    function escText(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function handleAuthError(error) {
+      if (error && error.status === 401) {
+        if (window.AuthGuard) AuthGuard.requireAuth();
+        return true;
+      }
+      return false;
+    }
+
+    function showRoadmapNotice(kind, title, message) {
+      const notice = document.getElementById('roadmapUpdatedAlert');
+      if (!notice) return;
+      notice.style.display = '';
+      notice.classList.remove('d-none');
+      notice.classList.add('d-flex', 'show');
+      notice.classList.toggle('alert-success', kind !== 'warning');
+      notice.classList.toggle('alert-warning', kind === 'warning');
+      const icon = document.getElementById('roadmapNoticeIcon');
+      if (icon) {
+        icon.className = kind === 'warning'
+          ? 'bi bi-exclamation-triangle-fill fs-5 text-warning'
+          : 'bi bi-check-circle-fill fs-5 text-success';
+      }
+      setText('roadmapNoticeTitle', title);
+      setText('roadmapNoticeText', ' ' + message);
+    }
+
+    function renderFocusAreas(areas) {
+      const container = document.getElementById('focusAreaChips');
+      if (!container) return;
+      container.innerHTML = areas.map((area) =>
+        '<span class="badge rounded-pill px-2 py-1" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">' +
+        escText(area) +
+        '</span>'
+      ).join('');
+    }
+
+    function milestoneTemplate(milestone, index) {
+      const status = ['pending', 'in_progress', 'completed'].indexOf(milestone.status) !== -1
+        ? milestone.status
+        : 'pending';
+      const id = String(milestone._id || '');
+      const delay = Math.min(index * 50, 400);
+      const hours = Number(milestone.estimatedHours) || 0;
+
+      let dotClass = 'upcoming';
+      let dotIcon = 'bi-lock';
+      let badge = '<span class="badge rounded-pill px-2 py-1 mb-2" style="background:var(--clr-bg);color:var(--clr-text-muted);font-weight:600;">Upcoming</span>';
+      let action = '<button class="btn btn-outline-custom btn-sm" onclick="setMilestoneStatus(\'' + id + '\', \'in_progress\')"><i class="bi bi-play-fill"></i> Start</button>';
+      let cardStyle = '';
+      let meta = '<span><i class="bi bi-hourglass-split"></i> Not started</span>';
+
+      if (status === 'completed') {
+        dotClass = 'completed';
+        dotIcon = 'bi-check-lg';
+        badge = '<span class="badge badge-strong mb-2">Completed</span>';
+        action = '<button class="btn btn-outline-success btn-sm" disabled><i class="bi bi-check-lg"></i> Completed</button>';
+        if (milestone.completedAt) {
+          const when = new Date(milestone.completedAt);
+          const label = isNaN(when.getTime())
+            ? 'Completed'
+            : 'Completed ' + when.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+          meta = '<span><i class="bi bi-check-circle-fill text-success"></i> ' + label + '</span>';
+        } else {
+          meta = '<span><i class="bi bi-check-circle-fill text-success"></i> Completed</span>';
+        }
+      } else if (status === 'in_progress') {
+        dotClass = 'in-progress';
+        dotIcon = 'bi-play-fill';
+        badge = '<span class="badge rounded-pill px-2 py-1 mb-2" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">In Progress</span>';
+        action = '<button class="btn btn-primary-custom btn-sm" onclick="setMilestoneStatus(\'' + id + '\', \'completed\')"><i class="bi bi-check-lg"></i> Mark as Done</button>';
+        cardStyle = ' style="border-color: var(--clr-primary);"';
+        meta = '<span><i class="bi bi-arrow-repeat"></i> In progress</span>';
+      }
+
+      return '' +
+        '<div class="roadmap-item" data-aos="fade-up" data-aos-delay="' + delay + '">' +
+          '<div class="roadmap-dot ' + dotClass + '"><i class="bi ' + dotIcon + '"></i></div>' +
+          '<div class="roadmap-card"' + cardStyle + '>' +
+            '<div class="d-flex justify-content-between align-items-start flex-wrap gap-2">' +
+              '<div>' +
+                badge +
+                '<h6>' + escText(milestone.title) + '</h6>' +
+                '<p>' + escText(milestone.description) + '</p>' +
+              '</div>' +
+              action +
+            '</div>' +
+            '<div class="roadmap-meta mt-2"><span><i class="bi bi-clock"></i> Est. ' + hours + ' hrs</span>' + meta + '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function renderRoadmap(roadmap) {
+      if (!roadmap) return;
+      roadmapData = roadmap;
+
+      setText('roadmapSummary', roadmap.summary ||
+        'Your personalized roadmap. Complete milestones to boost your readiness score.');
+      renderFocusAreas(Array.isArray(roadmap.focusAreas) ? roadmap.focusAreas : []);
+
+      const milestones = (Array.isArray(roadmap.milestones) ? roadmap.milestones : [])
+        .slice()
+        .sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
+      const completed = milestones.filter((m) => m.status === 'completed').length;
+
+      setText('milestoneCountText', completed + ' of ' + milestones.length + ' milestones completed');
+
+      const pct = Math.max(0, Math.min(100, Number(roadmap.completionPercentage) || 0));
+      setText('roadmapProgressPct', pct + '%');
+      const bar = document.getElementById('roadmapProgressBar');
+      if (bar) bar.style.width = pct + '%';
+
+      const timeline = document.getElementById('roadmapTimeline');
+      if (timeline) {
+        if (!milestones.length) {
+          timeline.innerHTML =
+            '<div class="roadmap-item" data-aos="fade-up">' +
+              '<div class="roadmap-dot upcoming"><i class="bi bi-info-circle"></i></div>' +
+              '<div class="roadmap-card">' +
+                '<h6>No milestones yet</h6>' +
+                '<p class="mb-0" style="color:var(--clr-text-secondary);font-size:0.9rem;">Use “Recalculate Roadmap” to generate your personalized plan.</p>' +
+              '</div>' +
+            '</div>';
+        } else {
+          timeline.innerHTML = milestones.map(milestoneTemplate).join('');
+        }
+      }
+
+      if (window.AOS && typeof AOS.refresh === 'function') AOS.refresh();
+    }
+
+    function renderRoadmapLoading() {
+      setText('milestoneCountText', 'Loading roadmap…');
+      setText('roadmapProgressPct', '—');
+      const bar = document.getElementById('roadmapProgressBar');
+      if (bar) bar.style.width = '0%';
+      const timeline = document.getElementById('roadmapTimeline');
+      if (timeline) {
+        timeline.innerHTML =
+          '<div class="roadmap-item" data-aos="fade-up">' +
+            '<div class="roadmap-dot upcoming"><i class="bi bi-hourglass-split"></i></div>' +
+            '<div class="roadmap-card">' +
+              '<h6>Loading your roadmap…</h6>' +
+              '<p class="mb-0" style="color:var(--clr-text-secondary);font-size:0.9rem;">Fetching your milestones from the Placement Coach server.</p>' +
+            '</div>' +
+          '</div>';
+      }
+    }
+
+    function renderRoadmapError(message) {
+      setText('milestoneCountText', 'Roadmap unavailable');
+      setText('roadmapProgressPct', '—');
+      const bar = document.getElementById('roadmapProgressBar');
+      if (bar) bar.style.width = '0%';
+      const timeline = document.getElementById('roadmapTimeline');
+      if (timeline) {
+        timeline.innerHTML =
+          '<div class="roadmap-item" data-aos="fade-up">' +
+            '<div class="roadmap-dot upcoming"><i class="bi bi-exclamation-triangle"></i></div>' +
+            '<div class="roadmap-card">' +
+              '<h6>We could not load your roadmap</h6>' +
+              '<p class="mb-0" style="color:var(--clr-text-secondary);font-size:0.9rem;">The server did not respond. Your progress is safe — refresh the page or try again in a moment.</p>' +
+            '</div>' +
+          '</div>';
+      }
+      showRoadmapNotice('warning', 'Roadmap unavailable:', message || 'Please try again in a moment.');
+      if (window.AOS && typeof AOS.refresh === 'function') AOS.refresh();
+    }
+
+    async function setMilestoneStatus(milestoneId, status) {
+      if (!window.API || !API.isAuthenticated()) return;
+      try {
+        const payload = await API.patch(
+          '/api/roadmap/milestones/' + encodeURIComponent(milestoneId),
+          { status: status }
+        );
+        const data = payload.data || {};
+        if (status === 'completed' && typeof triggerConfetti === 'function') triggerConfetti();
+        renderRoadmap(data.roadmap || roadmapData);
+
+        let message = payload.message || 'Roadmap updated.';
+        if (typeof data.readinessScore === 'number') {
+          message += ' Readiness score: ' + data.readinessScore + '%.';
+        }
+        showRoadmapNotice('success', 'Milestone updated:', message);
+      } catch (error) {
+        if (handleAuthError(error)) return;
+        showRoadmapNotice('warning', 'Could not update the milestone:', (error && error.message) || 'Please try again.');
+      }
+    }
+
+    async function generatePersonalizedRoadmap() {
       const btn = document.getElementById('recalcRoadmapBtn');
       const spinner = document.getElementById('recalcSpinner');
       const icon = document.getElementById('recalcIcon');
-      const alert = document.getElementById('generatingRoadmapAlert');
-      const updatedAlert = document.getElementById('roadmapUpdatedAlert');
+      const banner = document.getElementById('generatingRoadmapAlert');
+      const notice = document.getElementById('roadmapUpdatedAlert');
 
-      if (!btn) return;
-      btn.disabled = true;
-      spinner.classList.remove('d-none');
-      icon.classList.add('d-none');
-      alert.classList.remove('d-none');
-      alert.classList.add('d-flex');
-      if (updatedAlert) updatedAlert.classList.add('d-none');
+      if (btn) btn.disabled = true;
+      if (spinner) spinner.classList.remove('d-none');
+      if (icon) icon.classList.add('d-none');
+      if (banner) {
+        banner.classList.remove('d-none');
+        banner.classList.add('d-flex');
+      }
+      if (notice) notice.classList.add('d-none');
 
-      setTimeout(() => {
-        alert.classList.add('d-none');
-        alert.classList.remove('d-flex');
-        btn.disabled = false;
-        spinner.classList.add('d-none');
-        icon.classList.remove('d-none');
-        if (updatedAlert) {
-          updatedAlert.classList.remove('d-none');
-          updatedAlert.classList.add('d-flex');
+      try {
+        if (!window.API || !API.isAuthenticated()) {
+          showRoadmapNotice('warning', 'Not signed in:', 'Sign in to recalculate your roadmap.');
+          return;
         }
-      }, 1500);
+        const payload = await API.post('/api/roadmap/generate', {});
+        const data = payload.data || {};
+        renderRoadmap(data.roadmap || roadmapData);
+
+        let message = payload.message || 'Roadmap regenerated.';
+        if (typeof data.readinessScore === 'number') {
+          message += ' Readiness score: ' + data.readinessScore + '%.';
+        }
+        showRoadmapNotice('success', 'Roadmap Updated:', message);
+      } catch (error) {
+        if (!handleAuthError(error)) {
+          showRoadmapNotice('warning', 'Could not recalculate the roadmap:', (error && error.message) || 'Please try again.');
+        }
+      } finally {
+        if (btn) btn.disabled = false;
+        if (spinner) spinner.classList.add('d-none');
+        if (icon) icon.classList.remove('d-none');
+        if (banner) {
+          banner.classList.add('d-none');
+          banner.classList.remove('d-flex');
+        }
+      }
     }
+
+    async function loadRoadmap() {
+      renderRoadmapLoading();
+      if (!window.API || !API.isAuthenticated()) {
+        renderRoadmapError('Sign in to load your roadmap.');
+        return;
+      }
+      try {
+        const payload = await API.get('/api/roadmap');
+        renderRoadmap(payload.data && payload.data.roadmap);
+      } catch (error) {
+        if (handleAuthError(error)) return;
+        renderRoadmapError((error && error.message) || 'Please try again in a moment.');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadRoadmap);
   </script>
 </body>
 </html>

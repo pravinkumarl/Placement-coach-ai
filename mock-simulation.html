@@ -74,6 +74,16 @@
         </p>
       </div>
 
+      <!-- Past Interview Sessions -->
+      <div class="glass-card mb-4" data-aos="fade-up">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h6 class="fw-bold mb-0"><i class="bi bi-clock-history me-2" style="color:var(--clr-primary);"></i>Past Interview Sessions</h6>
+          <button class="btn btn-sm btn-outline-custom" id="refreshInterviewsBtn" type="button"><i class="bi bi-arrow-clockwise"></i></button>
+        </div>
+        <div id="pastInterviewList" class="small"></div>
+        <div id="pastInterviewNotice" class="small text-muted mt-2" style="display:none;"></div>
+      </div>
+
       <!-- Featured Company Simulation Carousel -->
       <div class="card border-0 shadow-sm mb-4" style="background: var(--glass-bg); border-radius: var(--radius-lg); overflow:hidden;" data-aos="fade-up">
         <div class="card-header bg-transparent border-0 d-flex align-items-center justify-content-between pt-3 px-4">
@@ -472,6 +482,9 @@
           </div>
         </div>
       </div>
+
+      <!-- Interview Results (filled by the API flow after a session completes) -->
+      <div class="glass-card mb-4" id="interviewResults" style="display:none;"></div>
     </div>
   </div>
 
@@ -480,36 +493,14 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content" style="border:none;border-radius:var(--radius-xl);background:var(--clr-surface);overflow:hidden;">
         <div class="modal-header border-0" style="background:linear-gradient(135deg,var(--clr-primary),#7C3AED);color:#fff;">
-          <h5 class="modal-title fw-bold"><i class="bi bi-person-video3 me-2"></i>Technical Interview — Google SDE</h5>
+          <h5 class="modal-title fw-bold" id="interviewModalTitle"><i class="bi bi-person-video3 me-2"></i>Interview Simulation</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body p-0">
           <!-- Interview Chat UI -->
-          <div class="chat-messages" style="max-height: 400px; padding: 1.5rem;">
-            <div class="chat-message-row">
-              <div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>
-              <div class="chat-bubble ai">
-                Welcome to your Google SDE Technical Interview simulation! I'm your AI interviewer. Let's start with a warm-up.
-                <br><br>
-                <strong>Question 1:</strong> Tell me about a challenging project you've worked on recently. What was your role, and what technical decisions did you make?
-                <span class="bubble-time">Interview Start</span>
-              </div>
-            </div>
-            <div class="chat-message-row user-row">
-              <div class="chat-bubble user">
-                I built a real-time chat application using WebSockets and Node.js. I was the lead developer and made architectural decisions around message queuing and database selection. I chose MongoDB for message storage because of its document-based structure and used Redis for caching active sessions.
-                <span class="bubble-time">1:23</span>
-              </div>
-            </div>
-            <div class="chat-message-row">
-              <div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>
-              <div class="chat-bubble ai">
-                Interesting choice of stack! Follow-up questions:<br><br>
-                1. Why did you choose MongoDB over PostgreSQL for message storage? What trade-offs did you consider?<br>
-                2. How did you handle message ordering and potential duplicates with WebSockets?<br><br>
-                Take your time to think through these.
-                <span class="bubble-time">1:30</span>
-              </div>
+          <div class="chat-messages" id="interviewChatMessages" style="max-height: 400px; padding: 1.5rem;">
+            <div class="text-center text-muted small py-4" id="interviewChatPlaceholder">
+              Start a simulation below to meet your AI interviewer — real questions, scores and feedback appear here.
             </div>
           </div>
           <div class="chat-input-bar" style="border-top: 1px solid var(--clr-border);">
@@ -518,7 +509,7 @@
           </div>
         </div>
         <div class="modal-footer border-0">
-          <small class="text-muted me-auto"><i class="bi bi-clock"></i> 43:27 remaining</small>
+          <small class="text-muted me-auto" id="interviewProgress"><i class="bi bi-chat-dots"></i> Not started</small>
           <button class="btn btn-outline-custom" data-bs-dismiss="modal">Pause</button>
           <a href="live-assessment.html?module=coding" class="btn btn-primary-custom"><i class="bi bi-arrows-fullscreen"></i> Full Screen</a>
         </div>
@@ -539,6 +530,8 @@
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js" defer></script>
   <script src="config.js" defer></script>
   <script src="gemini.js" defer></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth-guard.js"></script>
   <script src="app.js" defer></script>
   <script>
     function selectCompanyCard(companyName, el) {
@@ -569,6 +562,514 @@
       btn.classList.remove('btn-outline-custom');
       btn.classList.add('btn-primary-custom', 'active');
     }
+
+    /* ------------------------------------------------------------
+       Interview simulation flow.
+       Drives #interviewModal with the backend REST API through
+       js/api.js: create session -> inject real questions -> score
+       each answer -> complete -> show results. Sending inside the
+       modal is intercepted (capture phase) so app.js's free-form
+       Gemini chat never replaces the server question flow.
+       ------------------------------------------------------------ */
+    (function () {
+      const ACTIVE_KEY = 'pc_active_interview';
+      const modal = document.getElementById('interviewModal');
+      if (!modal) return;
+
+      const messagesEl = modal.querySelector('.chat-messages');
+      const inputEl = modal.querySelector('.chat-input-bar input');
+      const sendBtn = modal.querySelector('.chat-input-bar .btn-send');
+      const titleEl = document.getElementById('interviewModalTitle');
+      const progressEl = document.getElementById('interviewProgress');
+      const pastListEl = document.getElementById('pastInterviewList');
+      const pastNoticeEl = document.getElementById('pastInterviewNotice');
+      const resultsEl = document.getElementById('interviewResults');
+      const placeholderHTML = messagesEl ? messagesEl.innerHTML : '';
+
+      let current = null;
+      let busy = false;
+      let noticeTimer = null;
+
+      function esc(value) {
+        return String(value == null ? '' : value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function fmtDate(iso) {
+        const when = new Date(iso);
+        if (isNaN(when.getTime())) return '';
+        return when.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' ' +
+          when.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+      }
+
+      function showNotice(text) {
+        if (!pastNoticeEl) return;
+        pastNoticeEl.textContent = text;
+        pastNoticeEl.style.display = 'block';
+        if (noticeTimer) clearTimeout(noticeTimer);
+        noticeTimer = setTimeout(hideNotice, 8000);
+      }
+
+      function hideNotice() {
+        if (!pastNoticeEl) return;
+        pastNoticeEl.style.display = 'none';
+        pastNoticeEl.textContent = '';
+      }
+
+      function chosenCompany() {
+        const badge = document.getElementById('selectedCompanyBadge');
+        return badge ? badge.textContent.trim() : '';
+      }
+
+      function chosenRole() {
+        const active = document.querySelector('#simulationSection .btn.active');
+        return active ? active.textContent.trim() : '';
+      }
+
+      function setActive(id) {
+        window.__activeInterviewId = id;
+        try { localStorage.setItem(ACTIVE_KEY, id); } catch (e) { /* storage unavailable */ }
+      }
+
+      function storedActiveId() {
+        if (window.__activeInterviewId) return window.__activeInterviewId;
+        try { return localStorage.getItem(ACTIVE_KEY); } catch (e) { return null; }
+      }
+
+      function clearActive() {
+        window.__activeInterviewId = null;
+        try { localStorage.removeItem(ACTIVE_KEY); } catch (e) { /* storage unavailable */ }
+      }
+
+      /* ---------- modal chat helpers (existing markup only) ---------- */
+      function scrollMessages() {
+        if (messagesEl) messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      function clearChat() {
+        if (messagesEl) messagesEl.innerHTML = placeholderHTML;
+      }
+
+      function aiRow(html, label) {
+        if (!messagesEl) return null;
+        const row = document.createElement('div');
+        row.className = 'chat-message-row';
+        row.innerHTML = '<div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>' +
+          '<div class="chat-bubble ai">' + html +
+          '<span class="bubble-time">' + esc(label || 'Now') + '</span></div>';
+        messagesEl.appendChild(row);
+        scrollMessages();
+        return row;
+      }
+
+      function userRow(text) {
+        if (!messagesEl) return null;
+        const row = document.createElement('div');
+        row.className = 'chat-message-row user-row';
+        row.innerHTML = '<div class="chat-bubble user">' + esc(text) +
+          '<span class="bubble-time">Just now</span></div>';
+        messagesEl.appendChild(row);
+        scrollMessages();
+        return row;
+      }
+
+      function typingRow(label) {
+        if (!messagesEl) return null;
+        const row = document.createElement('div');
+        row.className = 'chat-message-row interview-typing';
+        row.innerHTML = '<div class="chat-avatar ai-avatar"><i class="bi bi-robot"></i></div>' +
+          '<div class="chat-bubble ai d-flex align-items-center gap-1 py-2 px-3">' +
+          '<span class="spinner-grow spinner-grow-sm text-primary" role="status"></span>' +
+          '<span class="spinner-grow spinner-grow-sm text-primary" style="animation-delay:0.15s;"></span>' +
+          '<span class="spinner-grow spinner-grow-sm text-primary" style="animation-delay:0.3s;"></span>' +
+          '<small class="text-muted ms-1" style="font-size:0.8rem;">' + esc(label) + '</small>' +
+          '</div>';
+        messagesEl.appendChild(row);
+        scrollMessages();
+        return row;
+      }
+
+      function removeRow(row) {
+        if (row && row.parentNode) row.parentNode.removeChild(row);
+      }
+
+      function setProgress(text) {
+        if (progressEl) progressEl.innerHTML = '<i class="bi bi-chat-dots"></i> ' + esc(text);
+      }
+
+      function setTitle(session) {
+        if (!titleEl) return;
+        const parts = [session.title || 'Interview Simulation'];
+        if (session.company) parts.push(session.company);
+        titleEl.innerHTML = '<i class="bi bi-person-video3 me-2"></i>' + esc(parts.join(' · '));
+      }
+
+      function appendQuestion(question, index) {
+        current.currentQuestion = question;
+        const meta = [(index + 1) + '/' + current.total, question.category, question.difficulty]
+          .filter(Boolean).join(' · ');
+        aiRow('<strong>' + esc(meta) + '</strong><br>' + esc(question.question), 'Question');
+        setProgress('Question ' + (index + 1) + ' of ' + current.total);
+      }
+
+      function appendFeedback(data) {
+        aiRow('<strong>Score: ' + esc(data.score) + '/100</strong> · ' +
+          esc(data.answeredCount) + '/' + esc(data.totalQuestions) + ' answered<br>' +
+          esc(data.feedback), 'Feedback');
+      }
+
+      function appendInfo(text) {
+        aiRow('<span class="text-muted">' + esc(text) + '</span>', 'Note');
+      }
+
+      /* ---------- session lifecycle ---------- */
+      function questionIndex(id) {
+        const idx = current.questions.findIndex((q) => q.id === id);
+        return idx >= 0 ? idx : 0;
+      }
+
+      function nextUnansweredQuestion() {
+        if (!current) return null;
+        const answered = (current.answers || []).map((a) => a.questionId);
+        for (let i = 0; i < current.questions.length; i += 1) {
+          if (answered.indexOf(current.questions[i].id) === -1) return current.questions[i];
+        }
+        return null;
+      }
+
+      async function startOrResume() {
+        if (!window.API || !API.isAuthenticated()) {
+          appendInfo('Sign in to start an interview simulation.');
+          return;
+        }
+        const storedId = storedActiveId();
+        if (storedId) {
+          try {
+            const payload = await API.get('/api/interviews/' + storedId);
+            const session = payload && payload.data && payload.data.session;
+            if (session && session.status === 'in_progress') {
+              resumeSession(session);
+              return;
+            }
+            clearActive();
+          } catch (error) {
+            if (error && error.status === 401) return;
+            if (error && error.network) {
+              appendInfo('Cannot reach the server — the simulation could not be resumed.');
+              return;
+            }
+            clearActive();
+          }
+        }
+        await createInterview();
+      }
+
+      function resumeSession(session) {
+        current = {
+          id: session._id,
+          questions: session.questions || [],
+          answers: session.answers || [],
+          total: (session.questions || []).length,
+          currentQuestion: null,
+        };
+        setTitle(session);
+        clearChat();
+        (session.transcript || []).forEach((line) => {
+          if (line.role === 'user') userRow(line.content);
+          else if (line.role === 'assistant') aiRow(esc(line.content), 'Feedback');
+        });
+        const next = nextUnansweredQuestion();
+        if (!next) {
+          finishInterview().catch(() => {});
+          return;
+        }
+        aiRow('<span class="text-muted">Resuming your session — ' +
+          esc((current.answers || []).length) + ' of ' + esc(current.total) +
+          ' answered so far.</span>', 'Resume');
+        appendQuestion(next, questionIndex(next.id));
+      }
+
+      async function createInterview() {
+        clearChat();
+        const typing = typingRow('Setting up your interview...');
+        const body = { type: 'technical' };
+        const role = chosenRole();
+        const company = chosenCompany();
+        if (role) body.role = role;
+        if (company) body.company = company;
+        try {
+          const payload = await API.post('/api/interviews', body);
+          removeRow(typing);
+          const session = payload && payload.data && payload.data.session;
+          if (!session) {
+            appendInfo('The server did not return an interview session. Please try again.');
+            return;
+          }
+          setActive(session._id);
+          current = {
+            id: session._id,
+            questions: session.questions || [],
+            answers: [],
+            total: (session.questions || []).length,
+            currentQuestion: null,
+          };
+          setTitle(session);
+          loadPastList();
+          if (!current.questions.length) {
+            appendInfo('No questions were generated for this session.');
+            setProgress('No questions');
+            return;
+          }
+          appendQuestion(current.questions[0], 0);
+        } catch (error) {
+          removeRow(typing);
+          if (error && error.status === 401) return;
+          appendInfo('Could not start the interview: ' + ((error && error.message) || 'unknown error'));
+        }
+      }
+
+      async function submitAnswer(text) {
+        if (busy) return;
+        if (!current || !current.currentQuestion) {
+          appendInfo('No active interview session. Close this window and start a simulation from the page.');
+          return;
+        }
+        busy = true;
+        try {
+          userRow(text);
+          if (inputEl) inputEl.value = '';
+          const typing = typingRow('Interviewer is evaluating...');
+          try {
+            const payload = await API.post('/api/interviews/' + current.id + '/answers', {
+              questionId: current.currentQuestion.id,
+              answer: text,
+            });
+            removeRow(typing);
+            const data = (payload && payload.data) || {};
+            appendFeedback(data);
+            if (data.nextQuestion) {
+              appendQuestion(data.nextQuestion, questionIndex(data.nextQuestion.id));
+            } else {
+              await finishInterview();
+            }
+          } catch (error) {
+            removeRow(typing);
+            if (error && error.status === 401) return;
+            appendInfo('Could not score that answer: ' + ((error && error.message) || 'unknown error'));
+          }
+        } finally {
+          busy = false;
+        }
+      }
+
+      async function finishInterview() {
+        if (!current) return;
+        const typing = typingRow('Calculating your overall result...');
+        try {
+          const payload = await API.post('/api/interviews/' + current.id + '/complete', {});
+          removeRow(typing);
+          const session = payload && payload.data && payload.data.session;
+          if (!session) {
+            appendInfo('The server did not return the final result.');
+            return;
+          }
+          clearActive();
+          current = null;
+          aiRow('<strong>Interview complete — Overall score: ' +
+            esc(Number(session.overallScore) || 0) + '/100</strong><br>' +
+            esc(session.overallFeedback), 'Done');
+          setProgress('Completed');
+          renderResults(session);
+          loadPastList();
+        } catch (error) {
+          removeRow(typing);
+          if (error && error.status === 401) return;
+          appendInfo('Could not finish the interview: ' + ((error && error.message) || 'unknown error'));
+        }
+      }
+
+      /* ---------- results ---------- */
+      function scoreBadge(score) {
+        const n = Number(score) || 0;
+        const cls = n >= 70 ? 'bg-success-subtle text-success border border-success-subtle'
+          : n >= 45 ? 'bg-warning-subtle text-dark border border-warning-subtle'
+            : 'bg-danger-subtle text-danger border border-danger-subtle';
+        return '<span class="badge ' + cls + '">' + n + '/100</span>';
+      }
+
+      function renderResults(session) {
+        if (!resultsEl || !session) return;
+        const results = Array.isArray(session.results) ? session.results : [];
+        const meta = [
+          session.type,
+          session.role,
+          session.company,
+          session.difficulty,
+          fmtDate(session.completedAt || session.startedAt || session.createdAt),
+        ].filter(Boolean).map(esc).join(' · ');
+
+        const rows = results.map((r) =>
+          '<div class="py-2 border-bottom">' +
+            '<div class="d-flex justify-content-between align-items-start gap-2">' +
+              '<span class="fw-semibold" style="font-size:0.88rem;">' + esc(r.question) + '</span>' +
+              scoreBadge(r.score) +
+            '</div>' +
+            '<div class="text-muted mt-1 mb-0" style="font-size:0.82rem;">' + esc(r.feedback) + '</div>' +
+            (r.expectedAnswer
+              ? '<div class="text-muted mt-1 mb-0" style="font-size:0.82rem;"><i class="bi bi-lightbulb me-1"></i>' + esc(r.expectedAnswer) + '</div>'
+              : '') +
+          '</div>').join('');
+
+        resultsEl.innerHTML =
+          '<div class="d-flex align-items-center justify-content-between mb-1">' +
+            '<h6 class="fw-bold mb-0"><i class="bi bi-trophy-fill text-warning me-2"></i>' +
+            esc(session.title || 'Interview results') + '</h6>' +
+            '<button type="button" class="btn btn-sm btn-outline-secondary" data-action="hide-results" aria-label="Hide results">' +
+            '<i class="bi bi-x-lg"></i></button>' +
+          '</div>' +
+          '<div class="small text-muted mb-3">' + meta + '</div>' +
+          '<div class="text-center py-2 mb-2">' +
+            '<div style="font-size:2.6rem;font-weight:800;line-height:1;">' +
+            esc(Number(session.overallScore) || 0) + '%</div>' +
+            '<div class="small text-muted">Overall score</div>' +
+          '</div>' +
+          '<p class="small mb-3" style="color:var(--clr-text-secondary);">' + esc(session.overallFeedback) + '</p>' +
+          (rows ? '<div class="small"><div class="fw-semibold mb-1">Question breakdown</div>' + rows + '</div>' : '');
+
+        resultsEl.style.display = 'block';
+        resultsEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      /* ---------- past sessions list ---------- */
+      function renderPastList(items) {
+        if (!pastListEl) return;
+        if (!items.length) {
+          pastListEl.innerHTML = '<div class="text-muted mb-0">No interview sessions yet — start one below.</div>';
+          return;
+        }
+        pastListEl.innerHTML = items.map((s) => {
+          const inProgress = s.status === 'in_progress';
+          const status = inProgress
+            ? '<span class="badge rounded-pill" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">In progress</span>'
+            : '<span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle">' +
+              (Number(s.overallScore) || 0) + '%</span>';
+          const action = inProgress
+            ? '<button type="button" class="btn btn-sm btn-outline-custom" data-action="resume" data-id="' +
+              esc(s._id) + '"><i class="bi bi-play-fill"></i> Resume</button>'
+            : '<button type="button" class="btn btn-sm btn-outline-custom" data-action="view" data-id="' +
+              esc(s._id) + '"><i class="bi bi-eye"></i> View</button>';
+          const meta = [s.company, s.role, s.difficulty, fmtDate(s.startedAt || s.createdAt)]
+            .filter(Boolean).map(esc).join(' · ');
+          return '<div class="d-flex align-items-center justify-content-between gap-2 py-2 border-bottom">' +
+            '<div class="flex-grow-1 overflow-hidden">' +
+              '<div class="fw-semibold text-truncate" style="font-size:0.9rem;">' +
+              esc(s.title || 'Interview') + '</div>' +
+              (meta ? '<div class="text-muted text-truncate" style="font-size:0.78rem;">' + meta + '</div>' : '') +
+            '</div>' + status + action + '</div>';
+        }).join('');
+      }
+
+      async function loadPastList() {
+        if (!pastListEl || !window.API || !API.isAuthenticated()) return;
+        try {
+          const payload = await API.get('/api/interviews');
+          hideNotice();
+          renderPastList((payload && payload.data && payload.data.interviews) || []);
+        } catch (error) {
+          if (error && error.status === 401) return;
+          pastListEl.innerHTML = '';
+          showNotice(error && error.network
+            ? 'Cannot reach the server — past sessions are unavailable.'
+            : ((error && error.message) || 'Could not load past sessions.'));
+        }
+      }
+
+      /* ---------- wiring ---------- */
+      function sendCurrentAnswer() {
+        const text = inputEl ? String(inputEl.value || '').trim() : '';
+        if (!text) return;
+        submitAnswer(text).catch((error) => {
+          appendInfo('Something went wrong: ' + ((error && error.message) || 'unknown error'));
+        });
+      }
+
+      modal.addEventListener('show.bs.modal', () => {
+        startOrResume().catch((error) => {
+          appendInfo('Could not start the simulation: ' + ((error && error.message) || 'unknown error'));
+        });
+      });
+
+      // Capture phase: run before app.js's listeners on the send button/input.
+      modal.addEventListener('click', (event) => {
+        if (!sendBtn) return;
+        if (event.target !== sendBtn && !sendBtn.contains(event.target)) return;
+        event.stopImmediatePropagation();
+        event.preventDefault();
+        sendCurrentAnswer();
+      }, true);
+
+      modal.addEventListener('keydown', (event) => {
+        if (!inputEl || event.target !== inputEl || event.key !== 'Enter') return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        sendCurrentAnswer();
+      }, true);
+
+      modal.addEventListener('keypress', (event) => {
+        if (!inputEl || event.target !== inputEl || event.key !== 'Enter') return;
+        event.stopImmediatePropagation();
+      }, true);
+
+      if (pastListEl) {
+        pastListEl.addEventListener('click', async (event) => {
+          const btn = event.target && event.target.closest
+            ? event.target.closest('button[data-action]') : null;
+          if (!btn) return;
+          const id = btn.getAttribute('data-id');
+          const action = btn.getAttribute('data-action');
+          if (action === 'resume') {
+            setActive(id);
+            if (window.bootstrap && bootstrap.Modal) {
+              bootstrap.Modal.getOrCreateInstance(modal).show();
+            } else {
+              startOrResume().catch(() => {});
+            }
+          } else if (action === 'view') {
+            try {
+              const payload = await API.get('/api/interviews/' + id);
+              const session = payload && payload.data && payload.data.session;
+              if (session) renderResults(session);
+            } catch (error) {
+              if (error && error.status === 401) return;
+              showNotice((error && error.message) || 'Could not open that session.');
+            }
+          }
+        });
+      }
+
+      if (resultsEl) {
+        resultsEl.addEventListener('click', (event) => {
+          const btn = event.target && event.target.closest
+            ? event.target.closest('[data-action="hide-results"]') : null;
+          if (btn) resultsEl.style.display = 'none';
+        });
+      }
+
+      const refreshBtn = document.getElementById('refreshInterviewsBtn');
+      if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => { loadPastList(); });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadPastList);
+      } else {
+        loadPastList();
+      }
+    })();
   </script>
 </body>
 </html>
