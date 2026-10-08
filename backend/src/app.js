@@ -34,6 +34,15 @@ const corsOptions = {
     if (normalized === allowed || normalized === `http://localhost:${env.port}`) {
       return callback(null, true);
     }
+    // Automatically allow all Vercel deployments (production and preview branches)
+    try {
+      const parsed = new URL(origin);
+      if (parsed.hostname.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+    } catch {
+      /* ignore */
+    }
     // Dev only: allow any local origin (file://, other local ports).
     if (!env.isProduction) {
       return callback(null, true);
