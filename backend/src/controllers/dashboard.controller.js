@@ -1,4 +1,6 @@
+import mongoose from 'mongoose';
 import AssessmentAttempt from '../models/AssessmentAttempt.js';
+import CodingSubmission from '../models/CodingSubmission.js';
 import Roadmap from '../models/Roadmap.js';
 import TopicPerformance from '../models/TopicPerformance.js';
 import ChatSession from '../models/ChatSession.js';
@@ -37,6 +39,28 @@ export const getDashboard = asyncHandler(async (req, res) => {
   const avgScore = completed
     ? Math.round(attempts.reduce((sum, a) => sum + (a.percentage || 0), 0) / completed)
     : 0;
+
+  // Coding performance: average score of the student's most recent submission
+  // per coding question (so retries move the number up, not spam).
+  const codingSubmissions = await CodingSubmission.find({ userId })
+    .sort({ submittedAt: -1 })
+    .select('questionId score submittedAt language')
+    .lean();
+  const latestByQuestion = new Map();
+  for (const s of codingSubmissions) {
+    if (!latestByQuestion.has(String(s.questionId))) latestByQuestion.set(String(s.questionId), s);
+  }
+  const latestSubmissions = [...latestByQuestion.values()];
+  const codingScore = latestSubmissions.length
+    ? Math.round(latestSubmissions.reduce((sum, s) => sum + (s.score || 0), 0) / latestSubmissions.length)
+    : 0;
+
+  const interviewAgg = await InterviewSession.aggregate([
+    { $match: { userId: new mongoose.Types.ObjectId(String(userId)), status: 'completed' } },
+    { $group: { _id: null, avg: { $avg: '$score' } } },
+  ]);
+  const interviewScore = Math.round(interviewAgg[0]?.avg || 0);
+
   const last30 = attempts.filter((a) => new Date(a.completedAt) >= since);
   const recentTrend = last30
     .slice()
@@ -58,6 +82,13 @@ export const getDashboard = asyncHandler(async (req, res) => {
 
   return sendSuccess(res, {
     readinessScore: req.user.readinessScore ?? 0,
+    readinessBreakdown: {
+      readinessScore: req.user.readinessScore ?? 0,
+      assessmentScore: avgScore,
+      codingScore,
+      roadmapProgress: roadmap?.completionPercentage ?? 0,
+      interviewScore,
+    },
     stats: {
       completedAssessments: completed,
       averageScore: avgScore,

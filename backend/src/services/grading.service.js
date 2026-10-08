@@ -3,8 +3,9 @@
  *
  * Rules (consistent across the whole platform):
  *  - mcq:        graded against the stored `correctKey`
- *  - code/sql:   graded on non-empty submission (no judge available offline)
- *  - interview / communication / open ended: graded on non-empty answer
+ *  - code:       graded from the persisted coding submission when available
+ *                (perfect = 100), otherwise on non-empty source
+ *  - sql/others: graded on non-empty answer (no judge available offline)
  *  - percentage = correct / total * 100
  */
 
@@ -20,9 +21,10 @@ function isEmptyAnswer(value) {
  * Grade a single question.
  * @param {object} question
  * @param {*} answer  raw answer from the client
+ * @param {object} [context]  { submissionScore?: number|null }
  * @returns {{isCorrect: boolean, correctValue: *}}
  */
-export function gradeQuestion(question, answer) {
+export function gradeQuestion(question, answer, context = {}) {
   const type = String(question.type || question.kind || 'mcq').toLowerCase();
 
   if (type === 'mcq' || type === 'multi' || question.options) {
@@ -36,6 +38,14 @@ export function gradeQuestion(question, answer) {
     };
   }
 
+  if (type === 'code') {
+    const submissionScore = context.submissionScore;
+    if (submissionScore === undefined || submissionScore === null) {
+      return { isCorrect: !isEmptyAnswer(answer), correctValue: null };
+    }
+    return { isCorrect: Number(submissionScore) === 100, correctValue: null };
+  }
+
   const correct = !isEmptyAnswer(answer);
   return { isCorrect: correct, correctValue: null };
 }
@@ -44,6 +54,7 @@ export function gradeQuestion(question, answer) {
  * Grade a full attempt.
  * @param {Array<object>} questions     questions served to the student
  * @param {Array<{questionId: string, value: *}>} answers  student answers
+ * @param {object} [options]            { submissionScores?: Map<string,number> }
  * @returns {{
  *   answers: Array<object>,
  *   topicResults: Array<object>,
@@ -52,7 +63,7 @@ export function gradeQuestion(question, answer) {
  *   percentage: number
  * }}
  */
-export function gradeAttempt(questions = [], answers = []) {
+export function gradeAttempt(questions = [], answers = [], options = {}) {
   const answerMap = new Map();
   for (const entry of answers) {
     if (entry && entry.questionId !== undefined && entry.questionId !== null) {
@@ -60,6 +71,7 @@ export function gradeAttempt(questions = [], answers = []) {
     }
   }
 
+  const submissionScores = options.submissionScores instanceof Map ? options.submissionScores : null;
   const topicBuckets = new Map();
   const graded = [];
   let correctAnswers = 0;
@@ -67,7 +79,8 @@ export function gradeAttempt(questions = [], answers = []) {
   for (const question of questions) {
     const questionId = String(question.id ?? question._id ?? '');
     const value = answerMap.has(questionId) ? answerMap.get(questionId) : undefined;
-    const { isCorrect } = gradeQuestion(question, value);
+    const submissionScore = submissionScores ? submissionScores.get(questionId) : undefined;
+    const { isCorrect } = gradeQuestion(question, value, { submissionScore });
 
     if (isCorrect) correctAnswers += 1;
 

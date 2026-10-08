@@ -215,7 +215,7 @@
       let dotClass = 'upcoming';
       let dotIcon = 'bi-lock';
       let badge = '<span class="badge rounded-pill px-2 py-1 mb-2" style="background:var(--clr-bg);color:var(--clr-text-muted);font-weight:600;">Upcoming</span>';
-      let action = '<button class="btn btn-outline-custom btn-sm" onclick="setMilestoneStatus(\'' + id + '\', \'in_progress\')"><i class="bi bi-play-fill"></i> Start</button>';
+      let action = '<button class="btn btn-outline-custom btn-sm" onclick="startMilestone(\'' + id + '\')"><i class="bi bi-play-fill"></i> Start</button>';
       let cardStyle = '';
       let meta = '<span><i class="bi bi-hourglass-split"></i> Not started</span>';
 
@@ -237,7 +237,7 @@
         dotClass = 'in-progress';
         dotIcon = 'bi-play-fill';
         badge = '<span class="badge rounded-pill px-2 py-1 mb-2" style="background:var(--clr-primary-light);color:var(--clr-primary);font-weight:600;">In Progress</span>';
-        action = '<button class="btn btn-primary-custom btn-sm" onclick="setMilestoneStatus(\'' + id + '\', \'completed\')"><i class="bi bi-check-lg"></i> Mark as Done</button>';
+        action = '<button class="btn btn-primary-custom btn-sm" onclick="startMilestone(\'' + id + '\')"><i class="bi bi-arrow-right-circle-fill"></i> Continue</button>';
         cardStyle = ' style="border-color: var(--clr-primary);"';
         meta = '<span><i class="bi bi-arrow-repeat"></i> In progress</span>';
       }
@@ -336,25 +336,37 @@
       if (window.AOS && typeof AOS.refresh === 'function') AOS.refresh();
     }
 
-    async function setMilestoneStatus(milestoneId, status) {
+    async function startMilestone(milestoneId) {
       if (!window.API || !API.isAuthenticated()) return;
       try {
         const payload = await API.patch(
-          '/api/roadmap/milestones/' + encodeURIComponent(milestoneId),
-          { status: status }
+          '/api/roadmap/milestones/' + encodeURIComponent(milestoneId) + '/start',
+          {}
         );
         const data = payload.data || {};
-        if (status === 'completed' && typeof triggerConfetti === 'function') triggerConfetti();
         renderRoadmap(data.roadmap || roadmapData);
 
-        let message = payload.message || 'Roadmap updated.';
+        // The start endpoint returns the activity link for the milestone.
+        const activity = data.activity || {};
+        let url = activity.url || '';
+        if (!url && activity.moduleKey) {
+          const qs = new URLSearchParams({ module: activity.moduleKey });
+          if (data.roadmap && data.roadmap._id) qs.set('roadmapId', String(data.roadmap._id));
+          url = 'live-assessment.html?' + qs.toString();
+        }
+        if (url) {
+          window.location.href = url;
+          return;
+        }
+
+        let message = payload.message || 'Milestone started.';
         if (typeof data.readinessScore === 'number') {
           message += ' Readiness score: ' + data.readinessScore + '%.';
         }
-        showRoadmapNotice('success', 'Milestone updated:', message);
+        showRoadmapNotice('success', 'Milestone started:', message);
       } catch (error) {
         if (handleAuthError(error)) return;
-        showRoadmapNotice('warning', 'Could not update the milestone:', (error && error.message) || 'Please try again.');
+        showRoadmapNotice('warning', 'Could not start the milestone:', (error && error.message) || 'Please try again.');
       }
     }
 

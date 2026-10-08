@@ -155,7 +155,7 @@ describe('performance aliases', () => {
 });
 
 describe('roadmap milestone CRUD', () => {
-  test('POST creates, PUT edits, PATCH completes and DELETE removes a milestone', async () => {
+  test('POST creates, PUT edits, PATCH starts and DELETE removes a milestone', async () => {
     const created = await auth(request(app).post('/api/roadmap')).send({
       title: 'Practice 2 DSA problems daily',
       description: 'Two easy to medium problems every evening.',
@@ -180,13 +180,10 @@ describe('roadmap milestone CRUD', () => {
     assert.equal(afterEdit.estimatedHours, 6);
     assert.equal(afterEdit.description, 'Two easy to medium problems every evening.');
 
-    const statusRes = await auth(request(app).patch(`/api/roadmap/${custom._id}/status`)).send({
-      status: 'completed',
-    });
+    const statusRes = await auth(request(app).patch(`/api/roadmap/${custom._id}/start`)).send({});
     assert.equal(statusRes.status, 200, JSON.stringify(statusRes.body));
     const done = statusRes.body.data.roadmap.milestones.find((m) => m._id === custom._id);
-    assert.equal(done.status, 'completed');
-    assert.ok(done.completedAt, 'completedAt stamped');
+    assert.equal(done.status, 'in_progress');
     assert.ok(statusRes.body.data.readinessScore >= 0);
 
     const removed = await auth(request(app).delete(`/api/roadmap/${custom._id}`));

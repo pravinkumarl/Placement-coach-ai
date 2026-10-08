@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 import TopicPerformance from '../models/TopicPerformance.js';
 import AssessmentAttempt from '../models/AssessmentAttempt.js';
+import CodingSubmission from '../models/CodingSubmission.js';
+import InterviewSession from '../models/InterviewSession.js';
+import Roadmap from '../models/Roadmap.js';
 import { sendSuccess, asyncHandler } from '../utils/response.js';
 
 /**
@@ -9,29 +12,63 @@ import { sendSuccess, asyncHandler } from '../utils/response.js';
 export async function computePerformance(user) {
   const userId = new mongoose.Types.ObjectId(String(user._id));
 
-  const [topics, attempts, aggregate] = await Promise.all([
-    TopicPerformance.find({ userId }).sort({ averageScore: -1 }).lean(),
-    AssessmentAttempt.find({ userId, status: 'completed' })
-      .sort('-completedAt')
-      .limit(100)
-      .select(
-        'title moduleKey category percentage score correctAnswers questionCount topicResults completedAt timeTakenSeconds'
-      )
-      .lean(),
-    AssessmentAttempt.aggregate([
-      { $match: { userId, status: 'completed' } },
-      {
-        $group: {
-          _id: null,
-          average: { $avg: '$percentage' },
-          best: { $max: '$percentage' },
-          count: { $sum: 1 },
+  const [topics, attempts, aggregate, codingAgg, roadmap, latestSubmissions, interviewAgg] =
+    await Promise.all([
+      TopicPerformance.find({ userId }).sort({ averageScore: -1 }).lean(),
+      AssessmentAttempt.find({ userId, status: 'completed' })
+        .sort('-completedAt')
+        .limit(100)
+        .select(
+          'title moduleKey category percentage score correctAnswers questionCount topicResults completedAt timeTakenSeconds'
+        )
+        .lean(),
+      AssessmentAttempt.aggregate([
+        { $match: { userId, status: 'completed' } },
+        {
+          $group: {
+            _id: null,
+            average: { $avg: '$percentage' },
+            best: { $max: '$percentage' },
+            count: { $sum: 1 },
+          },
         },
-      },
-    ]),
-  ]);
+      ]),
+      CodingSubmission.aggregate([
+        { $match: { userId } },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: 1 },
+            accepted: { $sum: { $cond: [{ $eq: ['$score', 100] }, 1, 0] } },
+            average: { $avg: '$score' },
+          },
+        },
+      ]),
+      Roadmap.findOne({ userId }).select('completionPercentage').lean(),
+      CodingSubmission.find({ userId })
+        .sort({ submittedAt: -1 })
+        .select('questionId score submittedAt language')
+        .lean(),
+      InterviewSession.aggregate([
+        { $match: { userId, status: 'completed' } },
+        { $group: { _id: null, avg: { $avg: '$score' } } },
+      ]),
+    ]);
 
   const summary = aggregate[0] || {};
+
+  // Coding score uses the latest submission per question so retries improve
+  // the number instead of spamming the average.
+  const latestByQuestion = new Map();
+  for (const s of latestSubmissions) {
+    if (!latestByQuestion.has(String(s.questionId))) latestByQuestion.set(String(s.questionId), s);
+  }
+  const codingList = [...latestByQuestion.values()];
+  const codingScore = codingList.length
+    ? Math.round(codingList.reduce((sum, s) => sum + (s.score || 0), 0) / codingList.length)
+    : 0;
+
+  const codingSummary = codingAgg[0] || {};
 
   return {
     summary: {
@@ -41,6 +78,19 @@ export async function computePerformance(user) {
       readinessScore: user.readinessScore ?? 0,
       strongCount: topics.filter((t) => t.averageScore >= 70).length,
       weakCount: topics.filter((t) => t.averageScore < 70).length,
+    },
+    readinessBreakdown: {
+      readinessScore: user.readinessScore ?? 0,
+      assessmentScore: Math.round(summary.average || 0),
+      codingScore,
+      roadmapProgress: roadmap?.completionPercentage ?? 0,
+      interviewScore: Math.round(interviewAgg[0]?.avg || 0),
+    },
+    coding: {
+      totalSubmissions: codingSummary.total || 0,
+      acceptedSubmissions: codingSummary.accepted || 0,
+      averageScore: Math.round(codingSummary.average || 0),
+      questionsAttempted: codingList.length,
     },
     topics: topics.map((t) => ({
       topic: t.topic,

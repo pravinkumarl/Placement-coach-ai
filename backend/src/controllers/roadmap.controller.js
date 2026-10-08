@@ -1,8 +1,14 @@
 import mongoose from 'mongoose';
 import Roadmap from '../models/Roadmap.js';
-import { ensureDefaultRoadmap, generateRoadmap } from '../services/roadmap.service.js';
+import {
+  ensureDefaultRoadmap,
+  generateRoadmap,
+  mapCategoryToModule,
+} from '../services/roadmap.service.js';
 import { recalculateReadiness } from '../services/performance.service.js';
 import { ApiError, sendSuccess, asyncHandler } from '../utils/response.js';
+
+const MILESTONE_STATUSES = ['pending', 'in_progress', 'completed'];
 
 /**
  * GET /api/roadmap
@@ -12,6 +18,49 @@ export const getRoadmap = asyncHandler(async (req, res) => {
     (await ensureDefaultRoadmap(req.user._id));
 
   return sendSuccess(res, { roadmap });
+});
+
+/**
+ * PATCH /api/roadmap/milestones/:milestoneId/start
+ * Opens a milestone and links it to its activity module.
+ */
+export const startMilestone = asyncHandler(async (req, res) => {
+  const { milestoneId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(milestoneId)) {
+    throw ApiError.badRequest('Invalid milestone id.');
+  }
+
+  const roadmap = (await Roadmap.findOne({ userId: req.user._id })) ||
+    (await ensureDefaultRoadmap(req.user._id));
+
+  const milestone = roadmap.milestones.id(milestoneId);
+  if (!milestone) throw ApiError.notFound('Milestone not found.');
+  if (milestone.status === 'completed') {
+    throw ApiError.conflict('This milestone is already completed.');
+  }
+
+  milestone.status = 'in_progress';
+  if (!milestone.startedAt) milestone.startedAt = new Date();
+  milestone.completedAt = null;
+  roadmap.recalculate();
+  await roadmap.save();
+  const readiness = await recalculateReadiness(req.user._id);
+
+  const moduleKey = mapCategoryToModule(milestone.category);
+  const url = moduleKey
+    ? `live-assessment.html?module=${encodeURIComponent(moduleKey)}&roadmapId=${encodeURIComponent(milestoneId)}`
+    : null;
+
+  return sendSuccess(
+    res,
+    {
+      roadmap,
+      readinessScore: readiness,
+      milestone,
+      activity: moduleKey ? { moduleKey, url } : null,
+    },
+    'Milestone started.'
+  );
 });
 
 /**
@@ -33,13 +82,17 @@ export const updateMilestone = asyncHandler(async (req, res) => {
   const { status, title, description, estimatedHours } = req.body || {};
 
   if (status !== undefined) {
-    if (!['pending', 'in_progress', 'completed'].includes(status)) {
+    if (!MILESTONE_STATUSES.includes(status)) {
       throw ApiError.badRequest('status must be pending, in_progress or completed.');
     }
-    const wasCompleted = milestone.status === 'completed';
+    if (status === 'completed') {
+      throw ApiError.badRequest(
+        'Milestones are completed automatically when the linked assessment or activity is completed.'
+      );
+    }
     milestone.status = status;
-    if (status === 'completed' && !wasCompleted) milestone.completedAt = new Date();
-    if (status !== 'completed') milestone.completedAt = null;
+    if (status === 'in_progress' && !milestone.startedAt) milestone.startedAt = new Date();
+    milestone.completedAt = null;
   }
   if (title !== undefined) milestone.title = String(title).trim().slice(0, 160);
   if (description !== undefined) milestone.description = String(description).slice(0, 600);
@@ -207,6 +260,7 @@ export const deleteMilestone = asyncHandler(async (req, res) => {
 export default {
   getRoadmap,
   createMilestone,
+  startMilestone,
   updateMilestone,
   replaceMilestone,
   deleteMilestone,

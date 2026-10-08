@@ -256,15 +256,73 @@ export const ASSESSMENT_MODULES = {
             title: "Q1: Two Sum Problem",
             question: "Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two numbers such that they add up to <code>target</code>.<br><br>Each input has exactly one solution and you may not use the same element twice.",
             example: "Input: nums = [2,7,11,15], target = 9\nOutput: [0,1]\nExplanation: nums[0] + nums[1] == 9",
+            entryFunction: "twoSum",
+            paramTypes: ["int[]", "int"],
+            returnType: "int[]",
+            supportedLanguages: ["python", "javascript", "cpp", "java", "csharp", "go", "rust", "kotlin", "c"],
             starterCode: `def twoSum(nums, target):
-    # Your solution here
+    # Write your solution here.
+    pass`,
+            starterTemplates: {
+              python: `def twoSum(nums, target):
+    # Write your solution here.
+    pass`,
+              javascript: `function twoSum(nums, target) {
+  // Write your solution here.
+}`,
+              cpp: `std::vector<int> twoSum(std::vector<int>& nums, int target) {
+  // Write your solution here.
+}`,
+              java: `class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        // Write your solution here.
+        return new int[0];
+    }
+}`,
+              csharp: `public class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        // Write your solution here.
+        return new int[0];
+    }
+}`,
+              go: `func twoSum(nums []int, target int) []int {
+    // Write your solution here.
+    return nil
+}`,
+              rust: `fn twoSum(nums: Vec<i32>, target: i32) -> Vec<i32> {
+    // Write your solution here.
+    Vec::new()
+}`,
+              kotlin: `fun twoSum(nums: IntArray, target: Int): IntArray {
+    // Write your solution here.
+    return intArrayOf()
+}`,
+              c: `int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
+    // Write your solution here.
+    *returnSize = 0;
+    return NULL;
+}`,
+            },
+            sampleTestCases: [
+              { input: "2 7 11 15\n9", expectedOutput: "0 1" },
+              { input: "3 2 4\n6", expectedOutput: "1 2" },
+            ],
+            hiddenTestCases: [
+              { input: "-3 4 3 90\n0", expectedOutput: "0 2" },
+              { input: "3 3\n6", expectedOutput: "0 1" },
+              { input: "1 5 9 3\n12", expectedOutput: "2 3" },
+              { input: "2\n9", expectedOutput: "" },
+            ],
+            solutionCode: {
+              python: `def twoSum(nums, target):
     lookup = {}
     for i, num in enumerate(nums):
         complement = target - num
         if complement in lookup:
             return [lookup[complement], i]
         lookup[num] = i
-    return []`
+    return []`,
+            },
           },
           {
             id: "code-2",
@@ -274,16 +332,71 @@ export const ASSESSMENT_MODULES = {
             title: "Q2: Longest Increasing Subsequence",
             question: "Given an integer array <code>nums</code>, return the length of the longest strictly increasing subsequence in O(N log N) or O(N²).",
             example: "Input: nums = [10,9,2,5,3,7,101,18]\nOutput: 4\nExplanation: The longest increasing subsequence is [2,3,7,101], length = 4.",
+            entryFunction: "lengthOfLIS",
+            paramTypes: ["int[]"],
+            returnType: "int",
+            supportedLanguages: ["python", "javascript", "cpp", "java", "csharp", "go", "rust", "kotlin", "c"],
             starterCode: `def lengthOfLIS(nums):
-    if not nums:
-        return 0
-    # Complete DP solution below
+    # Write your solution here.
+    pass`,
+            starterTemplates: {
+              python: `def lengthOfLIS(nums):
+    # Write your solution here.
+    pass`,
+              javascript: `function lengthOfLIS(nums) {
+  // Write your solution here.
+}`,
+              cpp: `int lengthOfLIS(std::vector<int>& nums) {
+  // Write your solution here.
+}`,
+              java: `class Solution {
+    public int lengthOfLIS(int[] nums) {
+        // Write your solution here.
+        return 0;
+    }
+}`,
+              csharp: `public class Solution {
+    public int lengthOfLIS(int[] nums) {
+        // Write your solution here.
+        return 0;
+    }
+}`,
+              go: `func lengthOfLIS(nums []int) int {
+    // Write your solution here.
+    return 0
+}`,
+              rust: `fn lengthOfLIS(nums: Vec<i32>) -> i32 {
+    // Write your solution here.
+    0
+}`,
+              kotlin: `fun lengthOfLIS(nums: IntArray): Int {
+    // Write your solution here.
+    return 0
+}`,
+              c: `int lengthOfLIS(int* nums, int numsSize) {
+    // Write your solution here.
+    return 0;
+}`,
+            },
+            sampleTestCases: [
+              { input: "10 9 2 5 3 7 101 18", expectedOutput: "4" },
+              { input: "0 1 0 3 2 3", expectedOutput: "4" },
+            ],
+            hiddenTestCases: [
+              { input: "7 7 7 7 7 7 7", expectedOutput: "1" },
+              { input: "1 3 6 7 9 4 10 5 6", expectedOutput: "6" },
+              { input: "", expectedOutput: "0" },
+              { input: "5", expectedOutput: "1" },
+            ],
+            solutionCode: {
+              python: `def lengthOfLIS(nums):
     dp = [1] * len(nums)
     for i in range(len(nums)):
         for j in range(i):
             if nums[i] > nums[j]:
                 dp[i] = max(dp[i], dp[j] + 1)
-    return max(dp)`
+    return max(dp) if dp else 0`,
+            },
           },
           {
             id: "code-3",
@@ -293,12 +406,50 @@ export const ASSESSMENT_MODULES = {
             title: "Q3: Validate Binary Search Tree",
             question: "Given the root of a binary tree, determine if it is a valid binary search tree (BST). The left subtree contains only nodes with keys less than the node's key, and the right subtree contains only keys greater.",
             example: "Input: root = [2,1,3]\nOutput: true",
-            starterCode: `def isValidBST(root, low=float('-inf'), high=float('inf')):
-    if not root:
-        return True
-    if not (low < root.val < high):
-        return False
-    return isValidBST(root.left, low, root.val) and isValidBST(root.right, root.val, high)`
+            entryFunction: "isValidBST",
+            paramTypes: ["tree"],
+            returnType: "bool",
+            supportedLanguages: ["python", "javascript", "cpp", "java"],
+            starterCode: `def isValidBST(root):
+    # Write your solution here.
+    return True`,
+            starterTemplates: {
+              python: `def isValidBST(root):
+    # Write your solution here.
+    return True`,
+              javascript: `function isValidBST(root) {
+  // Write your solution here.
+}`,
+              cpp: `bool isValidBST(TreeNode* root) {
+  // Write your solution here.
+}`,
+              java: `class Solution {
+    public boolean isValidBST(TreeNode root) {
+        // Write your solution here.
+        return true;
+    }
+}`,
+            },
+            sampleTestCases: [
+              { input: "2 1 3", expectedOutput: "true" },
+              { input: "5 1 4 null null 3 6", expectedOutput: "false" },
+            ],
+            hiddenTestCases: [
+              { input: "", expectedOutput: "true" },
+              { input: "2 1 3", expectedOutput: "true" },
+              { input: "5 1 4 null null 3 6", expectedOutput: "false" },
+              { input: "3 1 5 null null 4 6", expectedOutput: "true" },
+            ],
+            solutionCode: {
+              python: `def isValidBST(root):
+    def check(node, low, high):
+        if not node:
+            return True
+        if not (low < node.val < high):
+            return False
+        return check(node.left, low, node.val) and check(node.right, node.val, high)
+    return check(root, float('-inf'), float('inf'))`,
+            },
           }
         ]
       },
@@ -321,9 +472,8 @@ export const ASSESSMENT_MODULES = {
   salary INT,
   department_id INT
 );`,
-            starterCode: `SELECT MAX(salary) AS SecondHighestSalary
-FROM Employee
-WHERE salary < (SELECT MAX(salary) FROM Employee);`,
+            starterCode: `-- Write your SQL query here.
+SELECT NULL;`,
             expectedResult: [
               { SecondHighestSalary: 85000 }
             ]
@@ -339,14 +489,8 @@ WHERE salary < (SELECT MAX(salary) FROM Employee);`,
   id INT PRIMARY KEY,
   dept_name VARCHAR(50)
 );`,
-            starterCode: `SELECT d.dept_name AS Department, e.name AS Employee, e.salary AS Salary
-FROM Employee e
-JOIN Department d ON e.department_id = d.id
-WHERE (e.department_id, e.salary) IN (
-    SELECT department_id, MAX(salary)
-    FROM Employee
-    GROUP BY department_id
-);`,
+            starterCode: `-- Write your SQL query here.
+SELECT NULL;`,
             expectedResult: [
               { Department: "Engineering", Employee: "Alice", Salary: 95000 },
               { Department: "Marketing", Employee: "Bob", Salary: 72000 }
@@ -361,10 +505,8 @@ WHERE (e.department_id, e.salary) IN (
             question: "Find all customers who never placed any orders using <code>LEFT JOIN</code> on <code>Customers</code> and <code>Orders</code>.",
             schema: `TABLE Customers (id INT, name VARCHAR);
 TABLE Orders (id INT, customer_id INT);`,
-            starterCode: `SELECT c.name AS Customers
-FROM Customers c
-LEFT JOIN Orders o ON c.id = o.customer_id
-WHERE o.id IS NULL;`,
+            starterCode: `-- Write your SQL query here.
+SELECT NULL;`,
             expectedResult: [
               { Customers: "Henry" },
               { Customers: "Max" }

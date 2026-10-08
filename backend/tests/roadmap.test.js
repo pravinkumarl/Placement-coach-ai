@@ -38,39 +38,42 @@ describe('GET /api/roadmap', () => {
 });
 
 describe('PATCH /api/roadmap/milestones/:id', () => {
-  test('marks a milestone in progress then completed and recalculates', async () => {
+  test('PATCH status cannot be completed directly (automatic only)', async () => {
     const before = await auth(request(app).get('/api/roadmap'));
     const milestone = before.body.data.roadmap.milestones[0];
 
-    const inProgress = await auth(
-      request(app).patch(`/api/roadmap/milestones/${milestone._id}`)
-    ).send({ status: 'in_progress' });
-
-    assert.equal(inProgress.status, 200, JSON.stringify(inProgress.body));
-    assert.equal(inProgress.body.data.roadmap.milestones[0].status, 'in_progress');
-    assert.equal(inProgress.body.data.roadmap.completionPercentage, 0);
-
-    const completed = await auth(
+    const res = await auth(
       request(app).patch(`/api/roadmap/milestones/${milestone._id}`)
     ).send({ status: 'completed' });
 
-    assert.equal(completed.status, 200);
-    const roadmap = completed.body.data.roadmap;
-    assert.equal(roadmap.milestones[0].status, 'completed');
-    assert.ok(roadmap.milestones[0].completedAt, 'completedAt stamped');
-    assert.ok(roadmap.completionPercentage > 0, 'completion recalculated');
-    assert.equal(typeof completed.body.data.readinessScore, 'number');
+    assert.equal(res.status, 400, JSON.stringify(res.body));
+    assert.match(res.body.message, /completed automatically/i);
+  });
+
+  test('marks a milestone in progress via /start and links its activity', async () => {
+    const before = await auth(request(app).get('/api/roadmap'));
+    const milestone = before.body.data.roadmap.milestones[0];
+
+    const started = await auth(
+      request(app).patch(`/api/roadmap/milestones/${milestone._id}/start`)
+    ).send({});
+
+    assert.equal(started.status, 200, JSON.stringify(started.body));
+    assert.equal(started.body.data.roadmap.milestones[0].status, 'in_progress');
+    assert.equal(started.body.data.roadmap.completionPercentage, 0);
+    assert.ok(started.body.data.activity, 'milestone links to an activity module');
+    assert.match(started.body.data.activity.url, /live-assessment\.html\?module=/);
 
     const again = await auth(
       request(app).patch(`/api/roadmap/milestones/${milestone._id}`)
     ).send({ status: 'pending' });
-    assert.equal(again.body.data.roadmap.milestones[0].completedAt, null, 'un-completing clears it');
+    assert.equal(again.body.data.roadmap.milestones[0].completedAt, null, 'un-starting clears it');
     assert.equal(again.body.data.roadmap.completionPercentage, 0);
   });
 
   test('rejects an invalid milestone id', async () => {
     const res = await auth(request(app).patch('/api/roadmap/milestones/not-an-id')).send({
-      status: 'completed',
+      status: 'in_progress',
     });
     assert.equal(res.status, 400);
     assert.match(res.body.message, /milestone id/i);
@@ -79,7 +82,7 @@ describe('PATCH /api/roadmap/milestones/:id', () => {
   test('404s for a well formed but unknown milestone id', async () => {
     const res = await auth(
       request(app).patch(`/api/roadmap/milestones/${new mongoose.Types.ObjectId()}`)
-    ).send({ status: 'completed' });
+    ).send({ status: 'in_progress' });
     assert.equal(res.status, 404);
   });
 
@@ -112,9 +115,7 @@ describe('DELETE /api/roadmap', () => {
   test('resets everything back to the neutral starter plan', async () => {
     const before = await auth(request(app).get('/api/roadmap'));
     const milestone = before.body.data.roadmap.milestones[0];
-    await auth(request(app).patch(`/api/roadmap/milestones/${milestone._id}`)).send({
-      status: 'completed',
-    });
+    await auth(request(app).patch(`/api/roadmap/milestones/${milestone._id}/start`)).send({});
 
     const res = await auth(request(app).delete('/api/roadmap'));
     assert.equal(res.status, 200);

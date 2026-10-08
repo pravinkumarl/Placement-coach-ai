@@ -140,64 +140,6 @@ function initSidebarProfileSync() {
 }
 
 /* ============================================================
-   PROOF COUNTERS & COUNT-UP ANIMATION (requestAnimationFrame)
-   ============================================================ */
-function initCountUpAnimations() {
-  const counters = document.querySelectorAll('[data-countup]');
-  if (!counters.length) return;
-
-  const animateCounter = (el) => {
-    const target = parseFloat(el.getAttribute('data-countup'));
-    const suffix = el.getAttribute('data-suffix') || '';
-    const prefix = el.getAttribute('data-prefix') || '';
-    const isK = el.getAttribute('data-format') === 'k';
-    const duration = 1800;
-    const startTime = performance.now();
-
-    const updateCount = (currentTime) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      // Cubic ease-out
-      const ease = 1 - Math.pow(1 - progress, 3);
-      const current = Math.floor(ease * target);
-
-      if (isK && current >= 1000) {
-        el.textContent = prefix + (current / 1000).toFixed(0) + 'k' + suffix;
-      } else {
-        el.textContent = prefix + current.toLocaleString() + suffix;
-      }
-
-      if (progress < 1) {
-        requestAnimationFrame(updateCount);
-      } else {
-        if (isK && target >= 1000) {
-          el.textContent = prefix + (target / 1000).toFixed(0) + 'k' + suffix;
-        } else {
-          el.textContent = prefix + target.toLocaleString() + suffix;
-        }
-      }
-    };
-
-    requestAnimationFrame(updateCount);
-  };
-
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries, obs) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          animateCounter(entry.target);
-          obs.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.25 });
-
-    counters.forEach(c => observer.observe(c));
-  } else {
-    counters.forEach(animateCounter);
-  }
-}
-
-/* ============================================================
    CHATBOT WIDGET
    ============================================================ */
 function initChatbotWidget() {
@@ -457,8 +399,14 @@ function initReadinessGauge() {
         const offset = circumference - (score / 100) * circumference;
         fill.style.strokeDashoffset = offset;
 
-        // Animate score text
-        animateCounter(scoreEl);
+        // Animate the score number only when it carries a data-countup target;
+        // otherwise the page's real-time renderer keeps it accurate.
+        if (scoreEl.hasAttribute('data-countup')) {
+          animateCounter(scoreEl);
+        } else {
+          const suffix = scoreEl.getAttribute('data-suffix') || '';
+          scoreEl.textContent = score + suffix;
+        }
         observer.unobserve(entry.target);
       }
     });
@@ -574,26 +522,6 @@ function selectCompany(card) {
     simSection.style.display = 'block';
     simSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
-}
-
-/* Mark roadmap item as done */
-function markAsDone(btn) {
-  const item = btn.closest('.roadmap-item');
-  const dot = item.querySelector('.roadmap-dot');
-
-  if (dot.classList.contains('completed')) return;
-
-  dot.classList.remove('in-progress', 'upcoming');
-  dot.classList.add('completed');
-  dot.innerHTML = '<i class="bi bi-check-lg"></i>';
-
-  btn.textContent = 'Completed';
-  btn.classList.remove('btn-primary-custom');
-  btn.classList.add('btn', 'btn-outline-success');
-  btn.disabled = true;
-
-  // Confetti for completion
-  triggerConfetti();
 }
 
 /* Full-page chat send (chat.html) */
@@ -857,39 +785,68 @@ function toggleChatSidebar() {
   if (sidebar) sidebar.classList.toggle('show');
 }
 
-/* Timer for live assessment */
-function initAssessmentTimer(durationMinutes) {
+/* Timer for live assessment — deadline survives a page refresh for the same
+   module and the assessment auto-submits when the clock expires. */
+const ASSESSMENT_TIMER_PREFIX = 'pc_assessment_deadline';
+
+function initAssessmentTimer(durationMinutes, moduleKey) {
   const timerFill = document.querySelector('.timer-bar-fill');
   const timerText = document.getElementById('timerText');
   if (!timerFill || !timerText) return;
 
   const minsVal = parseInt(durationMinutes, 10) || 45;
-  let totalSeconds = minsVal * 60;
-  let remaining = totalSeconds;
+  const durationMs = minsVal * 60 * 1000;
+  const timerKey = ASSESSMENT_TIMER_PREFIX + ':' + (String(moduleKey || '').toLowerCase() || 'default');
+
+  let deadline;
+  try {
+    const stored = Number(sessionStorage.getItem(timerKey));
+    if (stored && stored > Date.now()) {
+      deadline = stored;
+    } else {
+      deadline = Date.now() + durationMs;
+      sessionStorage.setItem(timerKey, String(deadline));
+    }
+  } catch (e) {
+    deadline = Date.now() + durationMs;
+  }
 
   if (window._assessmentTimerInterval) {
     clearInterval(window._assessmentTimerInterval);
   }
 
-  window._assessmentTimerInterval = setInterval(() => {
-    remaining--;
-    if (remaining <= 0) {
-      clearInterval(window._assessmentTimerInterval);
-      remaining = 0;
-    }
-
+  const tick = () => {
+    const remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
     const mins = Math.floor(remaining / 60);
     const secs = remaining % 60;
     timerText.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 
-    const percent = ((totalSeconds - remaining) / totalSeconds) * 100;
-    timerFill.style.width = percent + '%';
+    const elapsedPct = ((durationMs - (deadline - Date.now())) / durationMs) * 100;
+    timerFill.style.width = Math.max(0, Math.min(100, elapsedPct)) + '%';
 
-    // Color change when low
     if (remaining < 300) { // < 5 min
       timerText.classList.add('text-danger');
     }
-  }, 1000);
+
+    if (remaining <= 0) {
+      clearInterval(window._assessmentTimerInterval);
+      window._assessmentTimerInterval = null;
+      try { sessionStorage.removeItem(timerKey); } catch (e) { /* ignore */ }
+
+      // Auto-submit when the clock runs out (only on the live assessment page).
+      if (window.location.pathname.indexOf('live-assessment') !== -1 && typeof handleFinalSubmit === 'function') {
+        const btn = document.getElementById('finalSubmitBtn');
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Time\'s up — submitting';
+        }
+        handleFinalSubmit();
+      }
+    }
+  };
+
+  tick();
+  window._assessmentTimerInterval = setInterval(tick, 1000);
 }
 
 /* Question navigation for live assessment */

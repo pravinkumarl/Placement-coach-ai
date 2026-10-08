@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   getRoadmap,
   createMilestone,
+  startMilestone,
   updateMilestone,
   replaceMilestone,
   deleteMilestone,
@@ -24,7 +25,10 @@ router.put('/:milestoneId', replaceMilestone);
 router.patch('/:milestoneId/status', updateMilestone);
 router.delete('/:milestoneId', deleteMilestone);
 
+router.patch('/milestones/:milestoneId/start', startMilestone);
 router.patch('/milestones/:milestoneId', updateMilestone);
 router.patch('/milestones/:milestoneId/reorder', reorderMilestone);
+
+router.patch('/:milestoneId/start', startMilestone);
 
 export default router;

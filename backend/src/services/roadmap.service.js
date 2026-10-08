@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Roadmap from '../models/Roadmap.js';
 import User from '../models/User.js';
 import AssessmentAttempt from '../models/AssessmentAttempt.js';
@@ -60,6 +61,65 @@ export const DEFAULT_MILESTONES = [
     estimatedHours: 6,
   },
 ];
+
+export const CATEGORY_TO_MODULE = {
+  quant: 'quant',
+  logical: 'logical',
+  verbal: 'verbal',
+  coding: 'coding',
+  dbms: 'dbms',
+  technical: 'technical',
+  hr: 'hr',
+  communication: 'communication',
+};
+
+const CATEGORY_ALIASES = {
+  aptitude: 'quant',
+  dsa: 'coding',
+  sql: 'dbms',
+  system_design: 'technical',
+  behavioral: 'hr',
+};
+
+export function mapCategoryToModule(category) {
+  const key = String(category || '').trim().toLowerCase();
+  if (CATEGORY_TO_MODULE[key]) return key;
+  if (CATEGORY_ALIASES[key]) return CATEGORY_ALIASES[key];
+  return null;
+}
+
+/**
+ * Mark the roadmap milestone linked to an activity as completed.
+ * A milestone is matched through its category → assessment module mapping;
+ * the first non-completed milestone of that category wins.
+ * @returns {Promise<object|null>} the milestone subdoc, or null when unmapped/already done.
+ */
+export async function completeMilestoneForActivity(userId, moduleKey, roadmapId = null) {
+  const category = mapCategoryToModule(moduleKey);
+  if (!category) return null;
+
+  const roadmapQuery = { userId };
+  if (roadmapId && mongoose.Types.ObjectId.isValid(String(roadmapId))) {
+    roadmapQuery._id = roadmapId;
+  }
+  const roadmap = await Roadmap.findOne(roadmapQuery);
+  if (!roadmap) return null;
+
+  const milestone =
+    roadmap.milestones
+      .filter((m) => String(m.category).trim().toLowerCase() === category)
+      .filter((m) => m.status !== 'completed')
+      .sort((a, b) => a.order - b.order)[0] || null;
+
+  if (!milestone) return null;
+
+  milestone.status = 'completed';
+  milestone.completedAt = new Date();
+  roadmap.recalculate();
+  await roadmap.save();
+  await recalculateReadiness(userId);
+  return milestone.toObject();
+}
 
 /**
  * Create the default roadmap for a new user (idempotent).

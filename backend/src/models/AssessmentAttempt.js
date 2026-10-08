@@ -27,6 +27,7 @@ const assessmentAttemptSchema = new mongoose.Schema(
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     assessmentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Assessment' },
     moduleKey: { type: String, default: '', index: true },
+    roadmapId: { type: mongoose.Schema.Types.ObjectId, ref: 'Roadmap', default: null },
     title: { type: String, default: '' },
     category: { type: String, default: '' },
     status: {
@@ -51,6 +52,7 @@ const assessmentAttemptSchema = new mongoose.Schema(
 assessmentAttemptSchema.index({ userId: 1, completedAt: -1 });
 assessmentAttemptSchema.index({ completedAt: -1 });
 assessmentAttemptSchema.index({ userId: 1, assessmentId: 1 });
+assessmentAttemptSchema.index({ userId: 1, roadmapId: 1 });
 
 const AssessmentAttempt = mongoose.model('AssessmentAttempt', assessmentAttemptSchema);
 
