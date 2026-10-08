@@ -6,7 +6,7 @@ import { ensureDefaultRoadmap } from '../services/roadmap.service.js';
 
 function buildAuthPayload(user) {
   return {
-    token: signToken(user._id),
+    token: signToken(user._id, user.role || 'student'),
     user: user.toSafeJSON(),
   };
 }

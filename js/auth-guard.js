@@ -27,9 +27,19 @@
     window.location.replace(`${LOGIN_URL}?next=${next}`);
   }
 
+  function isAdminPage() {
+    const page = currentPage();
+    return page === 'admin' || page.startsWith('admin-');
+  }
+
   function goToDashboardIfLoggedIn() {
     if (window.API && API.isAuthenticated()) {
-      window.location.replace('dashboard.html');
+      const user = API.getUser();
+      if (user && user.role === 'admin') {
+        window.location.replace('admin.html');
+      } else {
+        window.location.replace('dashboard.html');
+      }
     }
   }
 
@@ -38,7 +48,10 @@
     API.updateUserCache(user);
 
     const name = user.name || '';
-    const role = [user.branch || user.degree, user.graduationYear].filter(Boolean).join(', ');
+    const isAdm = user.role === 'admin';
+    const role = isAdm
+      ? 'Placement Officer (Admin)'
+      : [user.branch || user.degree, user.graduationYear].filter(Boolean).join(', ');
 
     if (name) {
       document.querySelectorAll('.sidebar-user .user-name, #sidebarUserName').forEach((el) => {
@@ -47,7 +60,7 @@
     }
     if (role) {
       document.querySelectorAll('.sidebar-user .user-role, #sidebarUserRole').forEach((el) => {
-        el.textContent = role + ' • Edit';
+        el.textContent = role + (isAdm ? '' : ' • Edit');
       });
     }
     if (user.avatar) {
@@ -92,7 +105,9 @@
     }
 
     if (isPublicPage()) {
-      goToDashboardIfLoggedIn();
+      if (currentPage() === 'login' || currentPage() === 'signup') {
+        goToDashboardIfLoggedIn();
+      }
       return;
     }
 
@@ -103,16 +118,40 @@
 
     try {
       const payload = await API.me();
-      syncSidebar(payload.data && payload.data.user);
+      const user = payload.data && payload.data.user;
+      syncSidebar(user);
+
+      // Strict role routing: Admin portal is only for admins; Student portal is only for students
+      if (isAdminPage()) {
+        if (!user || user.role !== 'admin') {
+          console.warn('Access denied: Admin privileges required.');
+          window.location.replace('dashboard.html');
+          return;
+        }
+      } else {
+        if (user && user.role === 'admin') {
+          console.warn('Admin user redirected to Admin Portal.');
+          window.location.replace('admin.html');
+          return;
+        }
+      }
     } catch (error) {
       if (error.status === 401) {
         API.clearSession();
         redirectToLogin();
         return;
       }
-      // Network/server hiccup: keep the cached profile so the page still renders.
+      // Network/server hiccup: keep cached profile
       console.warn('Profile refresh failed:', error.message);
-      syncSidebar(API.getUser());
+      const cached = API.getUser();
+      syncSidebar(cached);
+      if (isAdminPage() && (!cached || cached.role !== 'admin')) {
+        window.location.replace('dashboard.html');
+        return;
+      } else if (!isAdminPage() && cached && cached.role === 'admin') {
+        window.location.replace('admin.html');
+        return;
+      }
     }
   }
 

@@ -17,7 +17,35 @@ import {
   mapCategoryToModule,
 } from '../services/roadmap.service.js';
 import { recalculateReadiness } from '../services/performance.service.js';
+import { ASSESSMENT_MODULES } from '../data/assessmentBank.js';
 import { ApiError, sendSuccess, asyncHandler } from '../utils/response.js';
+
+export function enrichQuestion(question, moduleKey) {
+  if (!question) return question;
+  for (const mod of Object.values(ASSESSMENT_MODULES)) {
+    const found = (mod.questions || []).find((q) => String(q.id) === String(question.id));
+    if (found) {
+      return {
+        ...found,
+        ...question,
+        sampleTestCases: (Array.isArray(question.sampleTestCases) && question.sampleTestCases.length > 0)
+          ? question.sampleTestCases
+          : (found.sampleTestCases || []),
+        hiddenTestCases: (Array.isArray(question.hiddenTestCases) && question.hiddenTestCases.length > 0)
+          ? question.hiddenTestCases
+          : (found.hiddenTestCases || []),
+        supportedLanguages: (Array.isArray(question.supportedLanguages) && question.supportedLanguages.length > 0)
+          ? question.supportedLanguages
+          : (found.supportedLanguages || LANGUAGE_KEYS),
+        starterTemplates: {
+          ...(found.starterTemplates || {}),
+          ...(question.starterTemplates || {}),
+        },
+      };
+    }
+  }
+  return question;
+}
 
 /**
  * Find the assessment that owns a question and return the question itself.
@@ -28,8 +56,9 @@ async function findQuestion(questionId, moduleKey) {
     ? await Assessment.findOne({ ...query, moduleKey: String(moduleKey).toLowerCase() }).lean()
     : await Assessment.findOne(query).lean();
   if (!assessment) throw ApiError.notFound('Coding question not found.');
-  const question = (assessment.questions || []).find((q) => String(q.id) === String(questionId));
-  if (!question) throw ApiError.notFound('Coding question not found.');
+  const rawQuestion = (assessment.questions || []).find((q) => String(q.id) === String(questionId));
+  if (!rawQuestion) throw ApiError.notFound('Coding question not found.');
+  const question = enrichQuestion(rawQuestion, assessment.moduleKey);
   return { assessment, question };
 }
 
@@ -138,21 +167,25 @@ export const runCode = asyncHandler(async (req, res) => {
 });
 
 async function resolveAttempt(userId, assessment, attemptId) {
-  if (attemptId === undefined || attemptId === null || String(attemptId).trim() === '') {
-    return null;
+  if (attemptId !== undefined && attemptId !== null && String(attemptId).trim() !== '') {
+    if (!mongoose.Types.ObjectId.isValid(String(attemptId))) {
+      throw ApiError.badRequest('attemptId is not a valid id.');
+    }
+    const attempt = await AssessmentAttempt.findOne({
+      _id: attemptId,
+      userId,
+    });
+    if (!attempt) throw ApiError.notFound('Assessment attempt not found.');
+    if (String(attempt.assessmentId) !== String(assessment._id)) {
+      throw ApiError.badRequest('This attempt does not belong to the requested assessment.');
+    }
+    return attempt;
   }
-  if (!mongoose.Types.ObjectId.isValid(String(attemptId))) {
-    throw ApiError.badRequest('attemptId is not a valid id.');
-  }
-  const attempt = await AssessmentAttempt.findOne({
-    _id: attemptId,
+  return await AssessmentAttempt.findOne({
     userId,
-  });
-  if (!attempt) throw ApiError.notFound('Assessment attempt not found.');
-  if (String(attempt.assessmentId) !== String(assessment._id)) {
-    throw ApiError.badRequest('This attempt does not belong to the requested assessment.');
-  }
-  return attempt;
+    assessmentId: assessment._id,
+    status: 'in_progress',
+  }).sort('-startedAt');
 }
 
 /**

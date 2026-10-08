@@ -37,6 +37,7 @@
       <div class="nav-label">Main</div>
       <ul class="nav flex-column">
         <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="drives.html"><i class="bi bi-briefcase-fill"></i> Placement Drives</a></li>
         <li class="nav-item"><a class="nav-link" href="assessment-hub.html"><i class="bi bi-clipboard2-check"></i> Assessments</a></li>
         <li class="nav-item"><a class="nav-link" href="performance.html"><i class="bi bi-bar-chart-line-fill"></i> Reports</a></li>
         <li class="nav-item"><a class="nav-link" href="roadmap.html"><i class="bi bi-map-fill"></i> Roadmap</a></li>
@@ -51,6 +52,9 @@
     </nav>
     <div class="sidebar-footer">
       <div class="dark-mode-toggle" title="Toggle dark mode"><i class="bi bi-moon-stars"></i><span>Dark Mode</span><div class="toggle-track ms-auto"><div class="toggle-thumb"></div></div></div>
+      <a href="login.html" data-logout class="nav-link mt-2 d-flex align-items-center gap-2" style="color: var(--clr-text-muted); font-size: 0.85rem;">
+        <i class="bi bi-box-arrow-left"></i> Logout
+      </a>
     </div>
   </aside>
 
@@ -62,6 +66,9 @@
       </div>
       <div class="header-actions">
         <button class="btn-icon" title="Notifications"><i class="bi bi-bell"></i></button>
+        <button class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1 ms-1" data-logout title="Logout">
+          <i class="bi bi-box-arrow-left"></i> <span class="d-none d-md-inline">Logout</span>
+        </button>
       </div>
     </header>
 

@@ -51,4 +51,17 @@ export async function ensureDatabaseConnection(req, res, next) {
   }
 }
 
+/**
+ * Require administrator privileges. Must be called after protect middleware.
+ */
+export function requireAdmin(req, res, next) {
+  if (!req.user) {
+    return next(ApiError.unauthorized('You must be signed in to access this resource.'));
+  }
+  if (req.user.role !== 'admin') {
+    return next(ApiError.forbidden('Access denied. Administrator privileges required.'));
+  }
+  return next();
+}
+
 export default protect;

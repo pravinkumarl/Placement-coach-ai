@@ -834,7 +834,7 @@ export async function runTestCases(question, language, sourceCode, testCases) {
 
   const passedTests = results.filter((r) => r.passed).length;
   const totalTests = testCases.length;
-  const score = totalTests ? Math.round((passedTests / totalTests) * 100) : 0;
+  const score = totalTests ? Math.round((passedTests / totalTests) * 100) : (results.length ? 0 : 100);
 
   return {
     status,

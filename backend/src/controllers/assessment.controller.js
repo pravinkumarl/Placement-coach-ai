@@ -6,6 +6,7 @@ import Roadmap from '../models/Roadmap.js';
 import { gradeAttempt } from '../services/grading.service.js';
 import { recordAttemptPerformance, recalculateReadiness } from '../services/performance.service.js';
 import { completeMilestoneForActivity } from '../services/roadmap.service.js';
+import { enrichQuestion } from './code.controller.js';
 import { ApiError, sendSuccess, asyncHandler } from '../utils/response.js';
 
 const SENSITIVE_KEYS = [
@@ -88,7 +89,8 @@ export const listAssessments = asyncHandler(async (req, res) => {
 export const getAssessment = asyncHandler(async (req, res) => {
   const assessment = await findAssessment(req.params.id);
   const payload = assessment.toObject();
-  payload.questions = stripAnswerKeys(payload.questions || []);
+  const enriched = (payload.questions || []).map((q) => enrichQuestion(q, assessment.moduleKey));
+  payload.questions = stripAnswerKeys(enriched);
   return sendSuccess(res, { assessment: payload });
 });
 
@@ -106,6 +108,8 @@ export const startAssessment = asyncHandler(async (req, res) => {
     if (found) roadmap = found;
   }
 
+  const enriched = (assessment.questions || []).map((q) => enrichQuestion(q, assessment.moduleKey));
+
   const attempt = await AssessmentAttempt.create({
     userId: req.user._id,
     assessmentId: assessment._id,
@@ -114,8 +118,8 @@ export const startAssessment = asyncHandler(async (req, res) => {
     category: assessment.category,
     roadmapId: roadmap ? roadmap._id : null,
     status: 'in_progress',
-    questionCount: (assessment.questions || []).length,
-    totalQuestions: (assessment.questions || []).length,
+    questionCount: enriched.length,
+    totalQuestions: enriched.length,
     startedAt: new Date(),
   });
 
@@ -130,7 +134,7 @@ export const startAssessment = asyncHandler(async (req, res) => {
         title: assessment.title,
         category: assessment.category,
         durationMinutes: assessment.durationMinutes,
-        questions: stripAnswerKeys(assessment.questions || []),
+        questions: stripAnswerKeys(enriched),
       },
     },
     'Assessment started.',
@@ -198,16 +202,23 @@ export const submitAssessment = asyncHandler(async (req, res) => {
     if (roadmap) attempt.roadmapId = roadmap._id;
   }
 
-  const questions = assessment.questions || [];
+  const questions = (assessment.questions || []).map((q) => enrichQuestion(q, assessment.moduleKey));
 
   // Code questions are scored from the student's persisted coding submissions
   // (server side Judge0 result), never from the raw textarea value alone.
+  const codeQuestions = questions.filter((q) => String(q.type).toLowerCase() === 'code');
+  const codeQuestionIds = codeQuestions.map((q) => String(q.id));
+
   const codeSubmissions = await CodingSubmission.find({
     userId: req.user._id,
-    attemptId: attempt._id,
-    questionId: { $in: questions.filter((q) => String(q.type).toLowerCase() === 'code').map((q) => String(q.id)) },
+    $or: [
+      { attemptId: attempt._id },
+      { assessmentId: assessment._id },
+      { moduleKey: assessment.moduleKey },
+    ],
+    questionId: { $in: codeQuestionIds },
   })
-    .sort({ submittedAt: -1 })
+    .sort({ createdAt: -1 })
     .lean();
   const submissionScores = new Map();
   for (const submission of codeSubmissions) {

@@ -35,20 +35,47 @@ document.addEventListener('DOMContentLoaded', () => {
    DARK MODE
    ============================================================ */
 function initDarkMode() {
-  const saved = localStorage.getItem('pc-theme') || 'light';
-  document.documentElement.setAttribute('data-theme', saved);
-  document.documentElement.setAttribute('data-bs-theme', saved);
+  const saved = localStorage.getItem('pc-theme') || localStorage.getItem('theme') || 'light';
+  applyTheme(saved);
 
-  document.querySelectorAll('.dark-mode-toggle, #themeToggleBtn').forEach(toggle => {
-    toggle.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-bs-theme') || document.documentElement.getAttribute('data-theme');
+  document.querySelectorAll('.dark-mode-toggle, #themeToggleBtn').forEach((toggle) => {
+    // Avoid double attaching if element has both class and id
+    if (toggle.dataset.pcThemeBound) return;
+    toggle.dataset.pcThemeBound = 'true';
+
+    toggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      const current = document.documentElement.getAttribute('data-bs-theme') || document.documentElement.getAttribute('data-theme') || 'light';
       const newTheme = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', newTheme);
-      document.documentElement.setAttribute('data-bs-theme', newTheme);
+      applyTheme(newTheme);
       localStorage.setItem('pc-theme', newTheme);
-      // Update chart colors if any
+      localStorage.setItem('theme', newTheme);
       updateChartTheme(newTheme);
     });
+  });
+}
+
+function applyTheme(theme) {
+  const isDark = theme === 'dark';
+  const val = isDark ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', val);
+  document.documentElement.setAttribute('data-bs-theme', val);
+  if (document.body) {
+    document.body.setAttribute('data-theme', val);
+    document.body.setAttribute('data-bs-theme', val);
+  }
+  updateThemeToggleIcons(val);
+}
+
+function updateThemeToggleIcons(theme) {
+  const isDark = theme === 'dark';
+  document.querySelectorAll('.dark-mode-toggle, #themeToggleBtn').forEach((btn) => {
+    btn.setAttribute('title', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    btn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    const icon = btn.querySelector('i');
+    if (icon) {
+      icon.className = isDark ? 'bi bi-sun-fill text-warning' : 'bi bi-moon-stars';
+    }
   });
 }
 

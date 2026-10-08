@@ -6,8 +6,8 @@ import env from '../config/env.js';
  * @param {string} userId
  * @returns {string}
  */
-export function signToken(userId) {
-  return jwt.sign({ sub: String(userId) }, env.jwtSecret, {
+export function signToken(userId, role = 'student') {
+  return jwt.sign({ sub: String(userId), role }, env.jwtSecret, {
     expiresIn: env.jwtExpiresIn,
   });
 }

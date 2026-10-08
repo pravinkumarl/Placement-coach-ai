@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Placement Coach AI — Training & Placement Officer (TPO) Administration Portal.">
+  <title>TPO Admin Portal — Placement Coach AI</title>
+
+  <!-- Preconnect to CDNs & Font servers -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+
+  <style>
+    .admin-kpi-card {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+      position: relative;
+      overflow: hidden;
+    }
+    .admin-kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .admin-kpi-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+    .admin-section {
+      display: none;
+    }
+    .admin-section.active {
+      display: block;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .badge-tier-excellent { background-color: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-tier-ready { background-color: rgba(79, 70, 229, 0.15); color: #6366F1; border: 1px solid rgba(79, 70, 229, 0.3); }
+    .badge-tier-almost { background-color: rgba(245, 158, 11, 0.15); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-tier-needs { background-color: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .table-hover tbody tr { cursor: pointer; }
+    .status-pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+    }
+    .chart-container-card {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================== SIDEBAR ======================== -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-mortarboard-fill text-primary"></i>
+        <span>Placement Coach</span>
+      </div>
+      <span class="badge bg-danger rounded-pill small px-2 py-1" style="font-size: 0.7rem;">TPO PORTAL</span>
+    </div>
+
+    <!-- Admin Profile Badge -->
+    <div class="sidebar-user text-decoration-none d-flex align-items-center gap-2 p-2 rounded-3 mx-2 mb-3 bg-body-tertiary">
+      <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px; font-size: 1.1rem;">
+        <i class="bi bi-shield-lock-fill"></i>
+      </div>
+      <div class="flex-grow-1 overflow-hidden">
+        <div class="user-name fw-bold text-truncate" id="adminUserName">Placement Officer</div>
+        <div class="user-role small text-muted text-truncate" id="adminUserRole">Institutional Admin</div>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="sidebar-nav">
+      <div class="nav-label">Overview & Batch</div>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link active" href="#overview" data-target-section="section-overview">
+            <i class="bi bi-speedometer2"></i> Dashboard Overview
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#students" data-target-section="section-students">
+            <i class="bi bi-people-fill"></i> Student Directory
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#analytics" data-target-section="section-analytics">
+            <i class="bi bi-graph-up-arrow"></i> Batch Analytics
+          </a>
+        </li>
+      </ul>
+
+      <div class="nav-label">Placement Drives</div>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" href="#eligibility" data-target-section="section-eligibility">
+            <i class="bi bi-funnel-fill"></i> Eligibility Screener
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#drives" data-target-section="section-drives">
+            <i class="bi bi-building"></i> Placement Drives
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#applications" data-target-section="section-applications">
+            <i class="bi bi-journal-check"></i> Applications Pipeline
+          </a>
+        </li>
+      </ul>
+
+      <div class="nav-label">Academic Content</div>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" href="#assessments" data-target-section="section-assessments">
+            <i class="bi bi-clipboard2-check-fill"></i> Assessments Manager
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#questions" data-target-section="section-questions">
+            <i class="bi bi-patch-question-fill"></i> Question Bank
+          </a>
+        </li>
+      </ul>
+
+      <div class="nav-label">System Administration</div>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" href="#notifications" data-target-section="section-notifications">
+            <i class="bi bi-megaphone-fill"></i> Announcements
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#logs" data-target-section="section-logs">
+            <i class="bi bi-file-earmark-text-fill"></i> Audit Logs
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="dark-mode-toggle" title="Toggle dark mode">
+        <i class="bi bi-moon-stars"></i>
+        <span>Dark Mode</span>
+        <div class="toggle-track ms-auto"><div class="toggle-thumb"></div></div>
+      </div>
+      <a href="login.html" data-logout class="nav-link mt-2 d-flex align-items-center gap-2" style="color: var(--clr-text-muted); font-size: 0.85rem;">
+        <i class="bi bi-box-arrow-left"></i> Logout
+      </a>
+    </div>
+  </aside>
+
+  <!-- ======================== MAIN CONTENT ======================== -->
+  <div class="main-content">
+    <!-- Top Navbar -->
+    <header class="top-header">
+      <div class="d-flex align-items-center gap-3">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+          <i class="bi bi-list"></i>
+        </button>
+        <div>
+          <h1 class="page-title mb-0" id="currentSectionTitle">TPO Overview</h1>
+          <small class="text-muted" id="currentSectionSubtitle">Institutional Placement Management Dashboard</small>
+        </div>
+      </div>
+
+      <div class="header-actions d-flex align-items-center gap-2">
+        <button class="btn btn-sm btn-outline-custom d-flex align-items-center gap-1" id="refreshBtn" title="Refresh data">
+          <i class="bi bi-arrow-clockwise"></i> <span class="d-none d-md-inline">Refresh</span>
+        </button>
+        <button class="btn btn-sm btn-danger d-flex align-items-center gap-1" data-logout>
+          <i class="bi bi-power"></i> <span class="d-none d-md-inline">Logout</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Body Wrapper -->
+    <div class="p-3 p-md-4">
+
+      <!-- ========================================================
+           SECTION 1: OVERVIEW & BATCH ANALYTICS
+           ======================================================== -->
+      <section id="section-overview" class="admin-section active">
+        <!-- KPI Cards Grid -->
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-lg-4 col-xl-2">
+            <div class="admin-kpi-card">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="small text-muted fw-semibold">Students</span>
+                <div class="admin-kpi-icon bg-primary-subtle text-primary"><i class="bi bi-people"></i></div>
+              </div>
+              <h3 class="fw-bold mb-0" id="kpiTotalStudents">0</h3>
+              <small class="text-muted" style="font-size: 0.75rem;">Registered candidates</small>
+            </div>
+          </div>
+          <div class="col-6 col-lg-4 col-xl-2">
+            <div class="admin-kpi-card">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="small text-muted fw-semibold">Avg Readiness</span>
+                <div class="admin-kpi-icon bg-info-subtle text-info"><i class="bi bi-speedometer"></i></div>
+              </div>
+              <h3 class="fw-bold mb-0 text-info" id="kpiAvgReadiness">0%</h3>
+              <small class="text-muted" style="font-size: 0.75rem;">Cohort baseline</small>
+            </div>
+          </div>
+          <div class="col-6 col-lg-4 col-xl-2">
+            <div class="admin-kpi-card">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="small text-muted fw-semibold">Placement Ready</span>
+                <div class="admin-kpi-icon bg-success-subtle text-success"><i class="bi bi-check-circle"></i></div>
+              </div>
+              <h3 class="fw-bold mb-0 text-success" id="kpiReadyStudents">0</h3>
+              <small class="text-muted" style="font-size: 0.75rem;">Score ≥ 70%</small>
+            </div>
+          </div>
+          <div class="col-6 col-lg-4 col-xl-2">
+            <div class="admin-kpi-card">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="small text-muted fw-semibold">Needs Work</span>
+                <div class="admin-kpi-icon bg-danger-subtle text-danger"><i class="bi bi-exclamation-triangle"></i></div>
+              </div>
+              <h3 class="fw-bold mb-0 text-danger" id="kpiNeedsImprovement">0</h3>
+              <small class="text-muted" style="font-size: 0.75rem;">Score &lt; 55%</small>
+            </div>
+          </div>
+          <div class="col-6 col-lg-4 col-xl-2">
+            <div class="admin-kpi-card">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="small text-muted fw-semibold">Assessments</span>
+                <div class="admin-kpi-icon bg-warning-subtle text-warning"><i class="bi bi-clipboard2-data"></i></div>
+              </div>
+              <h3 class="fw-bold mb-0 text-warning" id="kpiTotalAttempts">0</h3>
+              <small class="text-muted" style="font-size: 0.75rem;">Completed tests</small>
+            </div>
+          </div>
+          <div class="col-6 col-lg-4 col-xl-2">
+            <div class="admin-kpi-card">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="small text-muted fw-semibold">Active Drives</span>
+                <div class="admin-kpi-icon bg-purple-subtle text-primary"><i class="bi bi-briefcase"></i></div>
+              </div>
+              <h3 class="fw-bold mb-0 text-primary" id="kpiActiveDrives">0</h3>
+              <small class="text-muted" style="font-size: 0.75rem;">Open for applications</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Placement Insight Alert Card -->
+        <div class="card border-0 shadow-sm mb-4" style="background: linear-gradient(135deg, rgba(109, 40, 217, 0.08) 0%, rgba(99, 102, 241, 0.04) 100%); border-left: 4px solid var(--bs-primary) !important;">
+          <div class="card-body p-3 p-md-4">
+            <div class="d-flex align-items-start gap-3">
+              <div class="rounded-circle p-2 bg-primary text-white flex-shrink-0">
+                <i class="bi bi-robot fs-5"></i>
+              </div>
+              <div class="flex-grow-1">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-1">
+                  <h6 class="fw-bold text-primary mb-0" id="aiInsightTitle">AI Placement Strategic Recommendation</h6>
+                  <span class="badge bg-primary-subtle text-primary">Gemini Placement Engine</span>
+                </div>
+                <p class="mb-0 text-body" id="aiInsightText" style="font-size: 0.92rem;">
+                  Loading institutional batch analysis...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row g-4 mb-4">
+          <!-- Readiness Tier Distribution -->
+          <div class="col-lg-6 col-xl-5">
+            <div class="chart-container-card">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0"><i class="bi bi-pie-chart-fill text-primary me-2"></i>Readiness Distribution</h6>
+                <span class="badge bg-body-secondary text-muted" style="font-size:0.75rem;">Institutional Tiers</span>
+              </div>
+              <div style="height: 260px; position: relative;">
+                <canvas id="chartDistribution"></canvas>
+              </div>
+              <div class="d-flex justify-content-around text-center mt-3 pt-2 border-top">
+                <div><small class="text-muted d-block">Excellent (≥85)</small><strong class="text-success" id="distExc">0</strong></div>
+                <div><small class="text-muted d-block">Ready (70-84)</small><strong class="text-primary" id="distRdy">0</strong></div>
+                <div><small class="text-muted d-block">Almost (55-69)</small><strong class="text-warning" id="distAlm">0</strong></div>
+                <div><small class="text-muted d-block">Needs Work (&lt;55)</small><strong class="text-danger" id="distNeed">0</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Branch-wise Readiness -->
+          <div class="col-lg-6 col-xl-7">
+            <div class="chart-container-card">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0"><i class="bi bi-bar-chart-fill text-primary me-2"></i>Branch-Wise Average Readiness</h6>
+                <span class="badge bg-body-secondary text-muted" style="font-size:0.75rem;">Performance by Dept</span>
+              </div>
+              <div style="height: 290px; position: relative;">
+                <canvas id="chartBranches"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Attempts Activity Table -->
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center pt-3 px-3 px-md-4">
+            <h6 class="fw-bold mb-0"><i class="bi bi-clock-history text-primary me-2"></i>Live Assessment Activity</h6>
+            <button class="btn btn-sm btn-link text-decoration-none" onclick="switchSection('section-students')">View All Students →</button>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr style="font-size: 0.8rem;" class="text-muted text-uppercase">
+                    <th class="ps-3 ps-md-4">Student</th>
+                    <th>Branch</th>
+                    <th>Module</th>
+                    <th>Score</th>
+                    <th>Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody id="recentAttemptsBody">
+                  <tr><td colspan="5" class="text-center py-4 text-muted">Loading activity stream...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           SECTION 2: STUDENT DIRECTORY
+           ======================================================== -->
+      <section id="section-students" class="admin-section">
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-body p-3 p-md-4">
+            <!-- Filter Controls Toolbar -->
+            <div class="row g-2 align-items-center mb-3">
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-text bg-body border-end-0"><i class="bi bi-search text-muted"></i></span>
+                  <input type="text" class="form-control border-start-0" id="studentSearchInput" placeholder="Search by name, roll no, email...">
+                </div>
+              </div>
+              <div class="col-6 col-md-2">
+                <select class="form-select" id="studentBranchFilter">
+                  <option value="">All Branches</option>
+                  <option value="Computer Science">Computer Science / CSE</option>
+                  <option value="Information Technology">Information Technology / IT</option>
+                  <option value="ECE">Electronics (ECE)</option>
+                  <option value="EEE">Electrical (EEE)</option>
+                  <option value="Mechanical">Mechanical</option>
+                  <option value="Civil">Civil</option>
+                </select>
+              </div>
+              <div class="col-6 col-md-2">
+                <select class="form-select" id="studentReadinessFilter">
+                  <option value="">All Readiness Tiers</option>
+                  <option value="85">Tier 1: Excellent (≥85)</option>
+                  <option value="70">Placement Ready (≥70)</option>
+                  <option value="55">Almost Ready (≥55)</option>
+                </select>
+              </div>
+              <div class="col-6 col-md-2">
+                <select class="form-select" id="studentStatusFilter">
+                  <option value="">All Placement Status</option>
+                  <option value="unplaced">Unplaced</option>
+                  <option value="placed">Placed</option>
+                  <option value="opted_out">Opted Out</option>
+                </select>
+              </div>
+              <div class="col-6 col-md-2 d-flex gap-2">
+                <button class="btn btn-outline-primary flex-fill" id="exportStudentsBtn" title="Export current list to CSV">
+                  <i class="bi bi-download"></i> CSV
+                </button>
+                <button class="btn btn-outline-success flex-fill" data-bs-toggle="modal" data-bs-target="#modalImportStudents" title="Import students from CSV">
+                  <i class="bi bi-upload"></i> Import
+                </button>
+              </div>
+            </div>
+
+            <!-- Students Table -->
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0" id="studentsTable">
+                <thead class="table-light">
+                  <tr style="font-size: 0.82rem;" class="text-muted text-uppercase">
+                    <th>Student Name</th>
+                    <th>Roll / Reg No</th>
+                    <th>Branch</th>
+                    <th>CGPA</th>
+                    <th>Readiness Score</th>
+                    <th>Tier</th>
+                    <th>Tests Attempted</th>
+                    <th>Placement Status</th>
+                    <th class="text-end pe-3">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="studentsTableBody">
+                  <tr><td colspan="9" class="text-center py-4 text-muted">Loading students directory...</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Server-side Pagination -->
+            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top flex-wrap gap-2">
+              <small class="text-muted" id="studentsPaginationSummary">Showing 0 of 0 students</small>
+              <div class="d-flex gap-1" id="studentsPaginationControls">
+                <!-- Injected via js/admin.js -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           SECTION 3: BATCH WEAKNESS ANALYTICS
+           ======================================================== -->
+      <section id="section-analytics" class="admin-section">
+        <div class="row g-4 mb-4">
+          <!-- Weakest Topics Chart -->
+          <div class="col-lg-6">
+            <div class="chart-container-card">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0 text-danger"><i class="bi bi-exclamation-octagon-fill me-2"></i>Critical Weak Areas (Cohort Bottlenecks)</h6>
+                <span class="badge bg-danger-subtle text-danger">Priority Intervention</span>
+              </div>
+              <div style="height: 320px; position: relative;">
+                <canvas id="chartWeakTopics"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category Mastery Comparison -->
+          <div class="col-lg-6">
+            <div class="chart-container-card">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0 text-primary"><i class="bi bi-layers-fill me-2"></i>Assessment Category Mastery</h6>
+                <span class="badge bg-primary-subtle text-primary">Avg Score %</span>
+              </div>
+              <div style="height: 320px; position: relative;">
+                <canvas id="chartCategoryMastery"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Topics Breakdown Table -->
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-transparent border-0 pt-3 px-4">
+            <h6 class="fw-bold mb-0"><i class="bi bi-table me-2"></i>Batch-Wide Topic Performance Breakdown</h6>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr style="font-size:0.8rem;" class="text-muted text-uppercase">
+                    <th class="ps-4">Topic Name</th>
+                    <th>Category</th>
+                    <th>Cohort Avg Score</th>
+                    <th>Students Struggling</th>
+                    <th>Total Attempts</th>
+                    <th>Intervention Priority</th>
+                    <th class="text-end pe-4">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="topicBreakdownBody">
+                  <tr><td colspan="7" class="text-center py-4 text-muted">Loading topic analytics...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           SECTION 4: DRIVE ELIGIBILITY SCREENER
+           ======================================================== -->
+      <section id="section-eligibility" class="admin-section">
+        <div class="row g-4">
+          <!-- Filter Panel (Left) -->
+          <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body p-3 p-md-4">
+                <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                  <i class="bi bi-sliders text-primary"></i> Eligibility Screener
+                </h6>
+                <p class="text-muted small mb-4">
+                  Define corporate placement drive criteria to filter students in real-time.
+                </p>
+
+                <div class="mb-3">
+                  <label class="form-label small fw-semibold">Minimum CGPA (0.0 – 10.0)</label>
+                  <div class="d-flex align-items-center gap-2">
+                    <input type="range" class="form-range" id="screenCgpaRange" min="5" max="9.5" step="0.1" value="7.0">
+                    <span class="badge bg-primary px-2 py-1" id="screenCgpaVal">7.0</span>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label small fw-semibold">Minimum Readiness Score (0 – 100%)</label>
+                  <div class="d-flex align-items-center gap-2">
+                    <input type="range" class="form-range" id="screenReadinessRange" min="40" max="95" step="5" value="65">
+                    <span class="badge bg-info px-2 py-1" id="screenReadinessVal">65%</span>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label small fw-semibold">Maximum Backlogs Allowed</label>
+                  <select class="form-select" id="screenBacklogsSelect">
+                    <option value="0" selected>0 (No Active Backlogs)</option>
+                    <option value="1">Up to 1 Backlog</option>
+                    <option value="2">Up to 2 Backlogs</option>
+                    <option value="100">Any Backlogs Allowed</option>
+                  </select>
+                </div>
+
+                <div class="mb-4">
+                  <label class="form-label small fw-semibold mb-2">Eligible Engineering Branches</label>
+                  <div class="d-flex flex-column gap-1" id="screenBranchesGroup">
+                    <div class="form-check">
+                      <input class="form-check-input branch-check" type="checkbox" value="Computer Science" id="brCSE" checked>
+                      <label class="form-check-label small" for="brCSE">Computer Science (CSE)</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input branch-check" type="checkbox" value="Information Technology" id="brIT" checked>
+                      <label class="form-check-label small" for="brIT">Information Technology (IT)</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input branch-check" type="checkbox" value="ECE" id="brECE">
+                      <label class="form-check-label small" for="brECE">Electronics & Communication (ECE)</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input branch-check" type="checkbox" value="EEE" id="brEEE">
+                      <label class="form-check-label small" for="brEEE">Electrical & Electronics (EEE)</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input branch-check" type="checkbox" value="Mechanical" id="brME">
+                      <label class="form-check-label small" for="brME">Mechanical Engineering</label>
+                    </div>
+                  </div>
+                </div>
+
+                <button class="btn btn-primary w-100 py-2 fw-semibold d-flex align-items-center justify-content-center gap-2" id="applyScreenBtn">
+                  <i class="bi bi-funnel"></i> Apply Screener Filters
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Matched Students & Actions (Right) -->
+          <div class="col-lg-8">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center pt-3 px-3 px-md-4">
+                <div>
+                  <h6 class="fw-bold mb-0">Eligible Candidates</h6>
+                  <small class="text-muted" id="eligibleCountBadge">Found 0 matching students</small>
+                </div>
+                <button class="btn btn-sm btn-success d-flex align-items-center gap-2" id="exportEligibleCsvBtn">
+                  <i class="bi bi-file-earmark-spreadsheet"></i> Export Shortlist (CSV)
+                </button>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                      <tr style="font-size:0.8rem;" class="text-muted text-uppercase">
+                        <th class="ps-3 ps-md-4">Name</th>
+                        <th>Roll No</th>
+                        <th>Branch</th>
+                        <th>CGPA</th>
+                        <th>Readiness</th>
+                        <th>Backlogs</th>
+                        <th class="text-end pe-3">Profile</th>
+                      </tr>
+                    </thead>
+                    <tbody id="eligibleStudentsBody">
+                      <tr><td colspan="7" class="text-center py-4 text-muted">Click Apply Screener to filter candidates.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           SECTION 5: PLACEMENT DRIVES
+           ======================================================== -->
+      <section id="section-drives" class="admin-section">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+          <div>
+            <h5 class="fw-bold mb-0">Campus Recruitment Drives</h5>
+            <small class="text-muted">Manage active and scheduled company recruitment drives</small>
+          </div>
+          <button class="btn btn-primary btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalCreateDrive">
+            <i class="bi bi-plus-circle"></i> Create New Drive
+          </button>
+        </div>
+
+        <div class="row g-3" id="drivesGridContainer">
+          <!-- Drive cards rendered via js/admin.js -->
+          <div class="col-12 text-center py-5 text-muted">Loading placement drives...</div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           SECTION 6: APPLICATIONS PIPELINE
+           ======================================================== -->
+      <section id="section-applications" class="admin-section">
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-body p-3 p-md-4">
+            <div class="row g-2 align-items-center mb-3">
+              <div class="col-md-4">
+                <h6 class="fw-bold mb-0">Student Application Pipeline</h6>
+                <small class="text-muted">Track candidate progress across interview rounds</small>
+              </div>
+              <div class="col-md-4">
+                <select class="form-select" id="appFilterDrive">
+                  <option value="">All Drives</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <select class="form-select" id="appFilterStatus">
+                  <option value="">All Stages / Statuses</option>
+                  <option value="Applied">Applied</option>
+                  <option value="Shortlisted">Shortlisted</option>
+                  <option value="Assessment">Online Assessment</option>
+                  <option value="Interview">Technical / HR Interview</option>
+                  <option value="Selected">Selected / Offered 🎉</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr style="font-size:0.8rem;" class="text-muted text-uppercase">
+                    <th class="ps-3 ps-md-4">Candidate</th>
+                    <th>Company</th>
+                    <th>Role</th>
+                    <th>Applied On</th>
+                    <th>Current Stage</th>
+                    <th>Stage Notes</th>
+                    <th class="text-end pe-3">Update Stage</th>
+                  </tr>
+                </thead>
+                <tbody id="applicationsTableBody">
+                  <tr><td colspan="7" class="text-center py-4 text-muted">Loading applications...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           SECTION 7: ASSESSMENTS MANAGER
+           ======================================================== -->
+      <section id="section-assessments" class="admin-section">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+          <div>
+            <h5 class="fw-bold mb-0">Assessment Modules</h5>
+            <small class="text-muted">Manage mock tests, diagnostic modules, and durations</small>
+          </div>
+          <button class="btn btn-primary btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalCreateAssessment">
+            <i class="bi bi-plus-circle"></i> Create Assessment
+          </button>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr style="font-size:0.8rem;" class="text-muted text-uppercase">
+                    <th class="ps-3 ps-md-4">Module Title</th>
+                    <th>Module Key</th>
+                    <th>Category</th>
+                    <th>Difficulty</th>
+                    <th>Duration</th>
+                    <th>Questions</th>
+                    <th>Status</th>
+                    <th class="text-end pe-3">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="assessmentsTableBody">
+                  <tr><td colspan="8" class="text-center py-4 text-muted">Loading assessments...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           SECTION 8: QUESTION BANK
+           ======================================================== -->
+      <section id="section-questions" class="admin-section">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+          <div>
+            <h5 class="fw-bold mb-0">Question Bank Repository</h5>
+            <small class="text-muted">Manage MCQs, Coding Challenges, SQL, and Interview prompts</small>
+          </div>
+          <button class="btn btn-primary btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalCreateQuestion">
+            <i class="bi bi-plus-circle"></i> Add Question
+          </button>
+        </div>
+
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-body p-3 p-md-4">
+            <div class="row g-2 mb-3">
+              <div class="col-md-4">
+                <input type="text" class="form-control" id="questionSearchInput" placeholder="Search questions or topics...">
+              </div>
+              <div class="col-6 col-md-3">
+                <select class="form-select" id="questionTypeFilter">
+                  <option value="">All Question Types</option>
+                  <option value="mcq">Multiple Choice (MCQ)</option>
+                  <option value="code">Coding Challenge</option>
+                  <option value="sql">SQL Query</option>
+                  <option value="interview">AI Interview</option>
+                  <option value="technical">Technical</option>
+                </select>
+              </div>
+              <div class="col-6 col-md-3">
+                <select class="form-select" id="questionDiffFilter">
+                  <option value="">All Difficulties</option>
+                  <option value="Easy">Easy</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+              </div>
+              <div class="col-md-2">
+                <button class="btn btn-outline-primary w-100" id="filterQuestionsBtn">Filter</button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr style="font-size:0.8rem;" class="text-muted text-uppercase">
+                    <th class="ps-3 ps-md-4">Title / Prompt</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Topic</th>
+                    <th>Difficulty</th>
+                    <th>Marks</th>
+                    <th class="text-end pe-3">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="questionsTableBody">
+                  <tr><td colspan="7" class="text-center py-4 text-muted">Loading question bank...</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top flex-wrap gap-2">
+              <small class="text-muted" id="questionsPaginationSummary">Showing 0 questions</small>
+              <div class="d-flex gap-1" id="questionsPaginationControls"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           SECTION 9: ANNOUNCEMENTS & NOTIFICATIONS
+           ======================================================== -->
+      <section id="section-notifications" class="admin-section">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+          <div>
+            <h5 class="fw-bold mb-0">Institutional Announcements</h5>
+            <small class="text-muted">Broadcast notices, registration alerts, and drive updates to candidates</small>
+          </div>
+          <button class="btn btn-primary btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalCreateNotification">
+            <i class="bi bi-broadcast"></i> Broadcast Notice
+          </button>
+        </div>
+
+        <div class="row g-3" id="notificationsContainer">
+          <div class="col-12 text-center py-4 text-muted">Loading announcements...</div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           SECTION 10: AUDIT LOGS
+           ======================================================== -->
+      <section id="section-logs" class="admin-section">
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-transparent border-0 pt-3 px-3 px-md-4">
+            <h6 class="fw-bold mb-0"><i class="bi bi-shield-check text-primary me-2"></i>Security & Administration Audit Trail</h6>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr style="font-size:0.8rem;" class="text-muted text-uppercase">
+                    <th class="ps-3 ps-md-4">Timestamp</th>
+                    <th>Admin</th>
+                    <th>Action</th>
+                    <th>Resource</th>
+                    <th>Resource ID</th>
+                    <th>Result</th>
+                    <th>IP Address</th>
+                  </tr>
+                </thead>
+                <tbody id="logsTableBody">
+                  <tr><td colspan="7" class="text-center py-4 text-muted">Loading audit records...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ======================== MODALS ======================== -->
+
+  <!-- 1. Student Drill-Down Modal -->
+  <div class="modal fade" id="modalStudentDrillDown" tabindex="-1" aria-labelledby="drillDownTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header border-bottom py-3">
+          <div class="d-flex align-items-center gap-3">
+            <div class="rounded-circle bg-primary-subtle text-primary p-2 fs-4">
+              <i class="bi bi-person-badge"></i>
+            </div>
+            <div>
+              <h5 class="modal-title fw-bold mb-0" id="drillDownTitle">Student Profile</h5>
+              <small class="text-muted" id="drillDownSubtitle">CSE • Batch 2026</small>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-3 p-md-4">
+          <!-- Readiness Overview Strip -->
+          <div class="p-3 rounded-3 mb-4 bg-body-tertiary border d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <span class="text-muted small d-block">Overall Readiness</span>
+              <h3 class="fw-bold mb-0 text-primary" id="drillReadinessScore">0%</h3>
+            </div>
+            <div>
+              <span class="text-muted small d-block">Placement Classification</span>
+              <span class="badge" id="drillTierBadge">Placement Ready</span>
+            </div>
+            <div>
+              <span class="text-muted small d-block">Academic CGPA</span>
+              <h5 class="fw-bold mb-0" id="drillCgpa">8.4</h5>
+            </div>
+            <div>
+              <span class="text-muted small d-block">Placement Status</span>
+              <select class="form-select form-select-sm" id="drillStatusSelect" style="width: 140px;">
+                <option value="unplaced">Unplaced</option>
+                <option value="placed">Placed</option>
+                <option value="opted_out">Opted Out</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Category Mastery Breakdown -->
+          <h6 class="fw-bold mb-2">Category Performance Breakdown</h6>
+          <div class="row g-2 mb-4" id="drillCategoriesRow">
+            <!-- Populated via js/admin.js -->
+          </div>
+
+          <!-- Strengths vs Weaknesses -->
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <div class="p-3 rounded-3 border h-100 bg-body">
+                <h6 class="fw-bold text-success mb-2"><i class="bi bi-star-fill me-1"></i>Strong Topics (≥70%)</h6>
+                <div class="d-flex flex-wrap gap-1" id="drillStrongTopics">
+                  <span class="text-muted small">None recorded yet</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-3 rounded-3 border h-100 bg-body">
+                <h6 class="fw-bold text-danger mb-2"><i class="bi bi-exclamation-triangle-fill me-1"></i>Weak Areas (&lt;60%)</h6>
+                <div class="d-flex flex-wrap gap-1" id="drillWeakTopics">
+                  <span class="text-muted small">No critical weak areas</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Assessment Attempts History -->
+          <h6 class="fw-bold mb-2">Assessment History</h6>
+          <div class="table-responsive border rounded-3 mb-4">
+            <table class="table table-sm table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr style="font-size:0.75rem;" class="text-muted text-uppercase">
+                  <th>Assessment Module</th>
+                  <th>Category</th>
+                  <th>Score</th>
+                  <th>Questions Correct</th>
+                  <th>Submitted At</th>
+                </tr>
+              </thead>
+              <tbody id="drillAttemptsTable">
+                <tr><td colspan="5" class="text-center py-3 text-muted">No attempts found</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Drive Applications -->
+          <h6 class="fw-bold mb-2">Campus Drive Applications</h6>
+          <div class="table-responsive border rounded-3">
+            <table class="table table-sm table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr style="font-size:0.75rem;" class="text-muted text-uppercase">
+                  <th>Company</th>
+                  <th>Role</th>
+                  <th>Package</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="drillApplicationsTable">
+                <tr><td colspan="4" class="text-center py-3 text-muted">No applications yet</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer border-top py-2">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary btn-sm" id="saveStudentStatusBtn">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Create Placement Drive Modal -->
+  <div class="modal fade" id="modalCreateDrive" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Create Campus Placement Drive</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="createDriveForm" onsubmit="handleCreateDriveSubmit(event)">
+          <div class="modal-body p-3 p-md-4">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Company Name *</label>
+                <input type="text" class="form-control" name="company" placeholder="e.g. Amazon / Oracle" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Job Role *</label>
+                <input type="text" class="form-control" name="role" placeholder="e.g. SDE-1 / Cloud Engineer" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">CTC / Package</label>
+                <input type="text" class="form-control" name="package" placeholder="e.g. 14.5 LPA">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label small fw-semibold">Min CGPA</label>
+                <input type="number" step="0.1" class="form-control" name="minCgpa" value="7.0">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label small fw-semibold">Min Readiness (%)</label>
+                <input type="number" class="form-control" name="minReadiness" value="65">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Drive Date</label>
+                <input type="date" class="form-control" name="driveDate">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Application Deadline</label>
+                <input type="date" class="form-control" name="applicationDeadline">
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-semibold">Eligible Branches (comma-separated)</label>
+                <input type="text" class="form-control" name="branches" value="CSE, IT, ECE">
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-semibold">Job Description / Requirements</label>
+                <textarea class="form-control" name="description" rows="3" placeholder="Job roles, hiring process, rounds..."></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-sm">Create & Publish Drive</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2b. Edit Placement Drive Modal -->
+  <div class="modal fade" id="modalEditDrive" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2 text-primary"></i>Edit Placement Drive</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="editDriveForm" onsubmit="handleEditDriveSubmit(event)">
+          <input type="hidden" name="driveId" id="editDriveId">
+          <div class="modal-body p-3 p-md-4">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Company Name *</label>
+                <input type="text" class="form-control" name="company" id="editDriveCompany" placeholder="e.g. Amazon / Oracle" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Job Role *</label>
+                <input type="text" class="form-control" name="role" id="editDriveRole" placeholder="e.g. SDE-1 / Cloud Engineer" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">CTC / Package</label>
+                <input type="text" class="form-control" name="package" id="editDrivePackage" placeholder="e.g. 14.5 LPA">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Drive Status</label>
+                <select class="form-select" name="status" id="editDriveStatus">
+                  <option value="Open">Open (Active & Accepting Applications)</option>
+                  <option value="Closed">Closed</option>
+                  <option value="Draft">Draft</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Min CGPA</label>
+                <input type="number" step="0.1" class="form-control" name="minCgpa" id="editDriveMinCgpa" value="7.0">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Min Readiness (%)</label>
+                <input type="number" class="form-control" name="minReadiness" id="editDriveMinReadiness" value="65">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Max Backlogs</label>
+                <input type="number" class="form-control" name="maxBacklogs" id="editDriveMaxBacklogs" value="0" min="0">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Drive Date</label>
+                <input type="date" class="form-control" name="driveDate" id="editDriveDriveDate">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Application Deadline</label>
+                <input type="date" class="form-control" name="applicationDeadline" id="editDriveDeadline">
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-semibold">Eligible Branches (comma-separated)</label>
+                <input type="text" class="form-control" name="branches" id="editDriveBranches" value="CSE, IT, ECE">
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-semibold">Job Description / Requirements</label>
+                <textarea class="form-control" name="description" id="editDriveDescription" rows="3" placeholder="Job roles, hiring process, rounds..."></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-sm" id="editDriveSubmitBtn">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Create Assessment Modal -->
+  <div class="modal fade" id="modalCreateAssessment" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Create Assessment Module</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="createAssessmentForm" onsubmit="handleCreateAssessmentSubmit(event)">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Title *</label>
+              <input type="text" class="form-control" name="title" placeholder="e.g. Operating Systems & Cloud" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Module Key (unique slug) *</label>
+              <input type="text" class="form-control" name="moduleKey" placeholder="e.g. os-cloud" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Category *</label>
+              <select class="form-select" name="category" required>
+                <option value="Aptitude & Problem Solving">Aptitude & Problem Solving</option>
+                <option value="Technical Core">Technical Core</option>
+                <option value="Coding & DSA">Coding & DSA</option>
+                <option value="Database Systems">Database Systems</option>
+                <option value="Communication & HR">Communication & HR</option>
+              </select>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Difficulty</label>
+                <select class="form-select" name="difficulty">
+                  <option value="Easy">Easy</option>
+                  <option value="Medium" selected>Medium</option>
+                  <option value="Hard">Hard</option>
+                  <option value="Mixed">Mixed</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Duration (Minutes)</label>
+                <input type="number" class="form-control" name="durationMinutes" value="45" min="5" max="300">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-sm">Create Assessment</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Create Question Modal -->
+  <div class="modal fade" id="modalCreateQuestion" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Add Question to Question Bank</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="createQuestionForm" onsubmit="handleCreateQuestionSubmit(event)">
+          <div class="modal-body p-3 p-md-4">
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label class="form-label small fw-semibold">Question Title *</label>
+                <input type="text" class="form-control" name="title" placeholder="e.g. Q1: Binary Tree Inversion" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Question Type *</label>
+                <select class="form-select" name="type" required>
+                  <option value="mcq" selected>Multiple Choice (MCQ)</option>
+                  <option value="code">Coding Challenge</option>
+                  <option value="sql">SQL Query</option>
+                  <option value="interview">Interview Prompt</option>
+                  <option value="technical">Technical</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Category *</label>
+                <input type="text" class="form-control" name="category" placeholder="e.g. DSA & Coding" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Topic *</label>
+                <input type="text" class="form-control" name="topic" placeholder="e.g. Dynamic Programming" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-semibold">Question Prompt *</label>
+                <textarea class="form-control" name="question" rows="3" placeholder="Enter complete problem statement..." required></textarea>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Option A</label>
+                <input type="text" class="form-control" name="optA" placeholder="Option A text">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Option B</label>
+                <input type="text" class="form-control" name="optB" placeholder="Option B text">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Option C</label>
+                <input type="text" class="form-control" name="optC" placeholder="Option C text">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Option D</label>
+                <input type="text" class="form-control" name="optD" placeholder="Option D text">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Correct Option / Key</label>
+                <select class="form-select" name="correctKey">
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Difficulty</label>
+                <select class="form-select" name="difficulty">
+                  <option value="Easy">Easy</option>
+                  <option value="Medium" selected>Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Marks</label>
+                <input type="number" class="form-control" name="marks" value="1" min="1">
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-semibold">Hint / Solution Explanation</label>
+                <textarea class="form-control" name="explanation" rows="2" placeholder="Explanation provided after student attempt..."></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-sm">Save to Bank</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Create Notification / Announcement Modal -->
+  <div class="modal fade" id="modalCreateNotification" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Broadcast Campus Announcement</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="createNotificationForm" onsubmit="handleCreateNotificationSubmit(event)">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Headline *</label>
+              <input type="text" class="form-control" name="title" placeholder="e.g. TCS Digital Registration Closing Tomorrow" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Message Content *</label>
+              <textarea class="form-control" name="message" rows="4" placeholder="Enter notification details for students..." required></textarea>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Notice Type</label>
+                <select class="form-select" name="type">
+                  <option value="announcement" selected>General Announcement</option>
+                  <option value="drive">Placement Drive Alert</option>
+                  <option value="alert">Critical Alert</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Pin at Top</label>
+                <div class="form-check form-switch mt-2">
+                  <input class="form-check-input" type="checkbox" name="isPinned" value="true">
+                  <label class="form-check-label small">Pinned</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-sm">Broadcast Notice</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Import Students CSV Modal -->
+  <div class="modal fade" id="modalImportStudents" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Import Students via CSV</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-muted small">
+            CSV must have a header row with columns: <code>name</code>, <code>email</code>, and optional <code>registerNumber</code>, <code>branch</code>, <code>cgpa</code>.
+          </p>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Paste CSV Text</label>
+            <textarea class="form-control font-monospace" id="csvImportText" rows="6" placeholder="name,email,registerNumber,branch,cgpa&#10;Aarav,aarav@college.edu,REG01,CSE,8.5"></textarea>
+          </div>
+          <div id="importResultAlert" class="alert d-none small"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-success btn-sm" id="submitCsvImportBtn">Import Records</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="app.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

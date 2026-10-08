@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore campus placement drives, check real-time eligibility based on your readiness score and CGPA, and track your recruitment pipeline.">
+  <title>Campus Placement Drives — Placement Coach AI</title>
+
+  <!-- Preconnect to CDNs & Font servers -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+
+  <style>
+    .drive-card {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .drive-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--bs-primary-border-subtle);
+    }
+    .company-logo-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .criterion-pill {
+      font-size: 0.78rem;
+      padding: 0.25rem 0.55rem;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--clr-bg);
+      border: 1px solid var(--clr-border);
+      color: var(--clr-text-secondary);
+    }
+    .criterion-pill.met {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.25);
+      color: #059669;
+      font-weight: 600;
+    }
+    .criterion-pill.unmet {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.25);
+      color: #DC2626;
+      font-weight: 600;
+    }
+    .stage-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.3rem 0.7rem;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================== SIDEBAR ======================== -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <i class="bi bi-mortarboard-fill text-primary"></i> Placement Coach
+    </div>
+
+    <!-- Student Profile summary -->
+    <a href="profile.html" class="sidebar-user text-decoration-none d-flex align-items-center gap-2 p-2 rounded-3" title="View & edit profile">
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="img-fluid rounded-circle user-avatar-img border border-2 border-primary" style="width: 42px; height: 42px; object-fit: cover;">
+      <div class="flex-grow-1 overflow-hidden">
+        <div class="user-name fw-bold text-truncate" id="sidebarUserName">Student</div>
+        <div class="user-role small text-muted text-truncate" id="sidebarUserRole">Candidate</div>
+      </div>
+    </a>
+
+    <!-- Navigation Menu -->
+    <nav class="sidebar-nav">
+      <div class="nav-label">Main</div>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" href="dashboard.html"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="drives.html"><i class="bi bi-briefcase-fill"></i> Placement Drives</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="assessment-hub.html"><i class="bi bi-clipboard2-check"></i> Assessments</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="performance.html"><i class="bi bi-bar-chart-line-fill"></i> Reports</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="roadmap.html"><i class="bi bi-map-fill"></i> Roadmap</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="progress.html"><i class="bi bi-graph-up-arrow"></i> Progress</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="profile.html"><i class="bi bi-person-badge-fill"></i> Profile & Settings</a>
+        </li>
+      </ul>
+      <div class="nav-label">AI Tools</div>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" href="chat.html"><i class="bi bi-chat-dots-fill"></i> AI Coach</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="mock-simulation.html"><i class="bi bi-building"></i> Mock Simulation</a>
+        </li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="dark-mode-toggle" title="Toggle dark mode">
+        <i class="bi bi-moon-stars"></i>
+        <span>Dark Mode</span>
+        <div class="toggle-track ms-auto"><div class="toggle-thumb"></div></div>
+      </div>
+      <a href="login.html" data-logout class="nav-link mt-2 d-flex align-items-center gap-2" style="color: var(--clr-text-muted); font-size: 0.85rem;">
+        <i class="bi bi-box-arrow-left"></i> Logout
+      </a>
+    </div>
+  </aside>
+
+  <!-- ======================== MAIN CONTENT ======================== -->
+  <div class="main-content">
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="d-flex align-items-center gap-3">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+          <i class="bi bi-list"></i>
+        </button>
+        <div>
+          <h1 class="page-title mb-0">Campus Placement Drives</h1>
+          <small class="text-muted d-none d-md-block">Discover company recruitment drives, check eligibility, and submit your applications</small>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1" id="refreshDrivesBtn" title="Reload live drives">
+          <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button>
+      </div>
+    </header>
+
+    <div class="p-3 p-md-4">
+      <!-- Top Metrics Banner -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+          <div class="glass-card p-3">
+            <div class="d-flex align-items-center gap-3">
+              <div class="rounded-3 p-2 bg-primary-subtle text-primary" style="font-size: 1.4rem;">
+                <i class="bi bi-building"></i>
+              </div>
+              <div>
+                <div class="small text-muted fw-semibold">Open Drives</div>
+                <h4 class="fw-bold mb-0" id="statTotalDrives">3</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="glass-card p-3">
+            <div class="d-flex align-items-center gap-3">
+              <div class="rounded-3 p-2 bg-success-subtle text-success" style="font-size: 1.4rem;">
+                <i class="bi bi-check-circle"></i>
+              </div>
+              <div>
+                <div class="small text-muted fw-semibold">Eligible For You</div>
+                <h4 class="fw-bold mb-0 text-success" id="statEligibleDrives">0</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="glass-card p-3">
+            <div class="d-flex align-items-center gap-3">
+              <div class="rounded-3 p-2 bg-info-subtle text-info" style="font-size: 1.4rem;">
+                <i class="bi bi-send-check"></i>
+              </div>
+              <div>
+                <div class="small text-muted fw-semibold">Applications Sent</div>
+                <h4 class="fw-bold mb-0" id="statMyApplications">0</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="glass-card p-3">
+            <div class="d-flex align-items-center gap-3">
+              <div class="rounded-3 p-2 bg-warning-subtle text-warning" style="font-size: 1.4rem;">
+                <i class="bi bi-speedometer2"></i>
+              </div>
+              <div>
+                <div class="small text-muted fw-semibold">Your Readiness</div>
+                <h4 class="fw-bold mb-0" id="statStudentReadiness">--%</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs: Open Drives vs My Applications -->
+      <ul class="nav nav-pills mb-4 gap-2" id="driveTabs">
+        <li class="nav-item">
+          <button class="nav-link active px-3 py-2 fw-semibold" id="tabDrivesBtn" onclick="switchDriveTab('drives')">
+            <i class="bi bi-grid-fill me-1"></i> Available Drives (<span id="tabCountDrives">0</span>)
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link px-3 py-2 fw-semibold" id="tabMyAppsBtn" onclick="switchDriveTab('applications')">
+            <i class="bi bi-clock-history me-1"></i> My Application Pipeline (<span id="tabCountApps">0</span>)
+          </button>
+        </li>
+      </ul>
+
+      <!-- ======================== TAB 1: ALL DRIVES ======================== -->
+      <div id="viewDrives">
+        <!-- Search & Filter Controls -->
+        <div class="glass-card p-3 mb-4">
+          <div class="row g-2 align-items-center">
+            <div class="col-md-5">
+              <div class="input-group">
+                <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control border-start-0" id="driveSearchInput" placeholder="Search by company, role, or package...">
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <select class="form-select" id="driveFilterEligibility">
+                <option value="all">All Open Drives</option>
+                <option value="eligible">Eligible to Apply Only</option>
+                <option value="applied">Already Applied</option>
+              </select>
+            </div>
+            <div class="col-6 col-md-4">
+              <select class="form-select" id="driveSort">
+                <option value="date">Sort: Upcoming Drive Date</option>
+                <option value="package">Sort: Highest Package (CTC)</option>
+                <option value="readiness">Sort: Readiness Requirement</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Drives Cards Grid -->
+        <div class="row g-4" id="drivesGrid">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="text-muted small mt-2">Loading active placement drives...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================== TAB 2: MY APPLICATIONS ======================== -->
+      <div id="viewApplications" style="display: none;">
+        <div class="card border-0 shadow-sm" style="background: var(--clr-surface); border-radius: var(--radius-lg);">
+          <div class="card-header bg-transparent border-0 pt-3 px-3 px-md-4 d-flex justify-content-between align-items-center">
+            <h6 class="fw-bold mb-0">Submitted Applications & Interview Stages</h6>
+            <span class="badge bg-primary-subtle text-primary" id="myAppsHeaderCount">0 Applications</span>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr style="font-size:0.8rem;" class="text-muted text-uppercase">
+                    <th class="ps-3 ps-md-4">Company & Role</th>
+                    <th>Package</th>
+                    <th>Drive Date</th>
+                    <th>Applied On</th>
+                    <th>Current Stage</th>
+                    <th>Recruiter Feedback / Notes</th>
+                  </tr>
+                </thead>
+                <tbody id="myApplicationsTableBody">
+                  <tr><td colspan="6" class="text-center py-4 text-muted">No applications submitted yet.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ======================== APPLY CONFIRMATION MODAL ======================== -->
+  <div class="modal fade" id="modalApplyDrive" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Confirm Application</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-3 p-md-4">
+          <div class="p-3 rounded-3 mb-3" style="background: var(--clr-primary-light);">
+            <div class="d-flex align-items-center gap-3">
+              <div class="company-logo-avatar bg-primary" id="modalCompanyAvatar">G</div>
+              <div>
+                <h5 class="fw-bold mb-0 text-primary" id="modalCompanyName">Google</h5>
+                <p class="text-muted small mb-0" id="modalDriveRole">Software Engineer</p>
+                <div class="small fw-semibold mt-1" id="modalDrivePackage">Package: 24 LPA</div>
+              </div>
+            </div>
+          </div>
+
+          <h6 class="fw-bold small text-muted text-uppercase mb-2">Your Candidate Profile Summary</h6>
+          <div class="bg-body-tertiary p-3 rounded-3 small mb-3">
+            <div class="d-flex justify-content-between py-1 border-bottom">
+              <span class="text-muted">Student Name:</span>
+              <span class="fw-semibold" id="modalStudentName">Rahul Sharma</span>
+            </div>
+            <div class="d-flex justify-content-between py-1 border-bottom">
+              <span class="text-muted">Degree & Branch:</span>
+              <span class="fw-semibold" id="modalStudentBranch">CSE</span>
+            </div>
+            <div class="d-flex justify-content-between py-1 border-bottom">
+              <span class="text-muted">Current CGPA:</span>
+              <span class="fw-semibold" id="modalStudentCgpa">8.4</span>
+            </div>
+            <div class="d-flex justify-content-between py-1">
+              <span class="text-muted">AI Placement Readiness:</span>
+              <span class="fw-semibold text-primary" id="modalStudentReadiness">75%</span>
+            </div>
+          </div>
+
+          <div class="alert alert-info small mb-0">
+            <i class="bi bi-info-circle-fill me-1"></i>
+            By applying, your verified academic credentials and readiness portfolio will be submitted to the Training & Placement Cell.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary-custom btn-sm" id="confirmSubmitAppBtn">
+            <i class="bi bi-send-fill me-1"></i> Confirm & Submit Application
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="app.js"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      let state = {
+        drives: [],
+        applications: [],
+        studentMetrics: {},
+        currentTab: 'drives',
+        selectedDrive: null,
+      };
+
+      const COMPANY_COLORS = {
+        Google: '#EA4335',
+        Microsoft: '#00A4EF',
+        Amazon: '#FF9900',
+        TCS: '#0F4C81',
+        'Tata Consultancy Services (TCS)': '#0F4C81',
+        Infosys: '#007CC3',
+        Wipro: '#4C12A1',
+        Accenture: '#A100FF',
+      };
+
+      function getCompanyColor(company) {
+        return COMPANY_COLORS[company] || '#6d28d9';
+      }
+
+      function escapeHtml(str) {
+        return String(str == null ? '' : str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      window.switchDriveTab = function (tab) {
+        state.currentTab = tab;
+        const drivesView = document.getElementById('viewDrives');
+        const appsView = document.getElementById('viewApplications');
+        const tabDrivesBtn = document.getElementById('tabDrivesBtn');
+        const tabMyAppsBtn = document.getElementById('tabMyAppsBtn');
+
+        if (tab === 'drives') {
+          if (drivesView) drivesView.style.display = 'block';
+          if (appsView) appsView.style.display = 'none';
+          tabDrivesBtn?.classList.add('active');
+          tabMyAppsBtn?.classList.remove('active');
+        } else {
+          if (drivesView) drivesView.style.display = 'none';
+          if (appsView) appsView.style.display = 'block';
+          tabDrivesBtn?.classList.remove('active');
+          tabMyAppsBtn?.classList.add('active');
+          loadMyApplications();
+        }
+      };
+
+      async function loadDrivesData() {
+        if (!window.API || !API.isAuthenticated()) return;
+        try {
+          const res = await API.get('/api/drives');
+          state.drives = res.data?.drives || [];
+          state.studentMetrics = res.data?.studentMetrics || {};
+
+          // Update Top Stats
+          const eligibleCount = state.drives.filter((d) => d.isEligible).length;
+          const appliedCount = state.drives.filter((d) => d.myApplicationStatus).length;
+
+          document.getElementById('statTotalDrives').textContent = state.drives.length;
+          document.getElementById('statEligibleDrives').textContent = eligibleCount;
+          document.getElementById('statMyApplications').textContent = appliedCount;
+          document.getElementById('statStudentReadiness').textContent = `${state.studentMetrics.readinessScore || 0}%`;
+
+          document.getElementById('tabCountDrives').textContent = state.drives.length;
+          document.getElementById('tabCountApps').textContent = appliedCount;
+
+          renderDrivesGrid();
+        } catch (err) {
+          document.getElementById('drivesGrid').innerHTML = `
+            <div class="col-12 text-center py-5 text-danger">
+              <i class="bi bi-exclamation-triangle fs-3 d-block mb-2"></i>
+              Failed to load placement drives: ${escapeHtml(err.message)}
+            </div>`;
+        }
+      }
+
+      function renderDrivesGrid() {
+        const grid = document.getElementById('drivesGrid');
+        if (!grid) return;
+
+        const search = (document.getElementById('driveSearchInput')?.value || '').toLowerCase().trim();
+        const filter = document.getElementById('driveFilterEligibility')?.value || 'all';
+        const sort = document.getElementById('driveSort')?.value || 'date';
+
+        let list = [...state.drives];
+
+        // Search
+        if (search) {
+          list = list.filter((d) =>
+            d.company.toLowerCase().includes(search) ||
+            d.role.toLowerCase().includes(search) ||
+            (d.package && d.package.toLowerCase().includes(search))
+          );
+        }
+
+        // Eligibility Filter
+        if (filter === 'eligible') {
+          list = list.filter((d) => d.isEligible);
+        } else if (filter === 'applied') {
+          list = list.filter((d) => d.myApplicationStatus);
+        }
+
+        // Sort
+        if (sort === 'package') {
+          list.sort((a, b) => {
+            const numA = parseFloat((a.package || '').replace(/[^0-9.]/g, '')) || 0;
+            const numB = parseFloat((b.package || '').replace(/[^0-9.]/g, '')) || 0;
+            return numB - numA;
+          });
+        } else if (sort === 'readiness') {
+          list.sort((a, b) => (b.minReadiness || 0) - (a.minReadiness || 0));
+        } else {
+          list.sort((a, b) => new Date(a.driveDate || 0) - new Date(b.driveDate || 0));
+        }
+
+        if (!list.length) {
+          grid.innerHTML = `
+            <div class="col-12 text-center py-5 text-muted">
+              <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+              No placement drives found matching your filter criteria.
+            </div>`;
+          return;
+        }
+
+        const metrics = state.studentMetrics;
+
+        grid.innerHTML = list.map((d) => {
+          const color = getCompanyColor(d.company);
+          const initial = (d.company || 'C').charAt(0).toUpperCase();
+          const driveDate = d.driveDate ? new Date(d.driveDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD';
+          const deadline = d.applicationDeadline ? new Date(d.applicationDeadline).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'Open';
+          const branches = (d.eligibleBranches || []).join(', ');
+
+          const b = d.eligibilityBreakdown || {};
+
+          // Eligibility criteria checklist
+          const cgpaCheck = b.isCgpaEligible
+            ? `<span class="criterion-pill met"><i class="bi bi-check-circle-fill"></i> CGPA ≥ ${d.minCgpa} (Yours: ${metrics.cgpa ?? 'N/A'})</span>`
+            : `<span class="criterion-pill unmet"><i class="bi bi-x-circle-fill"></i> CGPA ≥ ${d.minCgpa} (Yours: ${metrics.cgpa ?? 'N/A'})</span>`;
+
+          const readinessCheck = b.isReadinessEligible
+            ? `<span class="criterion-pill met"><i class="bi bi-check-circle-fill"></i> Readiness ≥ ${d.minReadiness}% (Yours: ${metrics.readinessScore}%)</span>`
+            : `<span class="criterion-pill unmet"><i class="bi bi-x-circle-fill"></i> Readiness ≥ ${d.minReadiness}% (Yours: ${metrics.readinessScore}%)</span>`;
+
+          const branchCheck = b.isBranchEligible
+            ? `<span class="criterion-pill met"><i class="bi bi-check-circle-fill"></i> ${branches}</span>`
+            : `<span class="criterion-pill unmet"><i class="bi bi-x-circle-fill"></i> ${branches}</span>`;
+
+          // Button state
+          let actionBtn = '';
+          if (d.myApplicationStatus) {
+            actionBtn = `
+              <button class="btn btn-outline-success btn-sm w-100 disabled">
+                <i class="bi bi-check2-circle me-1"></i> Applied (${d.myApplicationStatus})
+              </button>`;
+          } else if (d.isEligible) {
+            actionBtn = `
+              <button class="btn btn-primary-custom btn-sm w-100" onclick="window.openApplyModal('${d._id}')">
+                <i class="bi bi-send-fill me-1"></i> Apply Now
+              </button>`;
+          } else {
+            actionBtn = `
+              <button class="btn btn-outline-secondary btn-sm w-100" onclick="window.showImprovementTips('${d._id}')">
+                <i class="bi bi-lock-fill me-1"></i> Unlock with Preparation
+              </button>`;
+          }
+
+          return `
+            <div class="col-md-6 col-lg-4">
+              <div class="drive-card">
+                <div class="d-flex align-items-start gap-3 mb-3">
+                  <div class="company-logo-avatar" style="background: ${color};">
+                    ${initial}
+                  </div>
+                  <div class="flex-grow-1 overflow-hidden">
+                    <h5 class="fw-bold mb-0 text-truncate" title="${escapeHtml(d.company)}">${escapeHtml(d.company)}</h5>
+                    <div class="text-muted small text-truncate" title="${escapeHtml(d.role)}">${escapeHtml(d.role)}</div>
+                    <span class="badge bg-success-subtle text-success fw-bold px-2 py-1 mt-1">
+                      <i class="bi bi-cash-stack me-1"></i>${escapeHtml(d.package || 'Competitive')}
+                    </span>
+                  </div>
+                </div>
+
+                <p class="text-body small mb-3 text-truncate-2" style="line-height: 1.5; min-height: 40px;">
+                  ${escapeHtml(d.description || 'Full-time campus recruitment hiring drive for engineering graduates.')}
+                </p>
+
+                <!-- Dates Box -->
+                <div class="bg-body-tertiary p-2 rounded-2 small mb-3">
+                  <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted"><i class="bi bi-calendar-event me-1"></i>Drive Date:</span>
+                    <span class="fw-semibold">${driveDate}</span>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <span class="text-muted"><i class="bi bi-hourglass-split me-1"></i>Deadline:</span>
+                    <span class="fw-semibold text-danger">${deadline}</span>
+                  </div>
+                </div>
+
+                <!-- Eligibility Checklist -->
+                <div class="mb-3">
+                  <div class="small fw-semibold text-muted mb-2">Eligibility Criteria:</div>
+                  <div class="d-flex flex-wrap gap-1">
+                    ${cgpaCheck}
+                    ${readinessCheck}
+                    ${branchCheck}
+                  </div>
+                </div>
+
+                <!-- Action Bar -->
+                <div class="mt-auto pt-2 border-top">
+                  ${actionBtn}
+                </div>
+              </div>
+            </div>`;
+        }).join('');
+      }
+
+      window.openApplyModal = function (driveId) {
+        const drive = state.drives.find((d) => d._id === driveId);
+        if (!drive) return;
+        state.selectedDrive = drive;
+
+        const user = API.getUser() || {};
+        const metrics = state.studentMetrics;
+
+        document.getElementById('modalCompanyName').textContent = drive.company;
+        document.getElementById('modalCompanyAvatar').textContent = drive.company.charAt(0).toUpperCase();
+        document.getElementById('modalCompanyAvatar').style.background = getCompanyColor(drive.company);
+        document.getElementById('modalDriveRole').textContent = drive.role;
+        document.getElementById('modalDrivePackage').textContent = `Package: ${drive.package || 'Competitive'}`;
+
+        document.getElementById('modalStudentName').textContent = user.name || 'Candidate';
+        document.getElementById('modalStudentBranch').textContent = user.branch || metrics.branch || 'Engineering';
+        document.getElementById('modalStudentCgpa').textContent = metrics.cgpa != null ? metrics.cgpa : '—';
+        document.getElementById('modalStudentReadiness').textContent = `${metrics.readinessScore || 0}%`;
+
+        const modal = new bootstrap.Modal(document.getElementById('modalApplyDrive'));
+        modal.show();
+      };
+
+      document.getElementById('confirmSubmitAppBtn')?.addEventListener('click', async () => {
+        if (!state.selectedDrive) return;
+        const btn = document.getElementById('confirmSubmitAppBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Submitting...';
+
+        try {
+          await API.post(`/api/drives/${state.selectedDrive._id}/apply`, {});
+          bootstrap.Modal.getInstance(document.getElementById('modalApplyDrive'))?.hide();
+
+          // Refresh data
+          await loadDrivesData();
+          alert('🎉 Congratulations! Your application has been submitted successfully to the Placement Cell.');
+        } catch (err) {
+          alert(`Application submission failed: ${err.message}`);
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="bi bi-send-fill me-1"></i> Confirm & Submit Application';
+        }
+      });
+
+      window.showImprovementTips = function (driveId) {
+        const drive = state.drives.find((d) => d._id === driveId);
+        if (!drive) return;
+        const diff = (drive.minReadiness || 60) - (state.studentMetrics.readinessScore || 0);
+
+        let msg = `To unlock ${drive.company} (${drive.role}), you need:\n`;
+        if (diff > 0) {
+          msg += `• +${diff}% higher readiness score (Current: ${state.studentMetrics.readinessScore}%, Target: ${drive.minReadiness}%).\n`;
+        }
+        if (state.studentMetrics.cgpa != null && state.studentMetrics.cgpa < drive.minCgpa) {
+          msg += `• Minimum CGPA: ${drive.minCgpa} (Current: ${state.studentMetrics.cgpa}).\n`;
+        }
+        msg += '\nTip: Complete diagnostic assessments in Assessment Hub and finish milestones on your Roadmap to boost your readiness score above the threshold!';
+        alert(msg);
+      };
+
+      async function loadMyApplications() {
+        const tbody = document.getElementById('myApplicationsTableBody');
+        if (!tbody) return;
+
+        try {
+          const res = await API.get('/api/drives/my-applications');
+          const apps = res.data?.applications || [];
+          state.applications = apps;
+
+          document.getElementById('myAppsHeaderCount').textContent = `${apps.length} Applications`;
+
+          if (!apps.length) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted">You have not applied to any campus placement drives yet.</td></tr>';
+            return;
+          }
+
+          tbody.innerHTML = apps.map((app) => {
+            const drive = app.driveId || {};
+            const appliedDate = app.appliedAt ? new Date(app.appliedAt).toLocaleDateString() : '—';
+            const driveDate = drive.driveDate ? new Date(drive.driveDate).toLocaleDateString() : 'TBD';
+
+            const stageStyles = {
+              Applied: 'bg-primary-subtle text-primary',
+              Shortlisted: 'bg-info-subtle text-info',
+              Assessment: 'bg-warning-subtle text-warning',
+              Interview: 'bg-purple-subtle text-primary',
+              Selected: 'bg-success text-white',
+              Rejected: 'bg-danger-subtle text-danger',
+            };
+            const badgeClass = stageStyles[app.status] || 'bg-secondary-subtle text-secondary';
+
+            return `
+              <tr>
+                <td class="ps-3 ps-md-4">
+                  <span class="fw-bold text-primary d-block">${escapeHtml(drive.company || 'Company')}</span>
+                  <small class="text-muted">${escapeHtml(drive.role || 'Role')}</small>
+                </td>
+                <td><span class="fw-semibold">${escapeHtml(drive.package || '—')}</span></td>
+                <td><small class="text-muted">${driveDate}</small></td>
+                <td><small class="text-muted">${appliedDate}</small></td>
+                <td><span class="stage-badge ${badgeClass}">${escapeHtml(app.status)}</span></td>
+                <td><small class="text-muted">${escapeHtml(app.stageNotes || 'Under Placement Cell review.')}</small></td>
+              </tr>`;
+          }).join('');
+        } catch (err) {
+          tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">Error: ${escapeHtml(err.message)}</td></tr>`;
+        }
+      }
+
+      // Event listeners for filters
+      document.getElementById('driveSearchInput')?.addEventListener('input', renderDrivesGrid);
+      document.getElementById('driveFilterEligibility')?.addEventListener('change', renderDrivesGrid);
+      document.getElementById('driveSort')?.addEventListener('change', renderDrivesGrid);
+      document.getElementById('refreshDrivesBtn')?.addEventListener('click', loadDrivesData);
+
+      // On Page Load
+      document.addEventListener('DOMContentLoaded', () => {
+        loadDrivesData();
+      });
+    })();
+  </script>
+</body>
+</html>

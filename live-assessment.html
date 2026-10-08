@@ -225,6 +225,23 @@
   <script src="app.js"></script>
   <script>
     /* ============================================================
+       CODE COMPILER DEFINITIONS
+       ============================================================ */
+    const DEFAULT_CODE_LANGUAGES = {
+      python: { label: 'Python 3.8', short: 'Python' },
+      javascript: { label: 'JavaScript (Node 12)', short: 'JavaScript' },
+      java: { label: 'Java (OpenJDK 13)', short: 'Java' },
+      cpp: { label: 'C++ (GCC 9.2)', short: 'C++' },
+      c: { label: 'C (GCC 9.2)', short: 'C' },
+      csharp: { label: 'C# (Mono 6.6)', short: 'C#' },
+      go: { label: 'Go 1.13', short: 'Go' },
+      rust: { label: 'Rust 1.40', short: 'Rust' },
+      kotlin: { label: 'Kotlin 1.3', short: 'Kotlin' },
+    };
+    window.CODE_LANGUAGES = { ...DEFAULT_CODE_LANGUAGES };
+    const ALL_LANGUAGE_KEYS = Object.keys(DEFAULT_CODE_LANGUAGES);
+
+    /* ============================================================
        MULTI-MODULE ASSESSMENT QUESTION BANKS
        ============================================================ */
     const ASSESSMENT_MODULES = {
@@ -336,38 +353,6 @@
               { key: "D", text: "Neither I nor II follows" }
             ],
             correctKey: "B"
-          },
-          {
-            id: "log-2",
-            difficulty: "Hard",
-            topic: "Seating Arrangement",
-            type: "mcq",
-            title: "Q2: Circular Arrangement",
-            question: "Six persons P, Q, R, S, T, and U are seated around a circular table facing the center.\n• P is second to the left of T.\n• Q is to the immediate right of T.\n• R is seated between P and S.\nWho is seated opposite to P?",
-            hint: "Place T at the bottom. T's right is counter-clockwise. Work out the relative circular positions.",
-            options: [
-              { key: "A", text: "Q" },
-              { key: "B", text: "S" },
-              { key: "C", text: "U" },
-              { key: "D", text: "T" }
-            ],
-            correctKey: "A"
-          },
-          {
-            id: "log-3",
-            difficulty: "Medium",
-            topic: "Blood Relations",
-            type: "mcq",
-            title: "Q3: Pointing Relationship",
-            question: "Pointing to a man on stage, Sunita said, 'His mother is the only daughter of my mother.' How is Sunita related to the man on stage?",
-            hint: "'Only daughter of my mother' = Sunita herself (since Sunita is female). Thus the man's mother is Sunita.",
-            options: [
-              { key: "A", text: "Aunt" },
-              { key: "B", text: "Sister" },
-              { key: "C", text: "Mother" },
-              { key: "D", text: "Grandmother" }
-            ],
-            correctKey: "C"
           },
           {
             id: "log-4",
@@ -1026,12 +1011,25 @@ SELECT NULL;`
       if (Array.isArray(q.supportedLanguages) && q.supportedLanguages.length) {
         return q.supportedLanguages;
       }
-      return ['python'];
+      return ALL_LANGUAGE_KEYS;
     }
 
     function starterForLanguage(q, language) {
       if (q.starterTemplates && q.starterTemplates[language]) {
         return q.starterTemplates[language];
+      }
+      if (language === 'python' && q.starterCode) {
+        return q.starterCode;
+      }
+      const fn = q.entryFunction || 'solution';
+      if (language === 'javascript') {
+        return `function ${fn}(...) {\n  // Write your solution here.\n}`;
+      }
+      if (language === 'java') {
+        return `class Solution {\n    public Object ${fn}(...) {\n        // Write your solution here.\n        return null;\n    }\n}`;
+      }
+      if (language === 'cpp') {
+        return `// Write your solution here.\n`;
       }
       return q.starterCode || '';
     }
@@ -1225,8 +1223,10 @@ SELECT NULL;`
       const area = document.getElementById(`code_area_${qId}`);
       const select = document.getElementById(`code_lang_${qId}`);
       const language = select ? select.value : 'python';
+      if (userAnswers) delete userAnswers[qId + '_code_' + language];
       if (area) area.value = starterForLanguage(q, language);
       setCodeStatus(qId, '', true);
+      showCodeOutput(qId, '');
     }
 
     function changeCodeLanguage(qId) {
@@ -1234,10 +1234,21 @@ SELECT NULL;`
       if (!q) return;
       const select = document.getElementById(`code_lang_${qId}`);
       const area = document.getElementById(`code_area_${qId}`);
-      const language = select ? select.value : 'python';
-      if (area) area.value = starterForLanguage(q, language);
-      if (userAnswers) userAnswers[qId + '_lang'] = language;
+      const oldLang = (userAnswers && userAnswers[qId + '_lang']) || 'python';
+      const newLang = select ? select.value : 'python';
+
+      // Save user written code for previous language so work isn't lost
+      if (area && userAnswers) {
+        userAnswers[qId + '_code_' + oldLang] = area.value;
+      }
+      if (userAnswers) userAnswers[qId + '_lang'] = newLang;
+
+      if (area) {
+        const cached = userAnswers && userAnswers[qId + '_code_' + newLang];
+        area.value = cached !== undefined ? cached : starterForLanguage(q, newLang);
+      }
       setCodeStatus(qId, '', true);
+      showCodeOutput(qId, '');
     }
 
     function setCodeStatus(qId, html, hide) {
@@ -1307,12 +1318,14 @@ SELECT NULL;`
         const total = data.totalTests || 0;
         const lines = [];
 
-        if (data.status === 'Accepted' && passed >= total) {
+        if (total === 0) {
+          setCodeStatus(qId, '<i class="bi bi-info-circle-fill text-warning"></i> Code executed (no sample test cases defined)', false);
+        } else if (data.status === 'Accepted' && passed >= total) {
           setCodeStatus(qId, '<i class="bi bi-check-circle-fill"></i> ' + passed + '/' + total + ' sample cases passed (' + (data.executionTime || 0) + 'ms)');
         } else if (passed > 0) {
           setCodeStatus(qId, '<i class="bi bi-exclamation-triangle-fill text-warning"></i> ' + passed + '/' + total + ' sample cases passed', false);
         } else {
-          setCodeStatus(qId, '<i class="bi bi-x-circle-fill text-danger"></i> 0/' + total + ' sample cases passed', false);
+          setCodeStatus(qId, '<i class="bi bi-x-circle-fill text-danger"></i> 0/' + total + ' sample cases passed (' + (data.status || 'Failed') + ')', false);
         }
 
         if (Array.isArray(data.results)) {

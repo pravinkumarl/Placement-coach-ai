@@ -399,12 +399,94 @@ Models are tried in order: `GEMINI_MODEL` (if set) → `gemini-3.6-flash` → `g
 
 ---
 
+---
+
+## Admin & TPO Portal (`/api/admin/*`)
+
+All `/api/admin/*` endpoints require authentication **and** `role: "admin"`. Non-admin callers receive HTTP 403 Forbidden.
+
+### `GET /api/admin/overview`
+Cohort summary KPIs (total students, average readiness, attempts, placement ready count, active drives), readiness distribution, branch analytics, and recent attempt stream.
+
+### `GET /api/admin/students`
+Paginated, searchable student directory.
+Query params: `page`, `limit`, `search`, `branch`, `batch`, `minCgpa`, `minReadiness`, `placementStatus`, `sortBy`, `sortOrder`.
+
+### `GET /api/admin/students/:id`
+Drill-down profile for an individual student: overall readiness, category breakdown (Aptitude, Coding, Technical, Communication, Interview), strong/weak topics, attempts history, and drive applications.
+
+### `PATCH /api/admin/students/:id/status`
+Update placement status (`unplaced` | `placed` | `opted_out`), backlogs, or CGPA.
+
+### `GET /api/admin/analytics`
+Cohort-wide topic weakness analysis, struggling student percentages, category comparisons, and Gemini-powered placement recommendations.
+
+### `GET /api/admin/eligibility`
+Screen candidates meeting drive criteria (`minCgpa`, `minReadiness`, `branches`, `maxBacklogs`, `search`).
+
+### `GET /api/admin/eligibility/export`
+Exports matching students as a downloadable CSV.
+
+### `GET /api/admin/students/export`
+Exports student directory as CSV.
+
+### `POST /api/admin/students/import`
+Bulk imports/updates students from CSV text with email validation.
+
+### `GET/POST /api/admin/assessments`
+List all assessment modules or create new modules.
+
+### `PATCH /api/admin/assessments/:id/publish`
+Toggle publication status of an assessment module.
+
+### `GET/POST/DELETE /api/admin/questions`
+Question bank repository operations (MCQ, Coding, SQL, Interview).
+
+### `GET/POST/PUT/DELETE /api/admin/drives`
+Campus recruitment drive management.
+
+### `GET /api/admin/applications` & `PATCH /api/admin/applications/:id/status`
+Recruitment stage tracking (`Applied`, `Shortlisted`, `Assessment`, `Interview`, `Selected`, `Rejected`).
+
+### `GET/POST/DELETE /api/admin/notifications`
+Institutional campus announcement broadcaster.
+
+### `GET /api/admin/logs`
+Administrative audit trail.
+
+---
+
+## Placement Drives (`/api/drives`)
+
+Protected. Student-facing campus placement drive access.
+
+### `GET /api/drives`
+Lists open recruitment drives, candidate eligibility status, and active application statuses.
+
+### `POST /api/drives/:id/apply`
+Candidate submits application for an open recruitment drive.
+
+### `GET /api/drives/my-applications`
+Candidate's submitted drive applications and round statuses.
+
+---
+
+## Notifications (`/api/notifications`)
+
+Protected.
+
+### `GET /api/notifications`
+Lists institutional announcements and drive alerts relevant to the candidate.
+
+---
+
 ## Static frontend
 
 The Express app also serves the static pages with clean URLs:
 
-- `/` → `index.html`, `/dashboard` → `dashboard.html`, `/login`, `/profile`, `/roadmap`, `/chat`, …
+- `/` → `index.html`, `/dashboard` → `dashboard.html`, `/admin` → `admin.html`, `/login`, `/profile`, `/roadmap`, `/chat`, …
 - Requests under `/backend` or `/node_modules` → `404`
 - Unknown API paths → JSON `404`; unknown pages → `index.html` fallback where applicable
 
 On Vercel, `api/index.js` exports the same app and `vercel.json` rewrites `/api/(.*)` to it; all other paths are served as static files.
+

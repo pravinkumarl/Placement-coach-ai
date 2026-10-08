@@ -43,7 +43,7 @@ export function gradeQuestion(question, answer, context = {}) {
     if (submissionScore === undefined || submissionScore === null) {
       return { isCorrect: !isEmptyAnswer(answer), correctValue: null };
     }
-    return { isCorrect: Number(submissionScore) === 100, correctValue: null };
+    return { isCorrect: Number(submissionScore) >= 70, correctValue: null };
   }
 
   const correct = !isEmptyAnswer(answer);

@@ -109,38 +109,6 @@ export const ASSESSMENT_MODULES = {
             correctKey: "B"
           },
           {
-            id: "log-2",
-            difficulty: "Hard",
-            topic: "Seating Arrangement",
-            type: "mcq",
-            title: "Q2: Circular Arrangement",
-            question: "Six persons P, Q, R, S, T, and U are seated around a circular table facing the center.\n• P is second to the left of T.\n• Q is to the immediate right of T.\n• R is seated between P and S.\nWho is seated opposite to P?",
-            hint: "Place T at the bottom. T's right is counter-clockwise. Work out the relative circular positions.",
-            options: [
-              { key: "A", text: "Q" },
-              { key: "B", text: "S" },
-              { key: "C", text: "U" },
-              { key: "D", text: "T" }
-            ],
-            correctKey: "A"
-          },
-          {
-            id: "log-3",
-            difficulty: "Medium",
-            topic: "Blood Relations",
-            type: "mcq",
-            title: "Q3: Pointing Relationship",
-            question: "Pointing to a man on stage, Sunita said, 'His mother is the only daughter of my mother.' How is Sunita related to the man on stage?",
-            hint: "'Only daughter of my mother' = Sunita herself (since Sunita is female). Thus the man's mother is Sunita.",
-            options: [
-              { key: "A", text: "Aunt" },
-              { key: "B", text: "Sister" },
-              { key: "C", text: "Mother" },
-              { key: "D", text: "Grandmother" }
-            ],
-            correctKey: "C"
-          },
-          {
             id: "log-4",
             difficulty: "Easy",
             topic: "Coding-Decoding",
