@@ -99,7 +99,7 @@ Demo account (only with `npm run seed -- --demo`): `demo@placementcoach.ai` / `D
 npm test
 ```
 
-73 tests across health/auth/assessments/roadmap/chat/profile/dashboard/interview suites (including the spec alias endpoints, persisted chat sessions and interview sub-scores), run with `node:test` + supertest against a throwaway `placement_coach_test_<suite>` database (dropped after each run). No AI key is required — AI routes are asserted to fail cleanly with `503`.
+103 tests across health/auth/assessments/roadmap/chat/profile/dashboard/interview/authorization suites (including the spec alias endpoints, persisted chat sessions, interview sub-scores, cross-user isolation and attempt-integrity checks), run with `node:test` + supertest against a throwaway `placement_coach_test_<suite>` database (dropped after each run). No AI key is required — AI routes are asserted to fail cleanly with `503`.
 
 ## Deploying to Vercel
 

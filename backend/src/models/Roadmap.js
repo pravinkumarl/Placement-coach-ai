@@ -12,6 +12,7 @@ const milestoneSchema = new mongoose.Schema(
       default: 'pending',
     },
     estimatedHours: { type: Number, default: 4, min: 0 },
+    startedAt: { type: Date, default: null },
     completedAt: { type: Date, default: null },
   },
   { _id: true }

@@ -37,6 +37,11 @@ export const env = {
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   geminiApiKey: process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.trim() : '',
   geminiModel: process.env.GEMINI_MODEL || 'gemini-3.6-flash',
+  // Judge0-compatible code execution provider (server side only, never exposed).
+  // Falls back to the public Judge0 CE instance when unset.
+  judge0ApiUrl: (process.env.JUDGE0_API_URL || 'https://ce.judge0.com').trim().replace(/\/+$/, ''),
+  judge0ApiKey: process.env.JUDGE0_API_KEY ? process.env.JUDGE0_API_KEY.trim() : '',
+  judge0ApiHost: process.env.JUDGE0_API_HOST ? process.env.JUDGE0_API_HOST.trim() : '',
   repoRoot,
 };
 

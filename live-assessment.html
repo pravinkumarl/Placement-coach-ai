@@ -485,15 +485,57 @@
             title: "Q1: Two Sum Problem",
             question: "Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two numbers such that they add up to <code>target</code>.<br><br>Each input has exactly one solution and you may not use the same element twice.",
             example: "Input: nums = [2,7,11,15], target = 9\nOutput: [0,1]\nExplanation: nums[0] + nums[1] == 9",
+            entryFunction: "twoSum",
+            paramTypes: ["int[]", "int"],
+            returnType: "int[]",
+            supportedLanguages: ["python", "javascript", "cpp", "java", "csharp", "go", "rust", "kotlin", "c"],
+            starterTemplates: {
+              python: `def twoSum(nums, target):
+    # Write your solution here.
+    pass`,
+              javascript: `function twoSum(nums, target) {
+  // Write your solution here.
+}`,
+              cpp: `std::vector<int> twoSum(std::vector<int>& nums, int target) {
+  // Write your solution here.
+}`,
+              java: `class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        // Write your solution here.
+        return new int[0];
+    }
+}`,
+              csharp: `public class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        // Write your solution here.
+        return new int[0];
+    }
+}`,
+              go: `func twoSum(nums []int, target int) []int {
+    // Write your solution here.
+    return nil
+}`,
+              rust: `fn twoSum(nums: Vec<i32>, target: i32) -> Vec<i32> {
+    // Write your solution here.
+    Vec::new()
+}`,
+              kotlin: `fun twoSum(nums: IntArray, target: Int): IntArray {
+    // Write your solution here.
+    return intArrayOf()
+}`,
+              c: `int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
+    // Write your solution here.
+    *returnSize = 0;
+    return NULL;
+}`,
+            },
+            sampleTestCases: [
+              { input: "2 7 11 15\n9", expectedOutput: "0 1" },
+              { input: "3 2 4\n6", expectedOutput: "1 2" },
+            ],
             starterCode: `def twoSum(nums, target):
-    # Your solution here
-    lookup = {}
-    for i, num in enumerate(nums):
-        complement = target - num
-        if complement in lookup:
-            return [lookup[complement], i]
-        lookup[num] = i
-    return []`
+    # Write your solution here.
+    pass`
           },
           {
             id: "code-2",
@@ -503,16 +545,57 @@
             title: "Q2: Longest Increasing Subsequence",
             question: "Given an integer array <code>nums</code>, return the length of the longest strictly increasing subsequence in O(N log N) or O(N²).",
             example: "Input: nums = [10,9,2,5,3,7,101,18]\nOutput: 4\nExplanation: The longest increasing subsequence is [2,3,7,101], length = 4.",
+            entryFunction: "lengthOfLIS",
+            paramTypes: ["int[]"],
+            returnType: "int",
+            supportedLanguages: ["python", "javascript", "cpp", "java", "csharp", "go", "rust", "kotlin", "c"],
+            starterTemplates: {
+              python: `def lengthOfLIS(nums):
+    # Write your solution here.
+    return 0`,
+              javascript: `function lengthOfLIS(nums) {
+  // Write your solution here.
+}`,
+              cpp: `int lengthOfLIS(std::vector<int>& nums) {
+  // Write your solution here.
+  return 0;
+}`,
+              java: `class Solution {
+    public int lengthOfLIS(int[] nums) {
+        // Write your solution here.
+        return 0;
+    }
+}`,
+              csharp: `public class Solution {
+    public int lengthOfLIS(int[] nums) {
+        // Write your solution here.
+        return 0;
+    }
+}`,
+              go: `func lengthOfLIS(nums []int) int {
+    // Write your solution here.
+    return 0
+}`,
+              rust: `fn lengthOfLIS(nums: Vec<i32>) -> i32 {
+    // Write your solution here.
+    0
+}`,
+              kotlin: `fun lengthOfLIS(nums: IntArray): Int {
+    // Write your solution here.
+    return 0
+}`,
+              c: `int lengthOfLIS(int* nums, int numsSize) {
+    // Write your solution here.
+    return 0;
+}`,
+            },
+            sampleTestCases: [
+              { input: "10 9 2 5 3 7 101 18", expectedOutput: "4" },
+              { input: "0 1 0 3 2 3", expectedOutput: "4" },
+            ],
             starterCode: `def lengthOfLIS(nums):
-    if not nums:
-        return 0
-    # Complete DP solution below
-    dp = [1] * len(nums)
-    for i in range(len(nums)):
-        for j in range(i):
-            if nums[i] > nums[j]:
-                dp[i] = max(dp[i], dp[j] + 1)
-    return max(dp)`
+    # Write your solution here.
+    return 0`
           },
           {
             id: "code-3",
@@ -522,12 +605,34 @@
             title: "Q3: Validate Binary Search Tree",
             question: "Given the root of a binary tree, determine if it is a valid binary search tree (BST). The left subtree contains only nodes with keys less than the node's key, and the right subtree contains only keys greater.",
             example: "Input: root = [2,1,3]\nOutput: true",
-            starterCode: `def isValidBST(root, low=float('-inf'), high=float('inf')):
-    if not root:
-        return True
-    if not (low < root.val < high):
-        return False
-    return isValidBST(root.left, low, root.val) and isValidBST(root.right, root.val, high)`
+            entryFunction: "isValidBST",
+            paramTypes: ["tree"],
+            returnType: "bool",
+            supportedLanguages: ["python", "javascript", "cpp", "java"],
+            starterTemplates: {
+              python: `def isValidBST(root):
+    # Write your solution here.
+    return True`,
+              javascript: `function isValidBST(root) {
+  // Write your solution here.
+}`,
+              cpp: `bool isValidBST(TreeNode* root) {
+  // Write your solution here.
+}`,
+              java: `class Solution {
+    public boolean isValidBST(TreeNode root) {
+        // Write your solution here.
+        return true;
+    }
+}`,
+            },
+sampleTestCases: [
+              { input: "2 1 3", expectedOutput: "true" },
+              { input: "5 1 4 null null 3 6", expectedOutput: "false" },
+            ],
+            starterCode: `def isValidBST(root):
+    # Write your solution here.
+    return True`
           }
         ]
       },
@@ -550,12 +655,8 @@
   salary INT,
   department_id INT
 );`,
-            starterCode: `SELECT MAX(salary) AS SecondHighestSalary
-FROM Employee
-WHERE salary < (SELECT MAX(salary) FROM Employee);`,
-            expectedResult: [
-              { SecondHighestSalary: 85000 }
-            ]
+            starterCode: `-- Write your SQL query here.
+SELECT NULL;`
           },
           {
             id: "sql-2",
@@ -568,18 +669,8 @@ WHERE salary < (SELECT MAX(salary) FROM Employee);`,
   id INT PRIMARY KEY,
   dept_name VARCHAR(50)
 );`,
-            starterCode: `SELECT d.dept_name AS Department, e.name AS Employee, e.salary AS Salary
-FROM Employee e
-JOIN Department d ON e.department_id = d.id
-WHERE (e.department_id, e.salary) IN (
-    SELECT department_id, MAX(salary)
-    FROM Employee
-    GROUP BY department_id
-);`,
-            expectedResult: [
-              { Department: "Engineering", Employee: "Alice", Salary: 95000 },
-              { Department: "Marketing", Employee: "Bob", Salary: 72000 }
-            ]
+            starterCode: `-- Write your SQL query here.
+SELECT NULL;`
           },
           {
             id: "sql-3",
@@ -590,14 +681,8 @@ WHERE (e.department_id, e.salary) IN (
             question: "Find all customers who never placed any orders using <code>LEFT JOIN</code> on <code>Customers</code> and <code>Orders</code>.",
             schema: `TABLE Customers (id INT, name VARCHAR);
 TABLE Orders (id INT, customer_id INT);`,
-            starterCode: `SELECT c.name AS Customers
-FROM Customers c
-LEFT JOIN Orders o ON c.id = o.customer_id
-WHERE o.id IS NULL;`,
-            expectedResult: [
-              { Customers: "Henry" },
-              { Customers: "Max" }
-            ]
+            starterCode: `-- Write your SQL query here.
+SELECT NULL;`
           }
         ]
       },
@@ -695,6 +780,7 @@ WHERE o.id IS NULL;`,
     let flaggedQuestions = new Set();
     let activeAttemptId = null;      // POST /api/assessments/:id/start
     let activeAssessmentId = null;   // server _id (falls back to moduleKey)
+    let activeRoadmapId = null;      // ?roadmapId= (links attempt to a milestone)
     let assessmentStartedAt = null;
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -714,6 +800,8 @@ WHERE o.id IS NULL;`,
       const urlParams = new URLSearchParams(window.location.search);
       let paramKey = '';
       let storedRef = '';
+
+      activeRoadmapId = urlParams.get('roadmapId') || '';
 
       try {
         const stored = JSON.parse(localStorage.getItem('current_assessment'));
@@ -784,10 +872,22 @@ WHERE o.id IS NULL;`,
       showLoadingOverlay(true);
       const ref = activeAssessmentId || currentModuleKey;
 
+      // Warm the language metadata cache so the code editor labels the selector.
+      if (window.API && API.isAuthenticated() && !window.CODE_LANGUAGES) {
+        window.CODE_LANGUAGES = {};
+        API.get('/api/code/languages').then((payload) => {
+          const kw = (payload.data && payload.data.languages) || [];
+          window.CODE_LANGUAGES = {};
+          kw.forEach((lang) => { window.CODE_LANGUAGES[lang.key] = { label: lang.label }; });
+        }).catch(() => { /* fall back to raw language keys */ });
+      }
+
       if (window.API && API.isAuthenticated()) {
         // 1) Primary: start an attempt (returns questions + attemptId).
         try {
-          const payload = await API.post('/api/assessments/' + encodeURIComponent(ref) + '/start', {});
+          const payload = await API.post('/api/assessments/' + encodeURIComponent(ref) + '/start', {
+            roadmapId: activeRoadmapId || undefined,
+          });
           const data = payload.data || {};
           applyServerAssessment(data.assessment, data.attemptId);
           showLoadingOverlay(false);
@@ -842,7 +942,7 @@ WHERE o.id IS NULL;`,
 
       // Start Timer
       if (typeof initAssessmentTimer === 'function') {
-        initAssessmentTimer(currentModule.duration);
+        initAssessmentTimer(currentModule.duration, currentModuleKey);
       }
 
       // Render Question Panels
@@ -922,7 +1022,31 @@ WHERE o.id IS NULL;`,
       `;
     }
 
+    function codeEditorLanguages(q) {
+      if (Array.isArray(q.supportedLanguages) && q.supportedLanguages.length) {
+        return q.supportedLanguages;
+      }
+      return ['python'];
+    }
+
+    function starterForLanguage(q, language) {
+      if (q.starterTemplates && q.starterTemplates[language]) {
+        return q.starterTemplates[language];
+      }
+      return q.starterCode || '';
+    }
+
     function renderCodeQuestion(q, idx) {
+      const languages = codeEditorLanguages(q);
+      const languageOptions = languages
+        .map((key) => {
+          const label = (window.CODE_LANGUAGES && window.CODE_LANGUAGES[key] && window.CODE_LANGUAGES[key].label) || key;
+          return `<option value="${key}">${label}</option>`;
+        })
+        .join('');
+      const currentLang = (userAnswers && userAnswers[q.id + '_lang']) || 'python';
+      const defaultSource = starterForLanguage(q, languages.includes(currentLang) ? currentLang : languages[0]);
+
       return `
         <div class="row g-4">
           <div class="col-lg-6">
@@ -941,17 +1065,20 @@ WHERE o.id IS NULL;`,
           <div class="col-lg-6">
             <div class="glass-card h-100 p-0 overflow-hidden d-flex flex-column">
               <div class="d-flex align-items-center justify-content-between px-3 py-2" style="background: #1E1E2E; border-bottom: 1px solid #313244;">
-                <span style="font-size:0.8rem;color:#CDD6F4;font-weight:500;"><i class="bi bi-filetype-py text-warning me-1"></i> Python 3</span>
+                <select id="code_lang_${q.id}" class="form-select form-select-sm" style="width:auto;background:#1E1E2E;color:#CDD6F4;border:1px solid #313244;font-size:0.78rem;" onchange="changeCodeLanguage('${q.id}')">${languageOptions}</select>
                 <button class="btn btn-sm" style="color:#CDD6F4;font-size:0.75rem;background:rgba(255,255,255,0.1);border:none;border-radius:4px;padding:0.2rem 0.6rem;" onclick="resetCodeEditor('${q.id}')">Reset</button>
               </div>
               <div class="p-3 flex-grow-1" style="background: #1E1E2E;">
-                <textarea id="code_area_${q.id}" class="form-control font-monospace border-0 shadow-none text-light" style="background:transparent; resize:none; min-height: 280px; font-size:0.9rem;">${q.starterCode || ''}</textarea>
+                <textarea id="code_area_${q.id}" class="form-control font-monospace border-0 shadow-none text-light" style="background:transparent; resize:none; min-height: 280px; font-size:0.9rem;">${escapeHtml(defaultSource)}</textarea>
               </div>
-              <div class="d-flex align-items-center justify-content-between p-3" style="background: #1E1E2E; border-top: 1px solid #313244;">
-                <button class="btn btn-sm text-white" style="background:var(--clr-success);" onclick="runCodeSimulation('${q.id}')">
-                  <i class="bi bi-play-fill"></i> Run Code
-                </button>
-                <span id="code_status_${q.id}" class="small text-success d-none"><i class="bi bi-check-circle-fill"></i> 3/3 Test cases passed (42ms)</span>
+              <div class="p-3" style="background: #1E1E2E; border-top: 1px solid #313244;">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <button class="btn btn-sm text-white" style="background:var(--clr-success);" onclick="runCode('${q.id}')" id="code_run_${q.id}">
+                    <i class="bi bi-play-fill"></i> Run Code
+                  </button>
+                  <span id="code_status_${q.id}" class="small text-success d-none"></span>
+                </div>
+                <div id="code_output_${q.id}" class="d-none" style="max-height:180px;overflow-y:auto;background:#121218;border:1px solid #313244;border-radius:6px;padding:0.6rem 0.75rem;font-size:0.8rem;color:#CDD6F4;"></div>
               </div>
             </div>
           </div>
@@ -989,17 +1116,8 @@ WHERE o.id IS NULL;`,
                   </button>
                   <small class="text-muted">Dialect: PostgreSQL / ANSI SQL</small>
                 </div>
-                <div id="sql_result_${q.id}" class="table-responsive rounded-2 border border-secondary mt-2">
-                  <table class="table table-sm sql-result-table">
-                    <thead>
-                      <tr>${Object.keys((q.expectedResult || [])[0] || {}).map(k => `<th>${k}</th>`).join('')}</tr>
-                    </thead>
-                    <tbody>
-                      ${(q.expectedResult || []).map(row => `
-                        <tr>${Object.values(row).map(val => `<td>${val}</td>`).join('')}</tr>
-                      `).join('')}
-                    </tbody>
-                  </table>
+                <div id="sql_result_${q.id}" class="text-muted small rounded-3 border border-secondary mt-2 px-3 py-2" style="background:#121218;">
+                  Run your query to validate it. Your query is evaluated server-side when you submit the assessment.
                 </div>
               </div>
             </div>
@@ -1103,24 +1221,135 @@ WHERE o.id IS NULL;`,
 
     function resetCodeEditor(qId) {
       const q = currentModule.questions.find(x => x.id === qId);
-      if (q) {
-        document.getElementById(`code_area_${qId}`).value = q.starterCode || '';
+      if (!q) return;
+      const area = document.getElementById(`code_area_${qId}`);
+      const select = document.getElementById(`code_lang_${qId}`);
+      const language = select ? select.value : 'python';
+      if (area) area.value = starterForLanguage(q, language);
+      setCodeStatus(qId, '', true);
+    }
+
+    function changeCodeLanguage(qId) {
+      const q = currentModule.questions.find(x => x.id === qId);
+      if (!q) return;
+      const select = document.getElementById(`code_lang_${qId}`);
+      const area = document.getElementById(`code_area_${qId}`);
+      const language = select ? select.value : 'python';
+      if (area) area.value = starterForLanguage(q, language);
+      if (userAnswers) userAnswers[qId + '_lang'] = language;
+      setCodeStatus(qId, '', true);
+    }
+
+    function setCodeStatus(qId, html, hide) {
+      const statusEl = document.getElementById(`code_status_${qId}`);
+      if (!statusEl) return;
+      if (hide) {
+        statusEl.classList.add('d-none');
+        return;
+      }
+      if (html) {
+        statusEl.classList.remove('d-none');
+        statusEl.innerHTML = html;
       }
     }
 
-    function runCodeSimulation(qId) {
-      const statusEl = document.getElementById(`code_status_${qId}`);
-      if (statusEl) {
-        statusEl.classList.remove('d-none');
-        statusEl.innerHTML = `<i class="bi bi-check-circle-fill"></i> 3/3 Test cases passed (38ms)`;
+    function showCodeOutput(qId, html) {
+      const out = document.getElementById(`code_output_${qId}`);
+      if (!out) return;
+      if (!html) {
+        out.classList.add('d-none');
+        out.innerHTML = '';
+        return;
+      }
+      out.classList.remove('d-none');
+      out.innerHTML = html;
+    }
+
+    function currentCodeLanguage(qId) {
+      const select = document.getElementById(`code_lang_${qId}`);
+      return select ? select.value : 'python';
+    }
+
+    async function runCode(qId) {
+      const area = document.getElementById(`code_area_${qId}`);
+      const runBtn = document.getElementById(`code_run_${qId}`);
+      if (!area) return;
+      const sourceCode = area.value.trim();
+      if (!sourceCode) {
+        showCodeOutput(qId, '<span class="text-warning"><i class="bi bi-exclamation-triangle-fill me-1"></i>Write your solution first, then Run Code.</span>');
+        return;
+      }
+      if (!window.API || !API.isAuthenticated()) {
+        showCodeOutput(qId, '<span class="text-warning"><i class="bi bi-exclamation-triangle-fill me-1"></i>Sign in to run code against the judge.</span>');
+        return;
+      }
+
+      const language = currentCodeLanguage(qId);
+      const q = currentModule.questions.find(x => x.id === qId);
+      const originalText = runBtn ? runBtn.innerHTML : '';
+      if (runBtn) {
+        runBtn.disabled = true;
+        runBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Running...';
+      }
+      showCodeOutput(qId, '<span class="text-muted"><i class="bi bi-hourglass-split me-1"></i>Executing on the judge server…</span>');
+      setCodeStatus(qId, '', true);
+
+      try {
+        const payload = await API.post('/api/code/run', {
+          questionId: qId,
+          moduleKey: currentModuleKey,
+          language: language,
+          sourceCode: sourceCode,
+          attemptId: activeAttemptId || undefined,
+        });
+        const data = payload.data || {};
+        const passed = data.passedTests || 0;
+        const total = data.totalTests || 0;
+        const lines = [];
+
+        if (data.status === 'Accepted' && passed >= total) {
+          setCodeStatus(qId, '<i class="bi bi-check-circle-fill"></i> ' + passed + '/' + total + ' sample cases passed (' + (data.executionTime || 0) + 'ms)');
+        } else if (passed > 0) {
+          setCodeStatus(qId, '<i class="bi bi-exclamation-triangle-fill text-warning"></i> ' + passed + '/' + total + ' sample cases passed', false);
+        } else {
+          setCodeStatus(qId, '<i class="bi bi-x-circle-fill text-danger"></i> 0/' + total + ' sample cases passed', false);
+        }
+
+        if (Array.isArray(data.results)) {
+          data.results.forEach((r, i) => {
+            const verdict = r.passed ? '<span class="text-success">Passed</span>' : '<span class="text-danger">' + (r.status || 'Failed') + '</span>';
+            lines.push('<div class="mb-1">Case ' + (i + 1) + ': ' + verdict + ' <span class="text-muted">(' + (r.time != null ? r.time + 'ms' : '—') + ')</span></div>');
+            if (!r.passed) {
+              lines.push('<div class="text-muted ms-3" style="white-space:pre-wrap;">Input: ' + escapeHtml(String(r.input || '')) + '<br>Expected: ' + escapeHtml(String(r.expectedOutput || '')) + '<br>Your output: ' + escapeHtml(String(r.actualOutput || '∅')) + '</div>');
+            }
+          });
+        } else {
+          lines.push('<div>Status: ' + escapeHtml(data.status || 'Unknown') + '</div>');
+        }
+        if (data.compileOutput) lines.push('<div class="text-danger mt-1" style="white-space:pre-wrap;">' + escapeHtml(data.compileOutput) + '</div>');
+        if (data.results && data.results.some(r => r.stderr)) {
+          lines.push('<div class="text-warning mt-1" style="white-space:pre-wrap;">' + escapeHtml(data.results.map(r => r.stderr).filter(Boolean).join('\n')) + '</div>');
+        }
+        showCodeOutput(qId, lines.join(''));
+      } catch (error) {
+        setCodeStatus(qId, '', true);
+        showCodeOutput(qId,
+          '<span class="text-danger"><i class="bi bi-x-circle-fill me-1"></i>' +
+          escapeHtml((error && error.message) || 'Could not run your code.') +
+          '</span>');
+        if (error && error.status === 401 && window.AuthGuard) AuthGuard.requireAuth();
+      } finally {
+        if (runBtn) {
+          runBtn.disabled = false;
+          runBtn.innerHTML = originalText;
+        }
       }
     }
 
     function runSqlSimulation(qId) {
       const resEl = document.getElementById(`sql_result_${qId}`);
       if (resEl) {
-        resEl.style.opacity = '0.5';
-        setTimeout(() => { resEl.style.opacity = '1'; }, 200);
+        resEl.innerHTML = '<i class="bi bi-check2 me-1 text-success"></i>Query accepted by the editor. Results are computed and graded server-side when you submit.';
       }
     }
 
@@ -1307,6 +1536,9 @@ WHERE o.id IS NULL;`,
         if (q.type === 'code') {
           const area = document.getElementById(`code_area_${q.id}`);
           if (area) value = area.value;
+          if (userAnswers) {
+            userAnswers[q.id + '_lang'] = currentCodeLanguage(q.id);
+          }
         } else if (q.type === 'sql') {
           const area = document.getElementById(`sql_area_${q.id}`);
           if (area) value = area.value;
@@ -1388,10 +1620,37 @@ WHERE o.id IS NULL;`,
         return;
       }
 
+      // 1) Persist code answers against the judge so hidden test scores feed
+      //    the server-side automatic grader (see gradeAttempt + submissionScores).
+      const codeQuestions = (currentModule.questions || []).filter((q) => q.type === 'code');
+      for (const q of codeQuestions) {
+        const sourceCode = answers.find((a) => a.questionId === q.id);
+        const language = currentCodeLanguage(q.id);
+        if (!sourceCode || !String(sourceCode.value || '').trim()) continue;
+        try {
+          await API.post('/api/code/submit', {
+            questionId: q.id,
+            moduleKey: currentModuleKey,
+            language: language,
+            sourceCode: String(sourceCode.value),
+            attemptId: activeAttemptId || undefined,
+            roadmapId: activeRoadmapId || undefined,
+          });
+        } catch (submitCodeError) {
+          // Do not block the assessment — fall back to the text-answer grader.
+          console.warn('Code submission failed:', submitCodeError);
+        }
+      }
+
       try {
         const payload = await API.post(
           '/api/assessments/' + encodeURIComponent(ref) + '/submit',
-          { attemptId: activeAttemptId, answers: answers, timeTakenSeconds: timeTakenSeconds }
+          {
+            attemptId: activeAttemptId,
+            answers: answers,
+            timeTakenSeconds: timeTakenSeconds,
+            roadmapId: activeRoadmapId || undefined,
+          }
         );
         renderAttemptResults(payload.data || {});
       } catch (error) {

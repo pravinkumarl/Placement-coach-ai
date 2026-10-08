@@ -8,6 +8,7 @@ import roadmapRoutes from './roadmap.routes.js';
 import interviewRoutes from './interview.routes.js';
 import chatRoutes from './chat.routes.js';
 import geminiRoutes from './gemini.routes.js';
+import codeRoutes from './code.routes.js';
 import { ensureDatabaseConnection } from '../middleware/auth.middleware.js';
 import { getDatabaseStatus } from '../config/database.js';
 
@@ -36,5 +37,6 @@ router.use('/roadmap', roadmapRoutes);
 router.use('/interviews', interviewRoutes);
 router.use('/chat', chatRoutes);
 router.use('/gemini', geminiRoutes);
+router.use('/code', codeRoutes);
 
 export default router;

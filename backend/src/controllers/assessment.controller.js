@@ -1,11 +1,22 @@
 import mongoose from 'mongoose';
 import Assessment from '../models/Assessment.js';
 import AssessmentAttempt from '../models/AssessmentAttempt.js';
+import CodingSubmission from '../models/CodingSubmission.js';
+import Roadmap from '../models/Roadmap.js';
 import { gradeAttempt } from '../services/grading.service.js';
 import { recordAttemptPerformance, recalculateReadiness } from '../services/performance.service.js';
+import { completeMilestoneForActivity } from '../services/roadmap.service.js';
 import { ApiError, sendSuccess, asyncHandler } from '../utils/response.js';
 
-const SENSITIVE_KEYS = ['correctKey', 'correctAnswer', 'expectedAnswer', 'solution'];
+const SENSITIVE_KEYS = [
+  'correctKey',
+  'correctAnswer',
+  'expectedAnswer',
+  'solution',
+  'solutionCode',
+  'hiddenTestCases',
+  'expectedResult',
+];
 
 /**
  * Remove answer keys before questions are sent to the browser.
@@ -87,6 +98,13 @@ export const getAssessment = asyncHandler(async (req, res) => {
  */
 export const startAssessment = asyncHandler(async (req, res) => {
   const assessment = await findAssessment(req.params.id);
+  const roadmapId = req.body?.roadmapId || null;
+
+  let roadmap = null;
+  if (roadmapId && mongoose.Types.ObjectId.isValid(String(roadmapId))) {
+    const found = await Roadmap.findOne({ _id: roadmapId, userId: req.user._id }).lean();
+    if (found) roadmap = found;
+  }
 
   const attempt = await AssessmentAttempt.create({
     userId: req.user._id,
@@ -94,6 +112,7 @@ export const startAssessment = asyncHandler(async (req, res) => {
     moduleKey: assessment.moduleKey,
     title: assessment.title,
     category: assessment.category,
+    roadmapId: roadmap ? roadmap._id : null,
     status: 'in_progress',
     questionCount: (assessment.questions || []).length,
     totalQuestions: (assessment.questions || []).length,
@@ -104,6 +123,7 @@ export const startAssessment = asyncHandler(async (req, res) => {
     res,
     {
       attemptId: attempt._id,
+      roadmapId: attempt.roadmapId,
       assessment: {
         _id: assessment._id,
         moduleKey: assessment.moduleKey,
@@ -124,41 +144,79 @@ export const startAssessment = asyncHandler(async (req, res) => {
  */
 export const submitAssessment = asyncHandler(async (req, res) => {
   const assessment = await findAssessment(req.params.id);
-  const { answers = [], attemptId, timeTakenSeconds = 0 } = req.body || {};
+  const { answers = [], attemptId, timeTakenSeconds = 0, roadmapId } = req.body || {};
 
   if (!Array.isArray(answers)) {
     throw ApiError.badRequest('answers must be an array.');
   }
 
   let attempt = null;
-  if (attemptId && mongoose.Types.ObjectId.isValid(String(attemptId))) {
+  if (attemptId !== undefined && attemptId !== null && String(attemptId).trim() !== '') {
+    // An attemptId was supplied: it must be a valid id belonging to THIS user
+    // and it must still be open. Anything else is rejected so one student can
+    // never grade another student's attempt and duplicate submits cannot
+    // silently create extra attempts.
+    if (!mongoose.Types.ObjectId.isValid(String(attemptId))) {
+      throw ApiError.badRequest('attemptId is not a valid id.');
+    }
     attempt = await AssessmentAttempt.findOne({
       _id: attemptId,
       userId: req.user._id,
-      status: 'in_progress',
     });
-  }
-  if (!attempt) {
+    if (!attempt) {
+      throw ApiError.notFound('Assessment attempt not found.');
+    }
+    if (String(attempt.assessmentId) !== String(assessment._id)) {
+      throw ApiError.badRequest('This attempt does not belong to the requested assessment.');
+    }
+    if (attempt.status !== 'in_progress') {
+      throw ApiError.conflict('This assessment attempt has already been submitted.');
+    }
+  } else {
+    // No attemptId given: resume the student's own latest open attempt for
+    // this module, or open one for them.
     attempt = await AssessmentAttempt.findOne({
       userId: req.user._id,
       assessmentId: assessment._id,
       status: 'in_progress',
     }).sort('-startedAt');
+    if (!attempt) {
+      attempt = new AssessmentAttempt({
+        userId: req.user._id,
+        assessmentId: assessment._id,
+        moduleKey: assessment.moduleKey,
+        title: assessment.title,
+        category: assessment.category,
+        status: 'in_progress',
+        startedAt: new Date(),
+      });
+    }
   }
-  if (!attempt) {
-    attempt = new AssessmentAttempt({
-      userId: req.user._id,
-      assessmentId: assessment._id,
-      moduleKey: assessment.moduleKey,
-      title: assessment.title,
-      category: assessment.category,
-      status: 'in_progress',
-      startedAt: new Date(),
-    });
+
+  if (!attempt.roadmapId && roadmapId && mongoose.Types.ObjectId.isValid(String(roadmapId))) {
+    const roadmap = await Roadmap.findOne({ _id: roadmapId, userId: req.user._id }).lean();
+    if (roadmap) attempt.roadmapId = roadmap._id;
   }
 
   const questions = assessment.questions || [];
-  const graded = gradeAttempt(questions, answers);
+
+  // Code questions are scored from the student's persisted coding submissions
+  // (server side Judge0 result), never from the raw textarea value alone.
+  const codeSubmissions = await CodingSubmission.find({
+    userId: req.user._id,
+    attemptId: attempt._id,
+    questionId: { $in: questions.filter((q) => String(q.type).toLowerCase() === 'code').map((q) => String(q.id)) },
+  })
+    .sort({ submittedAt: -1 })
+    .lean();
+  const submissionScores = new Map();
+  for (const submission of codeSubmissions) {
+    if (!submissionScores.has(submission.questionId)) {
+      submissionScores.set(submission.questionId, submission.score);
+    }
+  }
+
+  const graded = gradeAttempt(questions, answers, { submissionScores });
 
   attempt.answers = graded.answers;
   attempt.topicResults = graded.topicResults;
@@ -174,6 +232,13 @@ export const submitAssessment = asyncHandler(async (req, res) => {
   await attempt.save();
 
   await recordAttemptPerformance(req.user._id, attempt);
+
+  // Completing the linked assessment completes the roadmap milestone.
+  const completedMilestone = await completeMilestoneForActivity(
+    req.user._id,
+    assessment.moduleKey,
+    attempt.roadmapId
+  );
 
   const readiness = await recalculateReadiness(req.user._id);
   req.user.lastAssessmentAt = attempt.completedAt;
@@ -194,6 +259,15 @@ export const submitAssessment = asyncHandler(async (req, res) => {
         completedAt: attempt.completedAt,
         timeTakenSeconds: attempt.timeTakenSeconds,
       },
+      completedMilestone: completedMilestone
+        ? {
+            _id: completedMilestone._id,
+            title: completedMilestone.title,
+            category: completedMilestone.category,
+            status: completedMilestone.status,
+            completedAt: completedMilestone.completedAt,
+          }
+        : null,
       readinessScore: readiness,
     },
     'Assessment submitted and graded.'
